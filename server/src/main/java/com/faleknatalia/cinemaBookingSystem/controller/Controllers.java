@@ -1,5 +1,7 @@
-package com.faleknatalia.cinemaBookingSystem;
+package com.faleknatalia.cinemaBookingSystem.controller;
 
+import com.faleknatalia.cinemaBookingSystem.model.*;
+import com.faleknatalia.cinemaBookingSystem.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

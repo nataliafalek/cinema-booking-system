@@ -1,4 +1,4 @@
-package com.faleknatalia.cinemaBookingSystem;
+package com.faleknatalia.cinemaBookingSystem.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

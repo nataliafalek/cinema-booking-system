@@ -1,5 +1,12 @@
 package com.faleknatalia.cinemaBookingSystem;
 
+import com.faleknatalia.cinemaBookingSystem.model.CinemaHall;
+import com.faleknatalia.cinemaBookingSystem.model.Movie;
+import com.faleknatalia.cinemaBookingSystem.model.ScheduledMovie;
+import com.faleknatalia.cinemaBookingSystem.model.Seat;
+import com.faleknatalia.cinemaBookingSystem.repository.CinemaHallRepository;
+import com.faleknatalia.cinemaBookingSystem.repository.MovieRepository;
+import com.faleknatalia.cinemaBookingSystem.repository.ScheduledMovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,7 +19,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @SpringBootApplication

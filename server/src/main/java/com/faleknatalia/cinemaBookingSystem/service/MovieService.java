@@ -1,5 +1,8 @@
-package com.faleknatalia.cinemaBookingSystem;
+package com.faleknatalia.cinemaBookingSystem.service;
 
+import com.faleknatalia.cinemaBookingSystem.model.Movie;
+import com.faleknatalia.cinemaBookingSystem.model.ScheduledMovie;
+import com.faleknatalia.cinemaBookingSystem.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

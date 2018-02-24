@@ -1,4 +1,4 @@
-package com.faleknatalia.cinemaBookingSystem;
+package com.faleknatalia.cinemaBookingSystem.model;
 
 import org.hibernate.validator.constraints.Email;
 

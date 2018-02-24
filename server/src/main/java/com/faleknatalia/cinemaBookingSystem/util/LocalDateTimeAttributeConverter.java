@@ -1,4 +1,4 @@
-package com.faleknatalia.cinemaBookingSystem;
+package com.faleknatalia.cinemaBookingSystem.util;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
