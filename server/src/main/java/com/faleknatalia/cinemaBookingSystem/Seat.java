@@ -12,15 +12,23 @@ public class Seat {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long seatId;
 
-    private boolean isFree;
-    private int ticketPrice;
+    private int seatNumber;
 
-    public Seat(boolean isFree, int ticketPrice) {
+    public Seat(int seatNumber, boolean isFree, int ticketPrice) {
+        this.seatNumber = seatNumber;
         this.isFree = isFree;
         this.ticketPrice = ticketPrice;
     }
 
+    private boolean isFree;
+    private int ticketPrice;
+
+
     public Seat() {
+    }
+
+    public int getSeatNumber() {
+        return seatNumber;
     }
 
     public boolean isFree() {
@@ -33,5 +41,9 @@ public class Seat {
 
     public long getSeatId() {
         return seatId;
+    }
+
+    public void setFree(boolean free) {
+        isFree = free;
     }
 }

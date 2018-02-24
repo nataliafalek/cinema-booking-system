@@ -1,20 +1,37 @@
 package com.faleknatalia.cinemaBookingSystem;
 
+import javax.persistence.*;
+
+@Entity
 public class Reservation {
-    private Movie chosenMovie;
-    private boolean isBuying;
-    private int numberOfchosenSeat;
+    private long chosenMovieId;
 
-    public Reservation(Movie chosenMovie, boolean isBuying) {
-        this.chosenMovie = chosenMovie;
-        this.isBuying = isBuying;
+    private long personalDataId;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long reservationId;
+
+    private long chosenSeatId;
+
+    public Reservation(long chosenMovieId, long personalDataId, long chosenSeatId) {
+        this.chosenMovieId = chosenMovieId;
+        this.personalDataId = personalDataId;
+        this.chosenSeatId = chosenSeatId;
     }
 
-    public Movie getChoosenMovie() {
-        return chosenMovie;
+    public Reservation() {
     }
 
-    public boolean isBuying() {
-        return isBuying;
+    public long getChosenMovieId() {
+        return chosenMovieId;
+    }
+
+    public long getPersonalDataId() {
+        return personalDataId;
+    }
+
+    public long getChosenSeatId() {
+        return chosenSeatId;
     }
 }

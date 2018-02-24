@@ -3,14 +3,14 @@ package com.faleknatalia.cinemaBookingSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+//TODO wydzielic do serwisow logike z controllerow
 
 @RestController
 public class Controllers {
@@ -26,7 +26,13 @@ public class Controllers {
     @Autowired
     private CinemaHallRepository cinemaHallRepository;
 
+    @Autowired
+    private PersonalDataRepository personalDataRepository;
 
+    @Autowired
+    private SeatRepository seatRepository;
+
+    //TODO optymalizacja - wydzielic metode do serwisu osobnego, tak by efektywnie laczyc ScheduledMovie i ScheduledMovieDetails
     @RequestMapping(value = "/whatsOn", method = RequestMethod.GET)
     public ResponseEntity<List<ScheduledMovieDetails>> whatsOn() {
 
@@ -52,5 +58,17 @@ public class Controllers {
         return new ResponseEntity<>(cinemaHallRepository.findOne(cinemaHallId), HttpStatus.OK);
     }
 
+    @Transactional
+    @RequestMapping(value = "/cinemaHall/seats/choose/{seatId}", method = RequestMethod.GET)
+    public ResponseEntity<Seat> chosenSeat(@PathVariable long seatId) {
+        seatRepository.setFalseForChosenSeat(seatId);
+        Seat chosenSeat = seatRepository.findOne(seatId);
+        return new ResponseEntity<>(chosenSeat, HttpStatus.OK);
+    }
 
+    @RequestMapping(value = "/cinemaHall/addPerson", method = RequestMethod.POST)
+    public ResponseEntity<Void> addPerson(@RequestBody PersonalData personalData) {
+        personalDataRepository.save(personalData);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
