@@ -34,6 +34,9 @@ public class Controllers {
     @Autowired
     private SeatRepository seatRepository;
 
+    @Autowired
+    private ReservationRepository reservationRepository;
+
     //TODO optymalizacja - wydzielic metode do serwisu osobnego, tak by efektywnie laczyc ScheduledMovie i ScheduledMovieDetails
     @RequestMapping(value = "/whatsOn", method = RequestMethod.GET)
     public ResponseEntity<List<ScheduledMovieDetails>> whatsOn() {
@@ -69,8 +72,11 @@ public class Controllers {
     }
 
     @RequestMapping(value = "/cinemaHall/addPerson", method = RequestMethod.POST)
-    public ResponseEntity<Void> addPerson(@RequestBody PersonalData personalData) {
+    public ResponseEntity<Long> addPerson(@RequestBody PersonalDataAndReservationInfo reservationInfo) {
+        PersonalData personalData = new PersonalData(reservationInfo.getName(), reservationInfo.getSurname(), reservationInfo.getPhoneNumber(), reservationInfo.getEmail());
         personalDataRepository.save(personalData);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Reservation reservation = new Reservation(reservationInfo.getChosenMovie(), personalData.getPersonId(), reservationInfo.getChosenSeatId());
+        reservationRepository.save(reservation);
+        return new ResponseEntity<>(reservation.getReservationId(), HttpStatus.OK);
     }
 }

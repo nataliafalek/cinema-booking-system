@@ -1,58 +1,47 @@
 import React, {Component} from 'react';
-import './css/PersonalData.css'
+import './index.css'
+import * as HttpService from "./HttpService";
+import {Redirect} from 'react-router-dom';
+
 
 class PersonalData extends Component {
     constructor() {
         super();
-        this.state = this.defaultState()
-    }
-
-    defaultState = () => {
-        return {
+        this.state = {
             name: '',
             surname: '',
             phoneNumber: '',
-            email: ''
+            email: '',
+            chosenMovie: '',
+            chosenSeatId: '',
+            reservationId: '',
         }
-    };
+    }
 
 
-    //TODO inline do metody render
-    // (event) => {
-    //     this.setState({name: event.target.value});
-    // };
-    changeName = (event) => {
-        this.setState({name: event.target.value});
-    };
-
-    changeSurname = (event) => {
-        this.setState({surname: event.target.value});
-    };
-
-    changePhoneNumber= (event) => {
-        this.setState({phoneNumber: event.target.value});
-    };
-
-    changeEmail = (event) => {
-        this.setState({email: event.target.value});
-    };
-
-
-    //TODO wydzielic do metody postJson analogicznie jak fetchJson
     addPerson = (event) => {
-        fetch('http://localhost:8080/cinemaHall/addPerson', {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(this.state)
-        })
-            .then(json => {
-                console.log("dostalam z backendu", json);
-                this.setState(this.defaultState())
-            });
+        const person = {
+            name: this.state.name,
+            surname: this.state.surname,
+            phoneNumber: this.state.phoneNumber,
+            email: this.state.email,
+            chosenMovie: this.props.match.params.scheduledMovieId,
+            chosenSeatId: this.props.match.params.seatId,
+        };
+        HttpService.postJson('cinemaHall/addPerson', person)
+            .then(results => {
+                return results.text();
+            }).then(reservationId => {
+            this.setState({reservationId: reservationId});
+            console.log("reservation id", this.state.reservationId)
+            this.handleOnClick()
+        });
         console.log(this.state);
         event.preventDefault()
+    };
+
+    handleOnClick = () => {
+        this.setState({redirect: true});
     };
 
     render() {
@@ -63,36 +52,45 @@ class PersonalData extends Component {
                     <input
                         type="text"
                         value={this.state.name}
-                        onChange={this.changeName}
+                        onChange={(event) => {
+                            this.setState({name: event.target.value});
+                        }}
                         required
                     />
                     <label htmlFor="surname">Surname</label>
                     <input
                         type="text"
                         value={this.state.surname}
-                        onChange={this.changeSurname}
+                        onChange={(event) => {
+                            this.setState({surname: event.target.value});
+                        }}
                         required
                     />
                     <label htmlFor="email">Email</label>
                     <input
                         type="email"
                         value={this.state.email}
-                        onChange={this.changeEmail}
+                        onChange={(event) => {
+                            this.setState({email: event.target.value});
+                        }}
                         required
                     />
                     <label htmlFor="name">Telephone</label>
                     <input
                         type="tel"
                         value={this.state.phoneNumber}
-                        onChange={this.changePhoneNumber}
+                        onChange={(event) => {
+                            this.setState({phoneNumber: event.target.value});
+                        }}
                         required
                     />
-                    <button>Send</button>
+                    {this.state.redirect ? <Redirect push
+                                                     to={`/transactionSummary/${this.state.reservationId}`}/> : null}
+                    <button type="submit">Next</button>
                 </form>
             </div>
         )
     }
-
 
 
 }

@@ -34,4 +34,8 @@ public class Reservation {
     public long getChosenSeatId() {
         return chosenSeatId;
     }
+
+    public long getReservationId() {
+        return reservationId;
+    }
 }

@@ -51,4 +51,8 @@ public class PersonalData {
     public String getEmail() {
         return email;
     }
+
+    public long getPersonId() {
+        return personId;
+    }
 }
