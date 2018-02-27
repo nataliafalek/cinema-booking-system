@@ -2,6 +2,14 @@ package com.faleknatalia.cinemaBookingSystem.controller;
 
 import com.faleknatalia.cinemaBookingSystem.model.*;
 import com.faleknatalia.cinemaBookingSystem.repository.*;
+import com.faleknatalia.cinemaBookingSystem.util.TicketData;
+import com.faleknatalia.cinemaBookingSystem.util.TicketDataService;
+import com.faleknatalia.cinemaBookingSystem.util.TicketGeneratorPdf;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +49,10 @@ public class Controllers {
 
     @Autowired
     private ReservationRepository reservationRepository;
+
+    @Autowired
+    private TicketDataService ticketDataService;
+
 
     //TODO optymalizacja - wydzielic metode do serwisu osobnego, tak by efektywnie laczyc ScheduledMovie i ScheduledMovieDetails
     @RequestMapping(value = "/whatsOn", method = RequestMethod.GET)
@@ -79,4 +96,23 @@ public class Controllers {
         reservationRepository.save(reservation);
         return new ResponseEntity<>(reservation.getReservationId(), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/generatePdf/{reservationId}", method = RequestMethod.GET)
+    public void getPdf(HttpServletResponse response, @PathVariable long reservationId) throws Exception {
+
+        ByteArrayOutputStream doc = new TicketGeneratorPdf().generateTicket(ticketDataService.findMovie(reservationId));
+
+        //void addPdfToResponse(response, doc )
+        addPdfToResponse(response, doc);
+    }
+
+    private void addPdfToResponse(HttpServletResponse response, ByteArrayOutputStream doc) throws Exception {
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=\"file.pdf\"");
+        OutputStream os = response.getOutputStream();
+        doc.writeTo(os);
+        os.flush();
+        os.close();
+    }
+
 }
