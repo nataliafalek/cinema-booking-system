@@ -12,4 +12,5 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
     @Query("update Seat s set s.isFree = false where s.seatId = ?1")
     int setFalseForChosenSeat(long seatId);
 
+    long countAllBySeatIdIsNotNull();
 }

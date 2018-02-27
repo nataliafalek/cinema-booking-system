@@ -25,6 +25,20 @@ public class PdfGeneratorTest {
         //
         generateTicket(ticketData);
 
+    }
+
+    @Test
+    public void generateWhatsOn() throws Exception {
+        LocalDateTime startDate = LocalDateTime.now().plusDays(1).withHour(12).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime endDate = LocalDateTime.now().plusDays(1).withHour(23).withMinute(0).withSecond(0).withNano(0);
+
+
+        for (LocalDateTime date = startDate; date.isBefore(endDate); date = date.plusMinutes(45)) {
+            System.out.println(date);
+            //losuje nowy film
+            //iteruje o jego czas trwania
+
+        }
 
     }
 
@@ -44,7 +58,7 @@ public class PdfGeneratorTest {
 
         PDPageContentStream contentStream = new PDPageContentStream(document, page);
         //Creating PDImageXObject object
-        PDImageXObject pdImage = PDImageXObject.createFromFile("./src/test/resources/static/logo.png",document);
+        PDImageXObject pdImage = PDImageXObject.createFromFile("./src/test/resources/static/logo.png", document);
         //Drawing the image in the PDF document
         contentStream.drawImage(pdImage, 60, 621, 100, 100);
 
@@ -78,5 +92,6 @@ public class PdfGeneratorTest {
 
         return document;
     }
+
 
 }

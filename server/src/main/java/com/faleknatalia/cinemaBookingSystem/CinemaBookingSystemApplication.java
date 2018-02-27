@@ -7,6 +7,8 @@ import com.faleknatalia.cinemaBookingSystem.model.Seat;
 import com.faleknatalia.cinemaBookingSystem.repository.CinemaHallRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.MovieRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.ScheduledMovieRepository;
+import com.faleknatalia.cinemaBookingSystem.service.CinemaHallService;
+import com.faleknatalia.cinemaBookingSystem.service.ScheduledMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @SpringBootApplication
@@ -33,6 +36,12 @@ public class CinemaBookingSystemApplication implements CommandLineRunner {
     @Autowired
     CinemaHallRepository cinemaHallRepository;
 
+    @Autowired
+    CinemaHallService cinemaHallService;
+
+    @Autowired
+    ScheduledMovieService scheduledMovieService;
+
     public static void main(String[] args) {
         SpringApplication.run(CinemaBookingSystemApplication.class, args);
     }
@@ -41,23 +50,17 @@ public class CinemaBookingSystemApplication implements CommandLineRunner {
 
         Movie movie1 = new Movie("The Prestige", "Magnificent", 120);
         Movie movie2 = new Movie("Catch me if you can", "Superb", 125);
+        Movie movie3 = new Movie("12 Angry Men", "Splendid", 95);
+        Movie movie4 = new Movie("The Silence of the Lambs", "Excellent", 120);
+        Movie movie5 = new Movie("Life of Brian", "Funny", 95);
+        Movie movie6 = new Movie("Coco", "superb", 120);
 
         LocalDateTime now = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
 
-        //TODO: zrobic automatyczne generowanie sal - taka metode
-        List<Seat> seats = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            seats.add(new Seat(i + 1, true, 20));
-        }
 
-        CinemaHall cinemaHallOne = new CinemaHall(seats);
+        CinemaHall cinemaHallOne = cinemaHallService.generateCinemaHall(30, 10);
+        CinemaHall cinemaHallTwo = cinemaHallService.generateCinemaHall(20, 15);
 
-        List<Seat> seats2 = new ArrayList<>();
-        for (int i = 10; i < 30; i++) {
-            seats2.add(new Seat(i - 9, true, 22));
-        }
-
-        CinemaHall cinemaHallTwo = new CinemaHall(seats2);
 
         cinemaHallRepository.save(cinemaHallOne);
         cinemaHallRepository.save(cinemaHallTwo);
@@ -65,10 +68,14 @@ public class CinemaBookingSystemApplication implements CommandLineRunner {
 
         movieRepository.save(movie1);
         movieRepository.save(movie2);
+        movieRepository.save(movie3);
+        movieRepository.save(movie4);
+        movieRepository.save(movie5);
+        movieRepository.save(movie6);
 
-        scheduledMovieRepository.save(new ScheduledMovie(now.plusHours(1), cinemaHallOne.getCinemaHallId(), movie1.getMovieId()));
-        scheduledMovieRepository.save(new ScheduledMovie(now.plusHours(3).plusMinutes(20), cinemaHallOne.getCinemaHallId(), movie2.getMovieId()));
-        scheduledMovieRepository.save(new ScheduledMovie(now.plusHours(5).plusMinutes(20), cinemaHallTwo.getCinemaHallId(), movie2.getMovieId()));
+        Map<LocalDateTime, List<ScheduledMovie>> weekWhatsOn = scheduledMovieService.generateWeekWhatsOn(1, LocalDateTime.now().withMinute(0).withSecond(0).withNano(0));
+        weekWhatsOn.values().stream().forEach(s -> scheduledMovieRepository.save(s));
+
     }
 
     @Bean
