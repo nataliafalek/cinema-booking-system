@@ -53,6 +53,9 @@ public class Controllers {
     @Autowired
     private TicketDataService ticketDataService;
 
+    @Autowired
+    private SeatReservationByScheduledMovieRepository seatReservationByScheduledMovieRepository;
+
 
     //TODO optymalizacja - wydzielic metode do serwisu osobnego, tak by efektywnie laczyc ScheduledMovie i ScheduledMovieDetails
     @RequestMapping(value = "/whatsOn", method = RequestMethod.GET)
@@ -75,15 +78,15 @@ public class Controllers {
     }
 
     @RequestMapping(value = "/cinemaHall/seats/{scheduledMovieId}", method = RequestMethod.GET)
-    public ResponseEntity<CinemaHall> cinemaHallSeatsState(@PathVariable long scheduledMovieId) {
-        long cinemaHallId = scheduledMovieRepository.findOne(scheduledMovieId).getCinemaHallId();
-        return new ResponseEntity<>(cinemaHallRepository.findOne(cinemaHallId), HttpStatus.OK);
+    public ResponseEntity<List<SeatReservationByScheduledMovie>> cinemaHallSeatsState(@PathVariable long scheduledMovieId) {
+        //  long cinemaHallId = scheduledMovieRepository.findOne(scheduledMovieId).getCinemaHallId();
+        return new ResponseEntity<>(seatReservationByScheduledMovieRepository.findAllByScheduledMovieId(scheduledMovieId), HttpStatus.OK);
     }
 
     @Transactional
-    @RequestMapping(value = "/cinemaHall/seats/choose/{seatId}", method = RequestMethod.GET)
-    public ResponseEntity<Seat> chosenSeat(@PathVariable long seatId) {
-        seatRepository.setFalseForChosenSeat(seatId);
+    @RequestMapping(value = "/cinemaHall/seats/choose/{scheduledMovieId}/{seatId}", method = RequestMethod.GET)
+    public ResponseEntity<Seat> chosenSeat(@PathVariable long seatId, @PathVariable long scheduledMovieId) {
+        seatReservationByScheduledMovieRepository.setFalseForChosenSeat(seatId, scheduledMovieId);
         Seat chosenSeat = seatRepository.findOne(seatId);
         return new ResponseEntity<>(chosenSeat, HttpStatus.OK);
     }

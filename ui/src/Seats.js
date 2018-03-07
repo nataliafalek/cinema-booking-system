@@ -20,7 +20,7 @@ class Seats extends Component {
 
 
     getSeat = (chosenSeat) => {
-        HttpService.fetchJson(`cinemaHall/seats/choose/${chosenSeat.seatId}`)
+        HttpService.fetchJson(`cinemaHall/seats/choose/${this.props.match.params.scheduledMovieId}/${chosenSeat.seatId}`)
             .then(data => {
                 console.log("ChosenSeat: ", data);
                 this.setState({chosenSeat: data})
@@ -49,7 +49,7 @@ class Seats extends Component {
 
             <div>
 
-                {this.state.cinemaHall ? this.state.cinemaHall.seats.map
+                {this.state.cinemaHall ? this.state.cinemaHall.map
                 (a =>
                     <li onClick={(event => {
                         this.getSeat(a);

@@ -15,11 +15,11 @@ public class CinemaHallService {
     @Autowired
     SeatRepository seatRepository;
 
-    public CinemaHall generateCinemaHall(int howManySeats, int ticketPrice) {
+    public CinemaHall generateCinemaHall(int howManySeats) {
         List<Seat> seats = new ArrayList<>();
         long lastSeatId = seatRepository.countAllBySeatIdIsNotNull();
         for (int i = (int) lastSeatId; i < howManySeats; i++) {
-            seats.add(new Seat(i - (int) lastSeatId + 1, true, ticketPrice));
+            seats.add(new Seat(i - (int) lastSeatId + 1));
         }
         return new CinemaHall(seats);
     }

@@ -36,7 +36,8 @@ public class TicketDataService {
         long cinemaHall = movie.getCinemaHallId();
         Seat seat = seatRepository.findOne(reservation.getChosenSeatId());
         int chosenSeat = seat.getSeatNumber();
-        int ticketPrice = seat.getTicketPrice();
+        //TODO podstawic cene z nowej klasy
+        int ticketPrice = 10;
 
         return new TicketData(movieTitle, movieProjection, cinemaHall, chosenSeat, ticketPrice);
     }

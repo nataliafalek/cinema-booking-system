@@ -5,19 +5,15 @@ import com.faleknatalia.cinemaBookingSystem.model.Movie;
 import com.faleknatalia.cinemaBookingSystem.model.ScheduledMovie;
 import com.faleknatalia.cinemaBookingSystem.repository.CinemaHallRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.MovieRepository;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Component
 public class ScheduledMovieService {

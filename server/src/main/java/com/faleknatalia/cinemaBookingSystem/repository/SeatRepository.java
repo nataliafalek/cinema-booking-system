@@ -6,11 +6,15 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface SeatRepository extends JpaRepository<Seat, Long> {
-    @Modifying
-    @Query("update Seat s set s.isFree = false where s.seatId = ?1")
-    int setFalseForChosenSeat(long seatId);
+//    @Modifying
+//    @Query("update Seat s set s.isFree = false where s.seatId = ?1")
+//    int setFalseForChosenSeat(long seatId);
 
     long countAllBySeatIdIsNotNull();
+
+
 }

@@ -3,12 +3,13 @@ package com.faleknatalia.cinemaBookingSystem;
 import com.faleknatalia.cinemaBookingSystem.model.CinemaHall;
 import com.faleknatalia.cinemaBookingSystem.model.Movie;
 import com.faleknatalia.cinemaBookingSystem.model.ScheduledMovie;
-import com.faleknatalia.cinemaBookingSystem.model.Seat;
 import com.faleknatalia.cinemaBookingSystem.repository.CinemaHallRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.MovieRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.ScheduledMovieRepository;
+import com.faleknatalia.cinemaBookingSystem.repository.SeatReservationByScheduledMovieRepository;
 import com.faleknatalia.cinemaBookingSystem.service.CinemaHallService;
 import com.faleknatalia.cinemaBookingSystem.service.ScheduledMovieService;
+import com.faleknatalia.cinemaBookingSystem.service.SeatReservationByScheduledMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,7 +20,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +42,12 @@ public class CinemaBookingSystemApplication implements CommandLineRunner {
     @Autowired
     ScheduledMovieService scheduledMovieService;
 
+    @Autowired
+    SeatReservationByScheduledMovieService seatReservationByScheduledMovieService;
+
+    @Autowired
+    SeatReservationByScheduledMovieRepository seatReservationByScheduledMovieRepository;
+
     public static void main(String[] args) {
         SpringApplication.run(CinemaBookingSystemApplication.class, args);
     }
@@ -58,8 +64,8 @@ public class CinemaBookingSystemApplication implements CommandLineRunner {
         LocalDateTime now = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
 
 
-        CinemaHall cinemaHallOne = cinemaHallService.generateCinemaHall(30, 10);
-        CinemaHall cinemaHallTwo = cinemaHallService.generateCinemaHall(20, 15);
+        CinemaHall cinemaHallOne = cinemaHallService.generateCinemaHall(30);
+        CinemaHall cinemaHallTwo = cinemaHallService.generateCinemaHall(20);
 
 
         cinemaHallRepository.save(cinemaHallOne);
@@ -75,6 +81,11 @@ public class CinemaBookingSystemApplication implements CommandLineRunner {
 
         Map<LocalDateTime, List<ScheduledMovie>> weekWhatsOn = scheduledMovieService.generateWeekWhatsOn(1, LocalDateTime.now().withMinute(0).withSecond(0).withNano(0));
         weekWhatsOn.values().stream().forEach(s -> scheduledMovieRepository.save(s));
+
+        Map<LocalDateTime, List<ScheduledMovie>> weekWhatsOn2 = scheduledMovieService.generateWeekWhatsOn(2, LocalDateTime.now().withMinute(0).withSecond(0).withNano(0));
+        weekWhatsOn2.values().stream().forEach(s -> scheduledMovieRepository.save(s));
+
+        seatReservationByScheduledMovieRepository.save(seatReservationByScheduledMovieService.findSeatsByScheduledMovieId());
 
     }
 

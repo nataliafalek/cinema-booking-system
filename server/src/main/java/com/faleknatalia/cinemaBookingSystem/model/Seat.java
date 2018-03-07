@@ -14,14 +14,9 @@ public class Seat {
 
     private int seatNumber;
 
-    public Seat(int seatNumber, boolean isFree, int ticketPrice) {
+    public Seat(int seatNumber) {
         this.seatNumber = seatNumber;
-        this.isFree = isFree;
-        this.ticketPrice = ticketPrice;
     }
-
-    private boolean isFree;
-    private int ticketPrice;
 
 
     public Seat() {
@@ -31,19 +26,9 @@ public class Seat {
         return seatNumber;
     }
 
-    public boolean isFree() {
-        return isFree;
-    }
-
-    public int getTicketPrice() {
-        return ticketPrice;
-    }
 
     public long getSeatId() {
         return seatId;
     }
 
-    public void setFree(boolean free) {
-        isFree = free;
-    }
 }
