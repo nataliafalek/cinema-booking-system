@@ -16,4 +16,6 @@ public interface SeatReservationByScheduledMovieRepository extends JpaRepository
     int setFalseForChosenSeat(long seatId, long scheduledMovieId);
 
     List<SeatReservationByScheduledMovie> findAllByScheduledMovieId(long scheduledMovieId);
+
+    SeatReservationByScheduledMovie findOneBySeatIdAndScheduledMovieId(long seatId, long scheduledMovieId);
 }

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class SeatReservationByScheduledMovieService {
@@ -32,7 +31,7 @@ public class SeatReservationByScheduledMovieService {
                 {
                     List<Seat> seats = cinemaHallRepository.findOne(sm.getCinemaHallId()).getSeats();
                     for (Seat seat : seats) {
-                        seatReservationByScheduledMovies.add(new SeatReservationByScheduledMovie(sm.getScheduledMovieId(), sm.getCinemaHallId(), true, 0, seat.getSeatId(), seat.getSeatNumber()));
+                        seatReservationByScheduledMovies.add(new SeatReservationByScheduledMovie(sm.getScheduledMovieId(), sm.getCinemaHallId(), true, 10, seat.getSeatId(), seat.getSeatNumber()));
                     }
 
                 }

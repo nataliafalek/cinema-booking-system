@@ -17,3 +17,10 @@ export function postJson(path, body) {
         body: JSON.stringify(body)
     }));
 }
+
+export function post(path) {
+    return (fetch(url + path, {
+        method: "POST",
+
+    }));
+}
