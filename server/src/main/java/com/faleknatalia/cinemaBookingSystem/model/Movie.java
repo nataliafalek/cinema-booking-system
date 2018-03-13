@@ -36,4 +36,8 @@ public class Movie {
     public long getMovieId() {
         return movieId;
     }
+
+    public String getDescription() {
+        return description;
+    }
 }

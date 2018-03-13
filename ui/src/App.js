@@ -24,11 +24,11 @@ class App extends Component {
                     <div>
                         <ul className="header">
                             <li><NavLink to="/home">Home</NavLink></li>
-                            <li><NavLink to="/movie">What's On</NavLink></li>
+                            <li><NavLink to="/whatsOn">What's On</NavLink></li>
                         </ul>
                     <div className="content">
                         <Route path="/home" component={Home}/>
-                        <Route path="/movie" component={Movie}/>
+                        <Route path="/whatsOn" component={Movie}/>
                         <Route path="/seats/:scheduledMovieId" component={Seats}/>
                         <Route path="/personalData/:scheduledMovieId/:seatId" component={PersonalData}/>
                         <Route path="/transactionSummary/:reservationId" component={TransactionSummary}/>

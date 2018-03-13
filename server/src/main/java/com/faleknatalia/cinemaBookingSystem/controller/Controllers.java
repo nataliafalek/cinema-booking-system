@@ -73,6 +73,16 @@ public class Controllers {
         return new ResponseEntity<>(scheduledMovieDetails, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/movies", method = RequestMethod.GET)
+    public ResponseEntity<List<Movie>> getMovies() {
+        return new ResponseEntity<>(movieRepository.findAll(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/whatsOn/{chosenMovieId}", method = RequestMethod.GET)
+    public ResponseEntity<List<ScheduledMovie>> getWhatsOnByMovie(@PathVariable long chosenMovieId) {
+        return new ResponseEntity<>(scheduledMovieRepository.findAllByMovieId(chosenMovieId), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/cinemaHall/seats/{scheduledMovieId}", method = RequestMethod.GET)
     public ResponseEntity<List<SeatReservationByScheduledMovie>> cinemaHallSeatsState(@PathVariable long scheduledMovieId) {
         //  long cinemaHallId = scheduledMovieRepository.findOne(scheduledMovieId).getCinemaHallId();

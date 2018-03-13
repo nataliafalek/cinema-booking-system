@@ -15,7 +15,7 @@ class Movie extends Component {
 
 
     printMovie = (movie) => {
-        return `Movie: ${movie.movieTitle}, Data: ${movie.dateOfProjection}, duration: ${movie.movieDurationInMinutes} minutes`
+        return `Movie: ${movie.movieTitle}, Date: ${movie.dateOfProjection}, duration: ${movie.movieDurationInMinutes} minutes`
     };
 
     handleOnClick = () => {
