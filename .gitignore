@@ -24,4 +24,4 @@ nbdist/
 .nb-gradle/
 
 ui/node_modules
-ui/public
+

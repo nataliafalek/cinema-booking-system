@@ -57,7 +57,7 @@ public class PaymentService {
         Product product = new Product("Ticket", ticketPriceInCents, "1");
         List<Product> products = new ArrayList<>();
         products.add(product);
-        OrderRequest orderRequest = new OrderRequest("127.0.0.1", clientId, "Bilecik do kina", "PLN", ticketPriceInCents, buyer, products);
+        OrderRequest orderRequest = new OrderRequest("127.0.0.1", clientId, "Bilecik do kina", "PLN", ticketPriceInCents, buyer, products,"http://localhost:3000/#/paymentSuccess");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

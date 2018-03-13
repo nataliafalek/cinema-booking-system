@@ -5,8 +5,10 @@ import com.faleknatalia.cinemaBookingSystem.payment.AccessToken;
 import com.faleknatalia.cinemaBookingSystem.payment.OrderResponse;
 import com.faleknatalia.cinemaBookingSystem.payment.PaymentService;
 import com.faleknatalia.cinemaBookingSystem.repository.*;
+import com.faleknatalia.cinemaBookingSystem.util.TicketData;
 import com.faleknatalia.cinemaBookingSystem.util.TicketDataService;
 import com.faleknatalia.cinemaBookingSystem.util.TicketGeneratorPdf;
+import org.omg.CORBA.PERSIST_STORE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -111,23 +113,31 @@ public class Controllers {
 
         ByteArrayOutputStream doc = new TicketGeneratorPdf().generateTicket(ticketDataService.findMovie(reservationId));
 
-        //void addPdfToResponse(response, doc )
         addPdfToResponse(response, doc);
+    }
+
+    @RequestMapping(value = "/reservationSummary/{reservationId}", method = RequestMethod.GET)
+    public ResponseEntity<ReservationSummary> reservationSummary(@PathVariable long reservationId) {
+        TicketData ticketData = ticketDataService.findMovie(reservationId);
+        long personalDataId = reservationRepository.findOne(reservationId).getPersonalDataId();
+        PersonalData personalData = personalDataRepository.findOne(personalDataId);
+        ReservationSummary reservationSummary = new ReservationSummary(ticketData, personalData);
+        return new ResponseEntity<>(reservationSummary, HttpStatus.OK);
     }
 
 
     //TODO POST
     @RequestMapping(value = "/payment/{reservationId}", method = RequestMethod.POST)
-    public void redirectToPayment(HttpServletResponse response, @PathVariable long reservationId) {
+    public ResponseEntity<OrderResponse> redirectToPayment(HttpServletResponse response, @PathVariable long reservationId) {
 
         AccessToken accessToken = paymentService.generateAccessToken(clientId, clientSecret);
-        OrderResponse order = paymentService.generateOrder(accessToken, reservationId, clientId);
+        return new ResponseEntity<>(paymentService.generateOrder(accessToken, reservationId, clientId), HttpStatus.OK);
 
-        //redirect
-        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-        response.setHeader("Location", order.getRedirectUri());
-        response.setHeader("Connection", "close");
-        response.setHeader("Access-Control-Allow-Origin", "*");
+//        //redirect
+//        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+//        response.setHeader("Location", order.getRedirectUri());
+//        response.setHeader("Connection", "close");
+//        response.setHeader("Access-Control-Allow-Origin", "*");
     }
 
     private void addPdfToResponse(HttpServletResponse response, ByteArrayOutputStream doc) throws Exception {

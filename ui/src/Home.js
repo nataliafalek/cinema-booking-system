@@ -34,18 +34,19 @@ class Home extends Component {
     render() {
         return (
             <div>
-                <h1>To moje super kino</h1>
+                <h2>To moje super kino</h2>
                 <div>
                     {this.state.movies.map(a =>
-                        <li onClick={(event) =>
-                            {this.setState({chosenMovie: a});
+                        <li onClick={(event) => {
+                            this.setState({chosenMovie: a});
                             this.getMovie(a)
-                            }}> {this.printMovies(a)}
+                        }}> {this.printMovies(a)}
                         </li>
                     )}
                 </div>
                 <div>
-                    {this.state.whatsOnByMovies ? this.state.whatsOnByMovies.map(date => <li>{date.dateOfProjection}</li>) : null}
+                    {this.state.whatsOnByMovies ? this.state.whatsOnByMovies.map(date =>
+                        <li>{date.dateOfProjection}</li>) : null}
                 </div>
             </div>
 

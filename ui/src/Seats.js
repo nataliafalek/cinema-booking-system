@@ -9,7 +9,7 @@ class Seats extends Component {
     constructor() {
         super();
         this.state = {
-            chosenSeat: null
+            chosenSeat: null,
         };
     }
 
@@ -42,6 +42,7 @@ class Seats extends Component {
 
     handleOnClick = () => {
         this.setState({redirect: true});
+        this.getSeat(this.state.chosenSeat);
     };
 
     render() {
@@ -52,8 +53,10 @@ class Seats extends Component {
                 {this.state.cinemaHall ? this.state.cinemaHall.map
                 (a =>
                     <li onClick={(event => {
-                        this.getSeat(a);
-                        this.setState({chosenSeat: a})
+                        if (a.free) {
+                            // this.getSeat(a);
+                            this.setState({chosenSeat: a})
+                        }
                     })}> {this.printSeats(a)}
                     </li>
                 ) : null}
