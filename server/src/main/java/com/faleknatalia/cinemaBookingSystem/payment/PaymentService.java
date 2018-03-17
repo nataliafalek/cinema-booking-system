@@ -2,6 +2,7 @@ package com.faleknatalia.cinemaBookingSystem.payment;
 
 import com.faleknatalia.cinemaBookingSystem.model.PersonalData;
 import com.faleknatalia.cinemaBookingSystem.model.Reservation;
+import com.faleknatalia.cinemaBookingSystem.model.SeatReservationByScheduledMovie;
 import com.faleknatalia.cinemaBookingSystem.repository.PersonalDataRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.ReservationRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.SeatReservationByScheduledMovieRepository;
@@ -48,16 +49,16 @@ public class PaymentService {
         //Order data
         Reservation reservation = reservationRepository.findOne(reservationId);
         PersonalData personalData = personalDataRepository.findOne(reservation.getPersonalDataId());
-        int ticketPrice = seatReservationByScheduledMovieRepository.findOneBySeatIdAndScheduledMovieId(reservation.getChosenSeatId(), reservation.getChosenMovieId()).getTicketPrice();
-        String ticketPriceInCents = String.valueOf(ticketPrice * 100);
+        List<SeatReservationByScheduledMovie> chosenSeatsPrice = seatReservationByScheduledMovieRepository.findBySeatIdInAndScheduledMovieId(reservation.getChosenSeatId(), reservation.getChosenMovieId());
 
+        String ticketPriceInCents = String.valueOf(sumOfTicketPrice(chosenSeatsPrice) * 100);
         String url = "https://secure.snd.payu.com/api/v2_1/orders";
         RestTemplate restTemplate = new RestTemplate();
         Buyer buyer = new Buyer(personalData.getEmail(), personalData.getPhoneNumber(), personalData.getName(), personalData.getSurname());
         Product product = new Product("Ticket", ticketPriceInCents, "1");
         List<Product> products = new ArrayList<>();
         products.add(product);
-        OrderRequest orderRequest = new OrderRequest("127.0.0.1", clientId, "Bilecik do kina", "PLN", ticketPriceInCents, buyer, products,"http://localhost:3000/#/paymentSuccess");
+        OrderRequest orderRequest = new OrderRequest(Long.toString(reservationId), "http://localhost:8080/notify", "127.0.0.1", clientId, "Bilecik do kina", "PLN", ticketPriceInCents, buyer, products, "http://localhost:3000/#/paymentSuccess");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -68,6 +69,14 @@ public class PaymentService {
 
         return restTemplate.postForObject(url, entity, OrderResponse.class);
 
+    }
+
+    private int sumOfTicketPrice(List<SeatReservationByScheduledMovie> chosenSeatsPrice) {
+        int sum = 0;
+        for (SeatReservationByScheduledMovie s : chosenSeatsPrice) {
+            sum = sum + s.getTicketPrice();
+        }
+        return sum;
     }
 
 

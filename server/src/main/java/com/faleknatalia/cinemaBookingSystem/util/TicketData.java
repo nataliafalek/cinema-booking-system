@@ -1,16 +1,17 @@
 package com.faleknatalia.cinemaBookingSystem.util;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class TicketData {
 
     private String movieTitle;
     private LocalDateTime projectionDate;
     private long cinemaHallId;
-    private int seatNumber;
+    private List<Integer> seatNumber;
     private int TicketPrice;
 
-    public TicketData(String movieTitle, LocalDateTime projectionDate, long cinemaHallId, int seatNumber, int ticketPrice) {
+    public TicketData(String movieTitle, LocalDateTime projectionDate, long cinemaHallId, List<Integer> seatNumber, int ticketPrice) {
         this.movieTitle = movieTitle;
         this.projectionDate = projectionDate;
         this.cinemaHallId = cinemaHallId;
@@ -33,7 +34,7 @@ public class TicketData {
         return cinemaHallId;
     }
 
-    public int getSeatNumber() {
+    public List<Integer> getSeatNumber() {
         return seatNumber;
     }
 

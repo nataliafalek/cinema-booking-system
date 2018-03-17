@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PdfGeneratorTest {
 
@@ -20,7 +22,10 @@ public class PdfGeneratorTest {
                 System.getProperty("user.dir"));
 
         //Before
-        TicketData ticketData = new TicketData("The Prestige", LocalDateTime.now(), 1l, 12, 22);
+        List<Integer> seats = new ArrayList<Integer>() {{
+            add(12);
+        }};
+        TicketData ticketData = new TicketData("The Prestige", LocalDateTime.now(), 1l, seats, 22);
 
         //
         generateTicket(ticketData);

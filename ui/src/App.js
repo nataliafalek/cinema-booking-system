@@ -17,6 +17,7 @@ class App extends Component {
         this.state = {};
     }
 
+
     //TODO stworzyc sesje dla użytkownika
     render() {
         return (
@@ -31,7 +32,7 @@ class App extends Component {
                             <Route path="/home" component={Home}/>
                             <Route path="/whatsOn" component={Movie}/>
                             <Route path="/seats/:scheduledMovieId" component={Seats}/>
-                            <Route path="/personalData/:scheduledMovieId/:seatId" component={PersonalData}/>
+                            <Route path="/personalData" component={PersonalData}/>
                             <Route path="/transactionSummary/:reservationId" component={TransactionSummary}/>
                             <Route path="/reservationSummary/:reservationId" component={ReservationSummary}/>
                             <Route path="/paymentSuccess" component={PaymentSuccess}/>

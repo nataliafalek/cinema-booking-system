@@ -2,31 +2,33 @@ import React, {Component} from 'react';
 import './index.css'
 import * as HttpService from "./HttpService";
 import {Redirect} from 'react-router-dom';
+import BackButton from "./BackButton";
+import queryString from 'query-string';
 
 
 class PersonalData extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             name: '',
             surname: '',
             phoneNumber: '',
             email: '',
             chosenMovie: '',
-            chosenSeatId: '',
             reservationId: '',
         }
     }
 
 
     addPerson = (event) => {
+        const parsedQueryParams = queryString.parse(this.props.location.search)
         const person = {
             name: this.state.name,
             surname: this.state.surname,
             phoneNumber: this.state.phoneNumber,
             email: this.state.email,
-            chosenMovie: this.props.match.params.scheduledMovieId,
-            chosenSeatId: this.props.match.params.seatId,
+            chosenMovie: parsedQueryParams.scheduledMovieId,
+            chosenSeatId: parsedQueryParams.seatId,
         };
         HttpService.postJson('cinemaHall/addPerson', person)
             .then(results => {
@@ -86,7 +88,8 @@ class PersonalData extends Component {
                     />
                     {this.state.redirect ? <Redirect push
                                                      to={`/reservationSummary/${this.state.reservationId}`}/> : null}
-                    <button type="submit">Show summary</button>
+                    <button type="submit">summary</button>
+                    <BackButton/>
                 </form>
             </div>
         )

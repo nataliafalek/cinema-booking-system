@@ -3,6 +3,8 @@ package com.faleknatalia.cinemaBookingSystem.payment;
 import java.util.List;
 
 public class OrderRequest {
+    private String extOrderId;
+    private String notifyUrl;
     private String customerIp;
     private String merchantPosId;
     private String description;
@@ -12,7 +14,9 @@ public class OrderRequest {
     private List<Product> products;
     private String continueUrl;
 
-    public OrderRequest(String customerIp, String merchantPosId, String description, String currencyCode, String totalAmount, Buyer buyer, List<Product> products, String continueUrl) {
+    public OrderRequest(String extOrderId, String notifyUrl, String customerIp, String merchantPosId, String description, String currencyCode, String totalAmount, Buyer buyer, List<Product> products, String continueUrl) {
+        this.extOrderId = extOrderId;
+        this.notifyUrl = notifyUrl;
         this.customerIp = customerIp;
         this.merchantPosId = merchantPosId;
         this.description = description;
@@ -56,5 +60,13 @@ public class OrderRequest {
 
     public String getContinueUrl() {
         return continueUrl;
+    }
+
+    public String getExtOrderId() {
+        return extOrderId;
+    }
+
+    public String getNotifyUrl() {
+        return notifyUrl;
     }
 }

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import * as HttpService from "./HttpService";
 import {Redirect} from 'react-router-dom';
+import BackButton from "./BackButton";
 
 
 class ReservationSummary extends Component {
@@ -9,9 +10,9 @@ class ReservationSummary extends Component {
         super();
         this.state = {
             personalData: [],
-            ticketData: [],
+            ticketData: null,
             orderResponse: [],
-    };
+        };
     }
 
     componentDidMount() {
@@ -37,7 +38,7 @@ class ReservationSummary extends Component {
     };
 
     render() {
-        return (
+        return this.state.ticketData ? (
             <div>
                 <div>
                     <h2>Summary</h2>
@@ -48,18 +49,19 @@ class ReservationSummary extends Component {
                     <div>Phone: {this.state.personalData.phoneNumber}</div>
                     <div>Movie: "{this.state.ticketData.movieTitle}"</div>
                     <div>Date of projection: {this.state.ticketData.projectionDate}</div>
-                    <div>Seat Number: {this.state.ticketData.seatNumber}</div>
-                    <div>Ticket Price: ${this.state.ticketData.ticketPrice}</div>
+                    <div>Seat Number: {this.state.ticketData.seatNumber.map(s => <li>{s} ticketPrice:
+                        ${this.state.ticketData.ticketPrice}</li>)}</div>
                 </div>
 
                 {this.state.redirect ? <Redirect push to={`/payment/${this.props.match.params.reservationId}`}/> : null}
 
-                {/*//TODO FUCKING REDIRECT DOESN'T WORK ;(*/}
                 <div>
                     <button type="button" onClick={this.handleClick}>Pay Fucking money</button>
                 </div>
+                <BackButton/>
+
             </div>
-        );
+        ) : null;
     }
 
 

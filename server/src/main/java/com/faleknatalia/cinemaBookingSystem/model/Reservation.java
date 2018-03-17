@@ -1,6 +1,7 @@
 package com.faleknatalia.cinemaBookingSystem.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Reservation {
@@ -12,9 +13,10 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long reservationId;
 
-    private long chosenSeatId;
+    @ElementCollection(targetClass = Long.class)
+    private List<Long> chosenSeatId;
 
-    public Reservation(long chosenMovieId, long personalDataId, long chosenSeatId) {
+    public Reservation(long chosenMovieId, long personalDataId, List<Long> chosenSeatId) {
         this.chosenMovieId = chosenMovieId;
         this.personalDataId = personalDataId;
         this.chosenSeatId = chosenSeatId;
@@ -31,7 +33,7 @@ public class Reservation {
         return personalDataId;
     }
 
-    public long getChosenSeatId() {
+    public List<Long> getChosenSeatId() {
         return chosenSeatId;
     }
 

@@ -1,10 +1,12 @@
 package com.faleknatalia.cinemaBookingSystem.controller;
 
+import java.util.List;
+
 public class PersonalDataAndReservationInfo {
 
 
     private long chosenMovie;
-    private long chosenSeatId;
+    private List<Long> chosenSeatId;
     private String email;
     private String name;
     private String phoneNumber;
@@ -18,7 +20,7 @@ public class PersonalDataAndReservationInfo {
         return chosenMovie;
     }
 
-    public long getChosenSeatId() {
+    public List<Long> getChosenSeatId() {
         return chosenSeatId;
     }
 

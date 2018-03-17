@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class TicketDataService {
@@ -34,8 +37,9 @@ public class TicketDataService {
         LocalDateTime movieProjection = movie.getDateOfProjection();
         String movieTitle = movieRepository.findOne(movie.getMovieId()).getTitle();
         long cinemaHall = movie.getCinemaHallId();
-        Seat seat = seatRepository.findOne(reservation.getChosenSeatId());
-        int chosenSeat = seat.getSeatNumber();
+        List<Seat> seats = seatRepository.findAll(reservation.getChosenSeatId());
+        List<Integer> chosenSeat = new ArrayList<>();
+        seats.stream().map(s -> chosenSeat.add(s.getSeatNumber())).collect(Collectors.toList());
         //TODO podstawic cene z nowej klasy
         int ticketPrice = 10;
 

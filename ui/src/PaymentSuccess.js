@@ -3,9 +3,7 @@ import React, {Component} from 'react';
 class PaymentSuccess extends Component {
     constructor() {
         super();
-        this.state = {
-
-        }
+        this.state = {}
     }
 
     render() {

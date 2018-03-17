@@ -15,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -37,7 +39,10 @@ public class PaymentServiceTest {
         //Before
         PersonalData personalData = new PersonalData("Nati", "Falek", "123456789", "nati@gmail.com");
         personalDataRepository.save(personalData);
-        Reservation reservation = new Reservation(2, personalData.getPersonId(), 20);
+        ArrayList<Long> listOfSeats = new ArrayList<Long>() {{
+            add(20l);
+        }};
+        Reservation reservation = new Reservation(2, personalData.getPersonId(), listOfSeats);
         reservationRepository.save(reservation);
 
         AccessToken token = paymentService.generateAccessToken("322611", "7bf401d342210d73b85081c0a2fae474");

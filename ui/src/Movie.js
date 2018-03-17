@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import * as HttpService from "./HttpService";
 import {Redirect} from 'react-router-dom';
+import BackButton from "./BackButton";
 
 
 class Movie extends Component {
@@ -46,10 +47,11 @@ class Movie extends Component {
 
                 </div>
                 {this.state.redirect ? <Redirect push to={`/seats/${this.state.chosenMovie.scheduledMovieId}`}/> : null}
-
+                <BackButton/>
                 <button disabled={!((this.state.chosenMovie || {}).scheduledMovieId)} onClick={this.handleOnClick}
                         type="button">Next
                 </button>
+
             </div>
         );
     }
