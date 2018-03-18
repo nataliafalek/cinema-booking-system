@@ -2,14 +2,13 @@ package com.faleknatalia.cinemaBookingSystem.controller;
 
 import com.faleknatalia.cinemaBookingSystem.mail.EmailSender;
 import com.faleknatalia.cinemaBookingSystem.model.*;
-import com.faleknatalia.cinemaBookingSystem.payment.AccessToken;
-import com.faleknatalia.cinemaBookingSystem.payment.OrderResponse;
-import com.faleknatalia.cinemaBookingSystem.payment.PaymentService;
+import com.faleknatalia.cinemaBookingSystem.payment.*;
 import com.faleknatalia.cinemaBookingSystem.repository.*;
 import com.faleknatalia.cinemaBookingSystem.util.TicketData;
 import com.faleknatalia.cinemaBookingSystem.util.TicketDataService;
 import com.faleknatalia.cinemaBookingSystem.util.TicketGeneratorPdf;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,9 +40,6 @@ public class Controllers {
     private PersonalDataRepository personalDataRepository;
 
     @Autowired
-    private SeatRepository seatRepository;
-
-    @Autowired
     private ReservationRepository reservationRepository;
 
     @Autowired
@@ -57,6 +53,9 @@ public class Controllers {
 
     @Autowired
     EmailSender emailSender;
+
+    @Value("${dev_mode}")
+    private boolean devMode;
 
     //TODO optymalizacja - wydzielic metode do serwisu osobnego, tak by efektywnie laczyc ScheduledMovie i ScheduledMovieDetails
     @RequestMapping(value = "/whatsOn", method = RequestMethod.GET)
@@ -93,10 +92,10 @@ public class Controllers {
         return new ResponseEntity<>(seatReservationByScheduledMovieRepository.findAllByScheduledMovieId(scheduledMovieId), HttpStatus.OK);
     }
 
-    //to musi byc POST
+
     @Transactional
-    @RequestMapping(value = "/cinemaHall/seats/choose", method = RequestMethod.GET)
-    public ResponseEntity<List<SeatReservationByScheduledMovie>> chosenSeat(@RequestParam long scheduledMovieId, @RequestParam List<Long> seatId) {
+    @RequestMapping(value = "/cinemaHall/seats/choose/{scheduledMovieId}", method = RequestMethod.POST)
+    public ResponseEntity<List<SeatReservationByScheduledMovie>> chosenSeat(@PathVariable long scheduledMovieId, @RequestBody List<Long> seatId) {
         seatReservationByScheduledMovieRepository.setFalseForChosenSeat(seatId, scheduledMovieId);
         return new ResponseEntity<>(seatReservationByScheduledMovieRepository.findBySeatIdInAndScheduledMovieId(seatId, scheduledMovieId), HttpStatus.OK);
     }
@@ -121,17 +120,50 @@ public class Controllers {
     }
 
 
-    //TODO POST
     @RequestMapping(value = "/payment/{reservationId}", method = RequestMethod.POST)
-    public ResponseEntity<OrderResponse> redirectToPayment(HttpServletResponse response, @PathVariable long reservationId) {
+    public ResponseEntity<OrderResponse> redirectToPayment(HttpServletResponse response, @PathVariable long reservationId) throws Exception {
 
         AccessToken accessToken = paymentService.generateAccessToken(clientId, clientSecret);
-        return new ResponseEntity<>(paymentService.generateOrder(accessToken, reservationId, clientId), HttpStatus.OK);
 
+        if (devMode) {
+            //KOD DO TESTÓW
+            Buyer buyer = new Buyer(
+                    "naticinema@gmail.com",
+                    "123456789",
+                    "Michał",
+                    "Abcd"
+            );
+
+            PayMethod payMethod = new PayMethod("PBL");
+            List<Product> productList = new ArrayList<Product>() {{
+                add(new Product("ticket", "10", "1"));
+            }};
+
+            OrderResponseNotification orderResponseNotification = new OrderResponseNotification(
+                    String.valueOf(reservationId),
+                    String.valueOf(reservationId),
+                    "http://localhost:8080/notify",
+                    "127.0.0.1",
+                    clientId,
+                    "bilecik test",
+                    "PLN",
+                    "100",
+                    buyer,
+                    payMethod,
+                    productList,
+                    "COMPLETED"
+            );
+
+            List<PropertyNotifcation> propertyNotifcationList = new ArrayList<PropertyNotifcation>() {{
+                add(new PropertyNotifcation("PAYMENT_ID", "12345"));
+            }};
+            notify(new NotificationResponse(orderResponseNotification, "2016-03-02T12:58:14.828+01:00", propertyNotifcationList));
+        }
+        return new ResponseEntity<>(paymentService.generateOrder(accessToken, reservationId, clientId), HttpStatus.OK);
     }
 
-    //todo POST
-    @RequestMapping(value = "/sendEmail/{reservationId}", method = RequestMethod.GET)
+
+    @RequestMapping(value = "/sendEmail/{reservationId}", method = RequestMethod.POST)
     public void sendEmail(@PathVariable long reservationId) throws Exception {
         ByteArrayOutputStream doc = new TicketGeneratorPdf().generateTicket(ticketDataService.findMovie(reservationId));
         long personalDataId = reservationRepository.findOne(reservationId).getPersonalDataId();
@@ -139,14 +171,12 @@ public class Controllers {
         emailSender.sendEmail(email, "NatiCinema cinema ticket", "Please take this ticket and show before projection of the movie.", doc);
     }
 
+    @RequestMapping(value = "/notify", method = RequestMethod.POST)
+    public void notify(NotificationResponse notificationResponse) throws Exception {
 
-//    private void addPdfToResponse(HttpServletResponse response, ByteArrayOutputStream doc) throws Exception {
-//        response.setContentType("application/pdf");
-//        response.setHeader("Content-Disposition", "attachment; filename=\"file.pdf\"");
-//        OutputStream os = response.getOutputStream();
-//        doc.writeTo(os);
-//        os.flush();
-//        os.close();
-//    }
+        if (notificationResponse.getOrder().getStatus().equals("COMPLETED")) {
+            sendEmail(Long.parseLong(notificationResponse.getOrder().getExtOrderId()));
+        }
 
+    }
 }

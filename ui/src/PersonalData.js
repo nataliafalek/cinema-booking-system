@@ -28,7 +28,7 @@ class PersonalData extends Component {
             phoneNumber: this.state.phoneNumber,
             email: this.state.email,
             chosenMovie: parsedQueryParams.scheduledMovieId,
-            chosenSeatId: parsedQueryParams.seatId,
+            chosenSeatId: Array.isArray(parsedQueryParams.seatId) ? parsedQueryParams.seatId : [parsedQueryParams.seatId],
         };
         HttpService.postJson('cinemaHall/addPerson', person)
             .then(results => {

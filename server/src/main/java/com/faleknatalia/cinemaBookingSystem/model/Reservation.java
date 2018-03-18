@@ -13,7 +13,7 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long reservationId;
 
-    @ElementCollection(targetClass = Long.class)
+    @ElementCollection(targetClass = Long.class, fetch = FetchType.EAGER)
     private List<Long> chosenSeatId;
 
     public Reservation(long chosenMovieId, long personalDataId, List<Long> chosenSeatId) {

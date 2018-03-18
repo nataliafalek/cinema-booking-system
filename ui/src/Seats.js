@@ -23,10 +23,11 @@ class Seats extends Component {
 
     chooseSeats = (seats) => {
         const chosenSeatIdsList = seats.map(a => a.seatId)
-        HttpService.fetchJson(`cinemaHall/seats/choose?${queryString.stringify({
-            scheduledMovieId: this.props.match.params.scheduledMovieId,
+        const chosenSeats = {
             seatId: chosenSeatIdsList
-        })}`)
+        };
+
+        HttpService.postJson(`cinemaHall/seats/choose/${this.props.match.params.scheduledMovieId}`, chosenSeatIdsList)
             .then(data => {
                 console.log("ChosenSeat: ", data);
                 this.setState({chosenSeat: data})

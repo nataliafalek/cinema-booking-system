@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class PaymentService {
@@ -49,16 +50,22 @@ public class PaymentService {
         //Order data
         Reservation reservation = reservationRepository.findOne(reservationId);
         PersonalData personalData = personalDataRepository.findOne(reservation.getPersonalDataId());
-        List<SeatReservationByScheduledMovie> chosenSeatsPrice = seatReservationByScheduledMovieRepository.findBySeatIdInAndScheduledMovieId(reservation.getChosenSeatId(), reservation.getChosenMovieId());
+        List<SeatReservationByScheduledMovie> chosenSeatsPrice = seatReservationByScheduledMovieRepository
+                .findBySeatIdInAndScheduledMovieId(reservation.getChosenSeatId(), reservation.getChosenMovieId());
 
         String ticketPriceInCents = String.valueOf(sumOfTicketPrice(chosenSeatsPrice) * 100);
         String url = "https://secure.snd.payu.com/api/v2_1/orders";
         RestTemplate restTemplate = new RestTemplate();
         Buyer buyer = new Buyer(personalData.getEmail(), personalData.getPhoneNumber(), personalData.getName(), personalData.getSurname());
         Product product = new Product("Ticket", ticketPriceInCents, "1");
+        //todo zrobic tyle produktow ile jest biletow
         List<Product> products = new ArrayList<>();
         products.add(product);
-        OrderRequest orderRequest = new OrderRequest(Long.toString(reservationId), "http://localhost:8080/notify", "127.0.0.1", clientId, "Bilecik do kina", "PLN", ticketPriceInCents, buyer, products, "http://localhost:3000/#/paymentSuccess");
+        OrderRequest orderRequest = new OrderRequest(
+                UUID.randomUUID().toString(),
+                "http://localhost:8080/notify", "127.0.0.1",
+                clientId,
+                "Bilecik do kina", "PLN", ticketPriceInCents, buyer, products, "http://localhost:3000/#/paymentSuccess");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
