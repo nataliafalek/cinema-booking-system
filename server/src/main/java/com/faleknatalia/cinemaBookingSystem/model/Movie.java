@@ -11,15 +11,17 @@ public class Movie {
     private String title;
     private String description;
     private int durationInMinutes;
+    private String imageUrl;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long movieId;
 
-    public Movie(String title, String description, int durationInMinutes) {
+    public Movie(String title, String description, int durationInMinutes, String imageUrl) {
         this.title = title;
         this.description = description;
         this.durationInMinutes = durationInMinutes;
+        this.imageUrl = imageUrl;
     }
 
     public Movie() {
@@ -39,5 +41,9 @@ public class Movie {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 }

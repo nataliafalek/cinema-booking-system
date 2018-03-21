@@ -16,10 +16,14 @@ class Seats extends Component {
     }
 
 
-    printSeats = (cinemaHall) => {
-        return `Seat: ${cinemaHall.seatNumber}, Status: ${cinemaHall.free ? "free" : "reserved"} , price: ${cinemaHall.ticketPrice}`
+    printChosenSeats = (cinemaHall) => {
+        return `Seat: ${cinemaHall.seatNumber}, Status: ${cinemaHall.free ? "free" : "reserved"} , price: $${cinemaHall.ticketPrice}`
     };
 
+
+    printSeats = (cinemaHall) => {
+        return `${cinemaHall.seatNumber}`
+    };
 
     chooseSeats = (seats) => {
         const chosenSeatIdsList = seats.map(a => a.seatId)
@@ -59,32 +63,39 @@ class Seats extends Component {
         }
         return (
 
-            <div>
+            <div className={"seats"}>
+                <div className={"printedSeats"}>
+                    <div className={"screen"}>Screen</div>
+                    {this.state.cinemaHall ? this.state.cinemaHall.map
+                    ((a, idx) => {
+                            const seatClass = "freeSeat" //todo okreslic czy free czy chosen
+                            return a.free ?
+                                <li className={seatClass} key={idx} onClick={(event => {
+                                    if (!this.state.listOfChosenSeats.includes(a)) {
+                                        const newSeats = this.state.listOfChosenSeats.concat(a)
+                                        this.setState({listOfChosenSeats: newSeats})
+                                    }
 
-                {this.state.cinemaHall ? this.state.cinemaHall.map
-                (a =>
-                    <li onClick={(event => {
-                        if (a.free && !this.state.listOfChosenSeats.includes(a)) {
-                            const newSeats = this.state.listOfChosenSeats.concat(a)
-                            this.setState({listOfChosenSeats: newSeats})
+                                })}> {this.printSeats(a)}</li> :
+                                <li className={"reservedSeat"}> {this.printSeats(a)} </li>
 
                         }
+                    ) : null}
 
-                    })}> {this.printSeats(a)}
-
-                    </li>
-                ) : null}
-
-                <div>
-                    {this.state.listOfChosenSeats ? this.state.listOfChosenSeats.map(a =>
-                        <div>{this.printSeats(a)}</div>) : []}
                 </div>
+                {this.state.listOfChosenSeats ? this.state.listOfChosenSeats.map((a, idx) =>
+                    <div className={"chosenSeats"} key={idx}>{this.printChosenSeats(a)}</div>) : []}
+
                 {this.state.redirect ? <Redirect push
                                                  to={`/personalData?${queryString.stringify(params)}`}/> : null}
-                <BackButton/>
-                <button disabled={this.state.listOfChosenSeats.length === 0} onClick={this.handleOnClick}
-                        type="button">Next
-                </button>
+
+                <div className={"buttons"}>
+                    <BackButton/>
+                    <button className={"nextButton"} disabled={this.state.listOfChosenSeats.length === 0}
+                            onClick={this.handleOnClick}
+                            type="button">Next
+                    </button>
+                </div>
             </div>
         );
     }

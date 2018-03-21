@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import * as HttpService from "./HttpService";
+import {Redirect} from 'react-router-dom';
 
-class Home extends Component {
+
+class Movies extends Component {
     constructor() {
         super();
         this.state = {
@@ -15,14 +17,6 @@ class Home extends Component {
         return `${movie.title}, Description: ${movie.description}, duration: ${movie.durationInMinutes} minutes`
     };
 
-    getMovie = (chosenMovieId) => {
-        HttpService.fetchJson(`whatsOn/${chosenMovieId.movieId}`)
-            .then(data => {
-                console.log("What's on by movies: ", data);
-                this.setState({whatsOnByMovies: data})
-            })
-    };
-
     componentDidMount() {
         HttpService.fetchJson('movies')
             .then(data => {
@@ -31,22 +25,32 @@ class Home extends Component {
             })
     }
 
+    handleOnClick = () => {
+        this.setState({redirect: true});
+    }
+
     render() {
         return (
             <div>
                 <h2>To moje super kino</h2>
                 <div>
-                    {this.state.movies.map(a =>
-                        <li onClick={(event) => {
-                            this.setState({chosenMovie: a});
-                            this.getMovie(a)
-                        }}> {this.printMovies(a)}
-                        </li>
+                    {this.state.movies.map((a, idx) =>
+                        <div key={idx} className={"responsive"}>
+                            <div className={"gallery"} onClick={(event) => {
+                                this.setState({chosenMovie: a});
+                                this.handleOnClick();
+                            }}>
+                                <img className={"movieImage"} src={a.imageUrl}/>
+                                {this.printMovies(a)}
+
+                            </div>
+                        </div>
                     )}
                 </div>
+
                 <div>
-                    {this.state.whatsOnByMovies ? this.state.whatsOnByMovies.map(date =>
-                        <li>{date.dateOfProjection}</li>) : null}
+                    {this.state.redirect ?
+                        <Redirect push to={`/movieDetails/${this.state.chosenMovie.movieId}`}/> : null}
                 </div>
             </div>
 
@@ -54,4 +58,4 @@ class Home extends Component {
     }
 }
 
-export default Home;
+export default Movies;

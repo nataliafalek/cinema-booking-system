@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,6 +62,9 @@ public class Controllers {
     @RequestMapping(value = "/whatsOn", method = RequestMethod.GET)
     public ResponseEntity<List<ScheduledMovieDetails>> whatsOn() {
 
+        DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
+
+
         List<ScheduledMovie> scheduledMovies = scheduledMovieRepository.findAll();
         List<ScheduledMovieDetails> scheduledMovieDetails =
                 scheduledMovies.stream().map(
@@ -70,7 +74,9 @@ public class Controllers {
                                     one.getTitle(),
                                     one.getDurationInMinutes(),
                                     sm.getDateOfProjection(),
-                                    sm.getScheduledMovieId()
+                                    sm.getScheduledMovieId(),
+                                    sm.getDateOfProjection().getDayOfWeek().name(),
+                                    sm.getDateOfProjection().format(formatterHour)
                             );
                         }).collect(Collectors.toList());
 
@@ -82,6 +88,7 @@ public class Controllers {
         return new ResponseEntity<>(movieRepository.findAll(), HttpStatus.OK);
     }
 
+    //SCHEDULEDMOVIE DETAILS
     @RequestMapping(value = "/whatsOn/{chosenMovieId}", method = RequestMethod.GET)
     public ResponseEntity<List<ScheduledMovie>> getWhatsOnByMovie(@PathVariable long chosenMovieId) {
         return new ResponseEntity<>(scheduledMovieRepository.findAllByMovieId(chosenMovieId), HttpStatus.OK);
@@ -104,7 +111,6 @@ public class Controllers {
     public ResponseEntity<Long> addPerson(@RequestBody PersonalDataAndReservationInfo reservationInfo) {
         PersonalData personalData = new PersonalData(reservationInfo.getName(), reservationInfo.getSurname(), reservationInfo.getPhoneNumber(), reservationInfo.getEmail());
         personalDataRepository.save(personalData);
-        //TODO ZAMIENIC SEATID na LIST
         Reservation reservation = new Reservation(reservationInfo.getChosenMovie(), personalData.getPersonId(), reservationInfo.getChosenSeatId());
         reservationRepository.save(reservation);
         return new ResponseEntity<>(reservation.getReservationId(), HttpStatus.OK);

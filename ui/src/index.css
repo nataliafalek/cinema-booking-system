@@ -2,26 +2,273 @@ body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
+    /*background-image: url(./assets/background3.jpg);*/
+    /*-webkit-background-size: cover;*/
+    /*-moz-background-size: cover;*/
+    /*-o-background-size: cover;*/
+    /*background-size: cover;*/
 }
 
-form {
+/*Navigation Menu*/
+ul.header {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333333;
+}
+
+ul.header li {
+    float: left;
+}
+
+ul.header a.nav {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+}
+
+ul.header a.nav:hover {
+    background-color: #111111;
+}
+
+/*Schedule*/
+.scheduledMovies {
     width: 450px;
-    padding: 30px;
+    font-size: 16px;
+    padding: 10px;
+
 }
 
-label {
+.scheduledMoviesDay {
+    color: red;
+    text-align: left;
+    margin: 5px;
+}
+
+li.scheduledMovie {
+    display: block;
+    color: black;
+    border-style: outset;
     padding: 5px;
 }
 
-form input {
-    display: block;
-    width: 50%;
-    padding: 5px 10px;
-    margin: 10px 0;
+li.scheduledMovie:hover {
+    background-color: #777777;
+}
+
+/*seats*/
+
+.seats {
+    width: 100%;
+    height: auto;
+    background-color: #cccccc;
+    margin-top: 100px;
+    margin-bottom: 100px;
 
 }
 
-form button {
+.printedSeats {
+    width: 300px;
+    height: 300px;
+    font-size: 16px;
+    background-color: lightblue;
+    padding: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: auto;
+}
+
+li.freeSeat {
+    float: left;
+    width: 20%;
+    height: 20%;
+    display: inline-block;
+    color: #111111;
+    border: 5px solid #282828;
+    cursor: pointer;
+    text-align: center;
+    background-color: white;
+
+}
+
+li.freeSeat:before {
+
     display: block;
-    width: 15%;
+    padding-top: 100%;
+
+}
+
+li.freeSeat:hover {
+    background-color: #777777;
+}
+
+/*li.freeSeat:focus {*/
+/*background-color: red;*/
+/*}*/
+
+li.reservedSeat {
+    float: left;
+    width: 20%;
+    height: 20%;
+    cursor: pointer;
+    text-align: center;
+    display: block;
+    color: #111111;
+    border: 5px solid #282828;
+    background-color: indianred;
+
+}
+
+li.reservedSeat:before {
+    display: block;
+    padding-top: 100%;
+
+}
+
+.screen {
+    background-color: aqua;
+    margin: 5px 15px 20px;
+    text-align: center;
+}
+
+.chosenSeats {
+    color: red;
+    padding: 5px;
+    text-align: center;
+}
+
+.buttons {
+    margin: 0 auto;
+}
+
+.backButton, .nextButton, .summaryButton, .payButton {
+    background-color: #333333;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    /*display: inline-block;*/
+    font-size: 16px;
+    margin: 10px 50px 10px 10px;
+    cursor: pointer;
+    /*-webkit-transition-duration: 0.4s; !* Safari *!*/
+    /*transition-duration: 0.4s;*/
+}
+
+.backButton:hover, .nextButton:hover, .payButton:hover {
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
+.nextButton:disabled {
+    cursor: not-allowed;
+}
+
+.summaryButton, .payButton {
+    background-color: #cccccc;
+}
+
+/*Personal data*/
+.PersonalDataForm {
+    width: 450px;
+    font-size: 16px;
+    /*background-color: rgba(41, 42, 36, 0.6);*/
+    padding: 30px 30px 15px 30px;
+}
+
+.PersonalDataForm label {
+    font-size: 20px;
+    padding: 5px;
+    color: #282828;
+}
+
+.PersonalDataForm input {
+    display: block;
+    width: 74%;
+    color: #282828;
+    font-size: 20px;
+    background-color: #999999;
+    padding: 5px 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #282828;
+
+}
+
+/*ReservationSummary*/
+
+.summaryData {
+    width: 450px;
+    font-size: 16px;
+    /*background-color: rgba(41, 42, 36, 0.6);*/
+    padding: 30px 30px 15px 30px;
+}
+
+.summaryData li {
+    color: #999999;
+    list-style-type: none;
+    padding: 5px;
+    border-bottom: 3px solid #777777;
+
+}
+
+.reservationData {
+    color: #282828;
+    font-size: 20px
+}
+
+li.reservationSeat {
+    border: none;
+}
+
+/*Movies*/
+
+div.gallery {
+    border: 1px solid #ccc;
+}
+
+div.gallery:hover {
+    border: 1px solid #777;
+}
+
+div.gallery img.movieImage {
+    width: 100%;
+    height: auto;
+}
+
+div.gallery div.movieDescription {
+    padding: 15px;
+    text-align: center;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.responsive {
+    padding: 0 6px;
+    float: left;
+    width: 24.99999%;
+}
+
+@media only screen and (max-width: 700px) {
+    .responsive {
+        width: 49.99999%;
+        margin: 6px 0;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .responsive {
+        width: 100%;
+    }
+}
+
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
 }

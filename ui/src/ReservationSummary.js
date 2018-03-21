@@ -39,24 +39,43 @@ class ReservationSummary extends Component {
 
     render() {
         return this.state.ticketData ? (
-            <div>
-                <div>
+            <div className={"summary"}>
+                <div className={"summaryData"}>
                     <h2>Summary</h2>
-                    <div>Reservation id: {this.props.match.params.reservationId}</div>
-                    <div>Name: {this.state.personalData.name}</div>
-                    <div>Surname: {this.state.personalData.surname}</div>
-                    <div>Email: {this.state.personalData.email}</div>
-                    <div>Phone: {this.state.personalData.phoneNumber}</div>
-                    <div>Movie: "{this.state.ticketData.movieTitle}"</div>
-                    <div>Date of projection: {this.state.ticketData.projectionDate}</div>
-                    <div>Seat Number: {this.state.ticketData.seatNumber.map(s => <li>{s} ticketPrice:
-                        ${this.state.ticketData.ticketPrice}</li>)}</div>
+                    <li>
+                        <text className={"reservationData"}>Reservation id:</text>
+                        {this.props.match.params.reservationId}</li>
+                    <li>
+                        <text className={"reservationData"}>Name:</text>
+                        {this.state.personalData.name}</li>
+                    <li>
+                        <text className={"reservationData"}>Surname:</text>
+                        {this.state.personalData.surname}</li>
+                    <li>
+                        <text className={"reservationData"}>Email:</text>
+                        {this.state.personalData.email}</li>
+                    <li>
+                        <text className={"reservationData"}>Phone:</text>
+                        {this.state.personalData.phoneNumber}</li>
+                    <li>
+                        <text className={"reservationData"}>Movie:</text>
+                        "{this.state.ticketData.movieTitle}"
+                    </li>
+                    <li>
+                        <text className={"reservationData"}>Date of projection:</text>
+                        {this.state.ticketData.projectionDate}</li>
+                    <li>
+                        <text className={"reservationData"}>Seat Number: &emsp;&emsp; Price:</text>
+                        {this.state.ticketData.seatNumber.map
+                        (s => <li
+                            className={"reservationSeat"}>&emsp;{s} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                            ${this.state.ticketData.ticketPrice}</li>)}</li>
                 </div>
 
                 {this.state.redirect ? <Redirect push to={`/payment/${this.props.match.params.reservationId}`}/> : null}
 
                 <div>
-                    <button type="button" onClick={this.handleClick}>Pay Fucking money</button>
+                    <button className={"payButton"} type="button" onClick={this.handleClick}>Pay Fucking money</button>
                 </div>
                 <BackButton/>
 

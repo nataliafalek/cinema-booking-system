@@ -49,7 +49,7 @@ class PersonalData extends Component {
     render() {
         return (
             <div>
-                <form onSubmit={this.addPerson}>
+                <form className={"PersonalDataForm"} onSubmit={this.addPerson}>
                     <label htmlFor="name">Name</label>
                     <input
                         type="text"
@@ -88,7 +88,7 @@ class PersonalData extends Component {
                     />
                     {this.state.redirect ? <Redirect push
                                                      to={`/reservationSummary/${this.state.reservationId}`}/> : null}
-                    <button type="submit">summary</button>
+                    <button className={"summaryButton"} type="submit">summary</button>
                     <BackButton/>
                 </form>
             </div>

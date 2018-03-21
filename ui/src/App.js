@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
 import PersonalData from "./PersonalData";
-import Movie from "./Movie";
+import Schedule from "./Schedule";
 import Seats from "./Seats";
-import Home from "./Home";
-import TransactionSummary from "./TransactionSummary";
+import Movies from "./Movies";
+import MovieDetails from "./MovieDetails";
 import {Route, HashRouter, NavLink} from 'react-router-dom';
 import ReservationSummary from "./ReservationSummary";
 import PaymentSuccess from "./PaymentSuccess";
 
-//TODO stworzyc dwie nowe klasy jedna to czesc odnosnie movie, jedna to czesc seat
 
 class App extends Component {
 
@@ -25,15 +24,15 @@ class App extends Component {
                 <HashRouter>
                     <div>
                         <ul className="header">
-                            <li><NavLink to="/home">Home</NavLink></li>
-                            <li><NavLink to="/whatsOn">What's On</NavLink></li>
+                            <li><NavLink className={"nav"} to="/movies">Movies</NavLink></li>
+                            <li><NavLink className={"nav"} to="/whatsOn">What's On</NavLink></li>
                         </ul>
                         <div className="content">
-                            <Route path="/home" component={Home}/>
-                            <Route path="/whatsOn" component={Movie}/>
+                            <Route path="/movies" component={Movies}/>
+                            <Route path="/movieDetails/:chosenMovieId" component={MovieDetails}/>
+                            <Route path="/whatsOn" component={Schedule}/>
                             <Route path="/seats/:scheduledMovieId" component={Seats}/>
                             <Route path="/personalData" component={PersonalData}/>
-                            <Route path="/transactionSummary/:reservationId" component={TransactionSummary}/>
                             <Route path="/reservationSummary/:reservationId" component={ReservationSummary}/>
                             <Route path="/paymentSuccess" component={PaymentSuccess}/>
                         </div>
