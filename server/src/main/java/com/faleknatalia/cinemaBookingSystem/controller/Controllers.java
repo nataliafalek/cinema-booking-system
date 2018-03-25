@@ -29,6 +29,7 @@ public class Controllers {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Controllers.class);
     private static final String clientId = "322611";
     private static final String clientSecret = "7bf401d342210d73b85081c0a2fae474";
+    private static final DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
 
 
     @Autowired
@@ -62,26 +63,12 @@ public class Controllers {
     @RequestMapping(value = "/whatsOn", method = RequestMethod.GET)
     public ResponseEntity<List<ScheduledMovieDetails>> whatsOn() {
 
-        DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
-
-
-        List<ScheduledMovie> scheduledMovies = scheduledMovieRepository.findAll();
-        List<ScheduledMovieDetails> scheduledMovieDetails =
-                scheduledMovies.stream().map(
-                        sm -> {
-                            Movie one = movieRepository.findOne(sm.getMovieId());
-                            return new ScheduledMovieDetails(
-                                    one.getTitle(),
-                                    one.getDurationInMinutes(),
-                                    sm.getDateOfProjection(),
-                                    sm.getScheduledMovieId(),
-                                    sm.getDateOfProjection().getDayOfWeek().name(),
-                                    sm.getDateOfProjection().format(formatterHour)
-                            );
-                        }).collect(Collectors.toList());
+        List<ScheduledMovie> scheduledMovies = scheduledMovieRepository.findAllByOrderByDateOfProjection();
+        List<ScheduledMovieDetails> scheduledMovieDetails = getScheduledMovieDetails(scheduledMovies);
 
         return new ResponseEntity<>(scheduledMovieDetails, HttpStatus.OK);
     }
+
 
     @RequestMapping(value = "/movies", method = RequestMethod.GET)
     public ResponseEntity<List<Movie>> getMovies() {
@@ -90,8 +77,10 @@ public class Controllers {
 
     //SCHEDULEDMOVIE DETAILS
     @RequestMapping(value = "/whatsOn/{chosenMovieId}", method = RequestMethod.GET)
-    public ResponseEntity<List<ScheduledMovie>> getWhatsOnByMovie(@PathVariable long chosenMovieId) {
-        return new ResponseEntity<>(scheduledMovieRepository.findAllByMovieId(chosenMovieId), HttpStatus.OK);
+    public ResponseEntity<List<ScheduledMovieDetails>> getWhatsOnByMovie(@PathVariable long chosenMovieId) {
+        List<ScheduledMovie> scheduledMovies = scheduledMovieRepository.findAllByMovieId(chosenMovieId);
+        List<ScheduledMovieDetails> scheduledMovieDetails = getScheduledMovieDetails(scheduledMovies);
+        return new ResponseEntity<>(scheduledMovieDetails, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/cinemaHall/seats", method = RequestMethod.GET)
@@ -185,4 +174,21 @@ public class Controllers {
         }
 
     }
+
+    private List<ScheduledMovieDetails> getScheduledMovieDetails(List<ScheduledMovie> scheduledMovies) {
+        return scheduledMovies.stream().map(
+                sm -> {
+                    Movie one = movieRepository.findOne(sm.getMovieId());
+                    return new ScheduledMovieDetails(
+                            one.getTitle(),
+                            one.getDurationInMinutes(),
+                            sm.getDateOfProjection(),
+                            sm.getScheduledMovieId(),
+                            sm.getDateOfProjection().getDayOfWeek().name(),
+                            sm.getDateOfProjection().format(formatterHour),
+                            one.getDescription()
+                    );
+                }).collect(Collectors.toList());
+    }
+
 }

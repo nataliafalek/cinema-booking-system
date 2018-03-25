@@ -10,14 +10,17 @@ public class ScheduledMovieDetails {
     private long scheduledMovieId;
     private String dayOfProjection;
     private String hourOfProjection;
+    private String movieDescription;
 
-    public ScheduledMovieDetails(String movieTitle, int movieDurationInMinutes, LocalDateTime dateOfProjection, long scheduledMovieId, String dayOfProjection, String hourOfProjection) {
+
+    public ScheduledMovieDetails(String movieTitle, int movieDurationInMinutes, LocalDateTime dateOfProjection, long scheduledMovieId, String dayOfProjection, String hourOfProjection, String movieDescription) {
         this.movieTitle = movieTitle;
         this.movieDurationInMinutes = movieDurationInMinutes;
         this.dateOfProjection = dateOfProjection;
         this.scheduledMovieId = scheduledMovieId;
         this.dayOfProjection = dayOfProjection;
         this.hourOfProjection = hourOfProjection;
+        this.movieDescription = movieDescription;
     }
 
     public String getHourOfProjection() {
@@ -42,5 +45,9 @@ public class ScheduledMovieDetails {
 
     public String getDayOfProjection() {
         return dayOfProjection;
+    }
+
+    public String getMovieDescription() {
+        return movieDescription;
     }
 }

@@ -7,12 +7,14 @@ class PaymentSuccess extends Component {
     }
 
     render() {
-        return (
-            <div>
-                <h1>Dzieki za hajsik!</h1>
-                <p>Sprawdz maila z biletem</p>
-            </div>
-        );
+        return <div className={"paymentSuccess"}>
+            <h1>Thank you for making a reservation at Nati Cinema!
+            </h1>
+            <h3>We have sent a ticket to your e-mail.</h3>
+            <p>PS This cinema does not really exist. Thanks to your money, I have a yacht and I eat pineapples all
+                day.</p>
+            <img src={require('./assets/meOnYacht.jpg')}/>
+        </div>;
     }
 }
 

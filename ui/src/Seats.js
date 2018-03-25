@@ -68,12 +68,15 @@ class Seats extends Component {
                     <div className={"screen"}>Screen</div>
                     {this.state.cinemaHall ? this.state.cinemaHall.map
                     ((a, idx) => {
-                            const seatClass = "freeSeat" //todo okreslic czy free czy chosen
+                            const seatClass = this.state.listOfChosenSeats.includes(a) ? "chosenSeat" : "freeSeat";
                             return a.free ?
                                 <li className={seatClass} key={idx} onClick={(event => {
                                     if (!this.state.listOfChosenSeats.includes(a)) {
                                         const newSeats = this.state.listOfChosenSeats.concat(a)
                                         this.setState({listOfChosenSeats: newSeats})
+                                    } else {
+                                        const seats = this.state.listOfChosenSeats.filter(s => s !== a)
+                                        this.setState({listOfChosenSeats: seats})
                                     }
 
                                 })}> {this.printSeats(a)}</li> :
@@ -83,8 +86,8 @@ class Seats extends Component {
                     ) : null}
 
                 </div>
-                {this.state.listOfChosenSeats ? this.state.listOfChosenSeats.map((a, idx) =>
-                    <div className={"chosenSeats"} key={idx}>{this.printChosenSeats(a)}</div>) : []}
+                {/*{this.state.listOfChosenSeats ? this.state.listOfChosenSeats.map((a, idx) =>*/}
+                {/*<div className={"chosenSeats"} key={idx}>{this.printChosenSeats(a)}</div>) : []}*/}
 
                 {this.state.redirect ? <Redirect push
                                                  to={`/personalData?${queryString.stringify(params)}`}/> : null}

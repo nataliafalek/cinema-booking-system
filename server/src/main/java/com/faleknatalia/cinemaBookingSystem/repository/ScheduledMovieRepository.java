@@ -13,4 +13,6 @@ public interface ScheduledMovieRepository extends JpaRepository<ScheduledMovie, 
 
     List<ScheduledMovie> findAllByMovieId(long movieId);
 
+    List<ScheduledMovie> findAllByOrderByDateOfProjection();
+
 }

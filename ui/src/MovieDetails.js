@@ -4,9 +4,15 @@ import * as HttpService from "./HttpService";
 class MovieDetails extends Component {
     constructor() {
         super();
+        this.days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
         this.state = {
-            chosenMovieId: []
+            chosenMovieId: [],
         };
+    }
+
+    today = () => {
+        const d = new Date();
+        return this.days[d.getDay()];
     }
 
     componentDidMount() {
@@ -19,12 +25,27 @@ class MovieDetails extends Component {
 
 
     render() {
-        return (
 
-            <div>
-                {this.state.whatsOnByMovies ? this.state.whatsOnByMovies.map((date, idx) =>
-                    <li key={idx}>{date.dateOfProjection}</li>) : null}
-            </div>
+        return (
+            this.state.whatsOnByMovies ?
+                <div className={"movieDetails"}>
+                    <div className={"movieDescImg"}><img
+                        src={decodeURIComponent(this.props.match.params.chosenMovieUrl)}/></div>
+
+                    <div className={"movieDesc"}>
+                        <h1>"{this.state.whatsOnByMovies[0].movieTitle}"</h1>
+                        <p> Duration: {this.state.whatsOnByMovies[0].movieDurationInMinutes} minutes </p>
+                        <p> Description: {this.state.whatsOnByMovies[0].movieDescription}</p>
+                        <p>Today's projection: </p>
+                    </div>
+                    <div className={"projectionHours"}>
+                        {this.state.whatsOnByMovies.map((movie, idx) =>
+                            movie.dayOfProjection == this.today() ?
+                                <li key={idx}>{movie.hourOfProjection}</li>
+                                : null
+                        )}
+                    </div>
+                </div> : null
 
         );
     }

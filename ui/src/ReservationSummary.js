@@ -73,11 +73,11 @@ class ReservationSummary extends Component {
                 </div>
 
                 {this.state.redirect ? <Redirect push to={`/payment/${this.props.match.params.reservationId}`}/> : null}
+                <div className={"buttons"}>
 
-                <div>
-                    <button className={"payButton"} type="button" onClick={this.handleClick}>Pay Fucking money</button>
+                    <BackButton/>
+                    <button className={"payButton"} type="button" onClick={this.handleClick}>Pay</button>
                 </div>
-                <BackButton/>
 
             </div>
         ) : null;

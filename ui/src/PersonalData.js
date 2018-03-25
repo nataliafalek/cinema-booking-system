@@ -48,48 +48,53 @@ class PersonalData extends Component {
 
     render() {
         return (
-            <div>
-                <form className={"PersonalDataForm"} onSubmit={this.addPerson}>
-                    <label htmlFor="name">Name</label>
-                    <input
-                        type="text"
-                        value={this.state.name}
-                        onChange={(event) => {
-                            this.setState({name: event.target.value});
-                        }}
-                        required
-                    />
-                    <label htmlFor="surname">Surname</label>
-                    <input
-                        type="text"
-                        value={this.state.surname}
-                        onChange={(event) => {
-                            this.setState({surname: event.target.value});
-                        }}
-                        required
-                    />
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="email"
-                        value={this.state.email}
-                        onChange={(event) => {
-                            this.setState({email: event.target.value});
-                        }}
-                        required
-                    />
-                    <label htmlFor="name">Telephone</label>
-                    <input
-                        type="tel"
-                        value={this.state.phoneNumber}
-                        onChange={(event) => {
-                            this.setState({phoneNumber: event.target.value});
-                        }}
-                        required
-                    />
+            <div className={"personalData"}>
+                <form onSubmit={this.addPerson}>
+                    <div className={"PersonalDataForm"}>
+                        <label htmlFor="name">Name</label>
+                        <input
+                            type="text"
+                            value={this.state.name}
+                            onChange={(event) => {
+                                this.setState({name: event.target.value});
+                            }}
+                            required
+                        />
+                        <label htmlFor="surname">Surname</label>
+                        <input
+                            type="text"
+                            value={this.state.surname}
+                            onChange={(event) => {
+                                this.setState({surname: event.target.value});
+                            }}
+                            required
+                        />
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="email"
+                            value={this.state.email}
+                            onChange={(event) => {
+                                this.setState({email: event.target.value});
+                            }}
+                            required
+                        />
+                        <label htmlFor="name">Telephone</label>
+                        <input
+                            type="tel"
+                            value={this.state.phoneNumber}
+                            onChange={(event) => {
+                                this.setState({phoneNumber: event.target.value});
+                            }}
+                            required
+                        />
+                    </div>
                     {this.state.redirect ? <Redirect push
                                                      to={`/reservationSummary/${this.state.reservationId}`}/> : null}
-                    <button className={"summaryButton"} type="submit">summary</button>
-                    <BackButton/>
+                    <div className={"buttons"}>
+
+                        <button className={"summaryButton"} type="submit">Summary</button>
+                        <BackButton/>
+                    </div>
                 </form>
             </div>
         )

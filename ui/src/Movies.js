@@ -14,7 +14,7 @@ class Movies extends Component {
     }
 
     printMovies = (movie) => {
-        return `${movie.title}, Description: ${movie.description}, duration: ${movie.durationInMinutes} minutes`
+        return `${movie.title}`
     };
 
     componentDidMount() {
@@ -31,26 +31,40 @@ class Movies extends Component {
 
     render() {
         return (
-            <div>
-                <h2>To moje super kino</h2>
-                <div>
-                    {this.state.movies.map((a, idx) =>
-                        <div key={idx} className={"responsive"}>
-                            <div className={"gallery"} onClick={(event) => {
-                                this.setState({chosenMovie: a});
-                                this.handleOnClick();
-                            }}>
-                                <img className={"movieImage"} src={a.imageUrl}/>
-                                {this.printMovies(a)}
-
-                            </div>
-                        </div>
-                    )}
+            <div className={"movies"}>
+                <div className={"cinemaImage"}><h1>Nati Cinema</h1>
+                    <br></br>
+                    <h3>presents</h3>
                 </div>
+                <div className={"scheduleAndPrices"}>
+                    <div className={"moviesSchedule"}>
+                        <h2>#movies</h2>
+                        <div>
+                            {this.state.movies.map((a, idx) =>
+                                <div key={idx} className={"responsive"}>
+                                    <div className={"gallery"} onClick={(event) => {
+                                        this.setState({chosenMovie: a});
+                                        this.handleOnClick();
+                                    }}>
+                                        <img className={"movieImage"} src={a.imageUrl}/><br/>
+                                        {this.printMovies(a)}
 
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div className={"prices"}>
+                        <h2> #prices</h2>
+                        <p>Student $10</p>
+                        <p>Junior $10</p>
+                        <p>Senior $10</p>
+                    </div>
+                </div>
                 <div>
                     {this.state.redirect ?
-                        <Redirect push to={`/movieDetails/${this.state.chosenMovie.movieId}`}/> : null}
+                        <Redirect push
+                                  to={`/movieDetails/${this.state.chosenMovie.movieId}/${encodeURIComponent(this.state.chosenMovie.imageUrl)}`}/> : null}
                 </div>
             </div>
 
