@@ -24,8 +24,16 @@ public class PdfGeneratorTest {
         //Before
         List<Integer> seats = new ArrayList<Integer>() {{
             add(12);
+            add(24);
         }};
-        TicketData ticketData = new TicketData("The Prestige", LocalDateTime.now(), 1l, seats, 22);
+
+        List<Integer> prices = new ArrayList<Integer>() {{
+            add(22);
+            add(22);
+        }};
+
+
+        TicketData ticketData = new TicketData("The Prestige", LocalDateTime.now(), 1l, seats, prices);
 
         //
         generateTicket(ticketData);

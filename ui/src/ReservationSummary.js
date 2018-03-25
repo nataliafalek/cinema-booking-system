@@ -67,9 +67,9 @@ class ReservationSummary extends Component {
                     <li>
                         <text className={"reservationData"}>Seat Number: &emsp;&emsp; Price:</text>
                         {this.state.ticketData.seatNumber.map
-                        (s => <li
+                        ((s,idx) => <li
                             className={"reservationSeat"}>&emsp;{s} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                            ${this.state.ticketData.ticketPrice}</li>)}</li>
+                            ${this.state.ticketData.ticketPrice[idx]}</li>)}</li>
                 </div>
 
                 {this.state.redirect ? <Redirect push to={`/payment/${this.props.match.params.reservationId}`}/> : null}

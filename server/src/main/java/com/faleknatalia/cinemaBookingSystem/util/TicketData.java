@@ -9,9 +9,9 @@ public class TicketData {
     private LocalDateTime projectionDate;
     private long cinemaHallId;
     private List<Integer> seatNumber;
-    private int TicketPrice;
+    private List<Integer> TicketPrice;
 
-    public TicketData(String movieTitle, LocalDateTime projectionDate, long cinemaHallId, List<Integer> seatNumber, int ticketPrice) {
+    public TicketData(String movieTitle, LocalDateTime projectionDate, long cinemaHallId, List<Integer> seatNumber, List<Integer> ticketPrice) {
         this.movieTitle = movieTitle;
         this.projectionDate = projectionDate;
         this.cinemaHallId = cinemaHallId;
@@ -38,7 +38,7 @@ public class TicketData {
         return seatNumber;
     }
 
-    public int getTicketPrice() {
+    public List<Integer> getTicketPrice() {
         return TicketPrice;
     }
 }

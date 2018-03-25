@@ -7,10 +7,14 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TicketGeneratorPdf {
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TicketGeneratorPdf.class);
 
 
     public ByteArrayOutputStream generateTicket(TicketData ticketData) throws Exception {
@@ -19,6 +23,9 @@ public class TicketGeneratorPdf {
         LocalDateTime dateOfProjection = ticketData.getProjectionDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
+
+        List<Integer> seatNumbers = ticketData.getSeatNumber();
+
 
         //image
         PDDocument document = new PDDocument();
@@ -49,8 +56,20 @@ public class TicketGeneratorPdf {
         contentStream.newLine();
         contentStream.newLine();
         contentStream.showText("Cinema Hall: " + ticketData.getCinemaHallId() + "  ");
-        contentStream.showText("Seat: " + ticketData.getSeatNumber() + "   ");
-        contentStream.showText("Price: $" + ticketData.getTicketPrice());
+        contentStream.newLine();
+        seatNumbers.stream().forEach(s -> {
+            try {
+                contentStream.newLine();
+                String a = "Seat number: " + s.toString() + ", price: $" + ticketData.getTicketPrice().get(seatNumbers.indexOf(s)).toString();
+                contentStream.showText(a);
+
+            } catch (IOException e) {
+                logger.info("Can't generate ticket", e);
+            }
+        });
+//        contentStream.newLine();
+//        contentStream.showText("Price: " + ticketData.getTicketPrice().stream().map(p -> "$" + p.toString())
+//                .collect(Collectors.joining(", ")));
         contentStream.endText();
         contentStream.close();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
