@@ -1,8 +1,9 @@
 package com.faleknatalia.cinemaBookingSystem.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class ScheduledMovieDetails {
+public class ScheduledMovieDetails implements Serializable {
 
     private String movieTitle;
     private int movieDurationInMinutes;

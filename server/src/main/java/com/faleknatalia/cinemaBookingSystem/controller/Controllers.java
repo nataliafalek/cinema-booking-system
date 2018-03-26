@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -60,8 +61,7 @@ public class Controllers {
 
     //TODO optymalizacja - wydzielic metode do serwisu osobnego, tak by efektywnie laczyc ScheduledMovie i ScheduledMovieDetails
     @RequestMapping(value = "/whatsOn", method = RequestMethod.GET)
-    public ResponseEntity<List<ScheduledMovieDetails>> whatsOn() {
-
+    public ResponseEntity<List<ScheduledMovieDetails>> whatsOn(HttpSession session) {
         DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
 
 
@@ -79,7 +79,13 @@ public class Controllers {
                                     sm.getDateOfProjection().format(formatterHour)
                             );
                         }).collect(Collectors.toList());
+        //ustawianie
+        String lol = "lol";
+        session.setAttribute("lolObject", lol);
+        session.setAttribute("movies", scheduledMovieDetails); //zapisywane obiekty musza implenetowac Serializable, bo sa pozniej serializowane w bazie
 
+        //pobieranie
+        session.getAttribute("lolObject");
         return new ResponseEntity<>(scheduledMovieDetails, HttpStatus.OK);
     }
 
