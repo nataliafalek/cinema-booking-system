@@ -7,6 +7,7 @@ import com.faleknatalia.cinemaBookingSystem.repository.*;
 import com.faleknatalia.cinemaBookingSystem.util.TicketData;
 import com.faleknatalia.cinemaBookingSystem.util.TicketDataService;
 import com.faleknatalia.cinemaBookingSystem.util.TicketGeneratorPdf;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 //TODO wydzielic do serwisow logike z controllerow
@@ -55,6 +57,10 @@ public class Controllers {
 
     @Autowired
     EmailSender emailSender;
+
+    @Autowired
+    OrderRequestDBRepository orderRequestDBRepository;
+
 
     @Value("${dev_mode}")
     private boolean devMode;
@@ -152,9 +158,17 @@ public class Controllers {
             List<PropertyNotifcation> propertyNotifcationList = new ArrayList<PropertyNotifcation>() {{
                 add(new PropertyNotifcation("PAYMENT_ID", "12345"));
             }};
-            notify(new NotificationResponse(orderResponseNotification, "2016-03-02T12:58:14.828+01:00", propertyNotifcationList));
+
+            NotificationResponse notificationResponse = new NotificationResponse(orderResponseNotification, "2016-03-02T12:58:14.828+01:00", propertyNotifcationList);
+            ObjectMapper mapper = new ObjectMapper();
+            orderRequestDBRepository.save(new OrderRequestsAndResponseDB(notificationResponse.getOrder().getExtOrderId(), reservationId, "response", mapper.writeValueAsString(notificationResponse)));
+
+            notify(notificationResponse);
         }
-        return new ResponseEntity<>(paymentService.generateOrder(accessToken, reservationId, clientId), HttpStatus.OK);
+
+        OrderResponse orderResponse = paymentService.generateOrder(accessToken, reservationId, clientId);
+
+        return new ResponseEntity<>(orderResponse, HttpStatus.OK);
     }
 
 
@@ -168,7 +182,7 @@ public class Controllers {
 
     @RequestMapping(value = "/notify", method = RequestMethod.POST)
     public void notify(NotificationResponse notificationResponse) throws Exception {
-
+        //zapis do bazy notification
         if (notificationResponse.getOrder().getStatus().equals("COMPLETED")) {
             sendEmail(Long.parseLong(notificationResponse.getOrder().getExtOrderId()));
         }

@@ -16,6 +16,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 
 @RunWith(SpringRunner.class)
@@ -34,7 +35,7 @@ public class PaymentServiceTest {
     PersonalDataRepository personalDataRepository;
 
     @Test
-    public void getAccessToken() {
+    public void getAccessToken() throws Exception {
 
         //Before
         PersonalData personalData = new PersonalData("Nati", "Falek", "123456789", "nati@gmail.com");

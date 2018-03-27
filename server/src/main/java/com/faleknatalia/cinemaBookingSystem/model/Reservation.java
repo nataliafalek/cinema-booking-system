@@ -1,9 +1,14 @@
 package com.faleknatalia.cinemaBookingSystem.model;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
+
 public class Reservation {
     private long chosenMovieId;
 
@@ -40,4 +45,5 @@ public class Reservation {
     public long getReservationId() {
         return reservationId;
     }
+
 }

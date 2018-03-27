@@ -1,8 +1,11 @@
 package com.faleknatalia.cinemaBookingSystem.payment;
 
+import javax.persistence.*;
 import java.util.List;
 
 public class OrderRequest {
+
+
     private String extOrderId;
     private String notifyUrl;
     private String customerIp;
@@ -10,8 +13,11 @@ public class OrderRequest {
     private String description;
     private String currencyCode;
     private String totalAmount;
+
     private Buyer buyer;
+
     private List<Product> products;
+
     private String continueUrl;
 
     public OrderRequest(String extOrderId, String notifyUrl, String customerIp, String merchantPosId, String description, String currencyCode, String totalAmount, Buyer buyer, List<Product> products, String continueUrl) {
@@ -69,4 +75,5 @@ public class OrderRequest {
     public String getNotifyUrl() {
         return notifyUrl;
     }
+
 }

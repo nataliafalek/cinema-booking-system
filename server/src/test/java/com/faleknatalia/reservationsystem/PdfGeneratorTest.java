@@ -17,6 +17,8 @@ public class PdfGeneratorTest {
 
     @Test
     public void generatePdf() throws Exception {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
 
         System.out.println("Working Directory = " +
                 System.getProperty("user.dir"));
@@ -33,7 +35,8 @@ public class PdfGeneratorTest {
         }};
 
 
-        TicketData ticketData = new TicketData("The Prestige", LocalDateTime.now(), 1l, seats, prices);
+        LocalDateTime now = LocalDateTime.now();
+        TicketData ticketData = new TicketData("The Prestige", now.format(formatter), now.format(formatterHour), 1l, seats, prices);
 
         //
         generateTicket(ticketData);
@@ -59,7 +62,8 @@ public class PdfGeneratorTest {
 
 
         //preparing data
-        LocalDateTime dateOfProjection = ticketData.getProjectionDate();
+        String dateOfProjection = ticketData.getProjectionDate();
+        String hourOfProjection = ticketData.getProjectionHour();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -90,8 +94,8 @@ public class PdfGeneratorTest {
         contentStream.showText("Movie: " + ticketData.getMovieTitle());
         contentStream.newLine();
         contentStream.newLine();
-        contentStream.showText("Date: " + dateOfProjection.format(formatter) + "          ");
-        contentStream.showText("Hour: " + dateOfProjection.format(formatterHour));
+        contentStream.showText("Date: " + dateOfProjection + "          ");
+        contentStream.showText("Hour: " + hourOfProjection);
         contentStream.newLine();
         contentStream.newLine();
         contentStream.showText("Cinema Hall: " + ticketData.getCinemaHallId() + "  ");

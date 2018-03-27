@@ -20,9 +20,9 @@ public class TicketGeneratorPdf {
     public ByteArrayOutputStream generateTicket(TicketData ticketData) throws Exception {
 
         //preparing data
-        LocalDateTime dateOfProjection = ticketData.getProjectionDate();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
+//        LocalDateTime dateOfProjection = ticketData.getProjectionDate();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//        DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
 
         List<Integer> seatNumbers = ticketData.getSeatNumber();
 
@@ -51,8 +51,8 @@ public class TicketGeneratorPdf {
         contentStream.showText("Movie: " + ticketData.getMovieTitle());
         contentStream.newLine();
         contentStream.newLine();
-        contentStream.showText("Date: " + dateOfProjection.format(formatter) + "          ");
-        contentStream.showText("Hour: " + dateOfProjection.format(formatterHour));
+        contentStream.showText("Date: " + ticketData.getProjectionDate() + "          ");
+        contentStream.showText("Hour: " + ticketData.getProjectionHour());
         contentStream.newLine();
         contentStream.newLine();
         contentStream.showText("Cinema Hall: " + ticketData.getCinemaHallId() + "  ");
@@ -67,9 +67,7 @@ public class TicketGeneratorPdf {
                 logger.info("Can't generate ticket", e);
             }
         });
-//        contentStream.newLine();
-//        contentStream.showText("Price: " + ticketData.getTicketPrice().stream().map(p -> "$" + p.toString())
-//                .collect(Collectors.joining(", ")));
+
         contentStream.endText();
         contentStream.close();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -1,6 +1,8 @@
 package com.faleknatalia.cinemaBookingSystem.payment;
 
+
 public class Product {
+
 
     private String name;
     private String unitPrice;
@@ -38,4 +40,5 @@ public class Product {
     public void setQuantity(String quantity) {
         this.quantity = quantity;
     }
+
 }

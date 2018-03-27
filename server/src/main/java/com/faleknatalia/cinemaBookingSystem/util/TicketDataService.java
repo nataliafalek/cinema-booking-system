@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,11 +36,17 @@ public class TicketDataService {
 
 
     public TicketData findMovie(long reservationId) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
+
         Reservation reservation = reservationRepository.findOne(reservationId);
 
         long chosenMovie = reservation.getChosenMovieId();
         ScheduledMovie movie = scheduledMovieRepository.findOne(chosenMovie);
         LocalDateTime movieProjection = movie.getDateOfProjection();
+        String projectionDate = movieProjection.format(formatter);
+        String projectionHour = movieProjection.format(formatterHour);
+
         String movieTitle = movieRepository.findOne(movie.getMovieId()).getTitle();
         long cinemaHall = movie.getCinemaHallId();
 
@@ -48,13 +55,12 @@ public class TicketDataService {
         List<Integer> chosenSeat = new ArrayList<Integer>();
         seats.stream().map(s -> chosenSeat.add(s.getSeatNumber())).collect(Collectors.toList());
 
-        //TODO podstawic cene z nowej klasy
         List<SeatReservationByScheduledMovie> chosenSeats = seatReservationByScheduledMovieRepository
                 .findBySeatIdInAndScheduledMovieId(reservation.getChosenSeatId(), reservation.getChosenMovieId());
         List<Integer> ticketPrices = new ArrayList<>();
         chosenSeats.stream().map(s -> ticketPrices.add(s.getTicketPrice())).collect(Collectors.toList());
 
-        return new TicketData(movieTitle, movieProjection, cinemaHall, chosenSeat, ticketPrices);
+        return new TicketData(movieTitle, projectionDate, projectionHour, cinemaHall, chosenSeat, ticketPrices);
     }
 
 }

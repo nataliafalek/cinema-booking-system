@@ -1,6 +1,8 @@
 package com.faleknatalia.cinemaBookingSystem.payment;
 
+
 public class OrderResponse {
+
 
     private String orderId;
     private String extOrderId;
@@ -32,4 +34,5 @@ public class OrderResponse {
     public String getRedirectUri() {
         return redirectUri;
     }
+
 }
