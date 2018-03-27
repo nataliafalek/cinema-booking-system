@@ -33,7 +33,7 @@ class App extends Component {
                             <Route path="/whatsOn" component={Schedule}/>
                             <Route path="/seats/:scheduledMovieId" component={Seats}/>
                             <Route path="/personalData" component={PersonalData}/>
-                            <Route path="/reservationSummary/:reservationId" component={ReservationSummary}/>
+                            <Route path="/reservationSummary" component={ReservationSummary}/>
                             <Route path="/paymentSuccess" component={PaymentSuccess}/>
                         </div>
                     </div>

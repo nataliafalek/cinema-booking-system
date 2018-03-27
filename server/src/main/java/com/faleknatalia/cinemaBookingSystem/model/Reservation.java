@@ -1,10 +1,11 @@
 package com.faleknatalia.cinemaBookingSystem.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
-public class Reservation {
+public class Reservation implements Serializable {
     private long chosenMovieId;
 
     private long personalDataId;

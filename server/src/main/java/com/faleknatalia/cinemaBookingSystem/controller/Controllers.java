@@ -108,32 +108,47 @@ public class Controllers {
 
     @Transactional
     @RequestMapping(value = "/cinemaHall/seats/choose/{scheduledMovieId}", method = RequestMethod.POST)
-    public ResponseEntity<List<SeatReservationByScheduledMovie>> chosenSeat(@PathVariable long scheduledMovieId, @RequestBody List<Long> seatId) {
-        seatReservationByScheduledMovieRepository.setFalseForChosenSeat(seatId, scheduledMovieId);
+    public ResponseEntity<List<SeatReservationByScheduledMovie>> chosenSeat(HttpSession session, @PathVariable long scheduledMovieId, @RequestBody List<Long> seatId) {
+//        seatReservationByScheduledMovieRepository.setFalseForChosenSeat(seatId, scheduledMovieId);
+
+        session.setAttribute("seats", seatId);
+        session.setAttribute("movieId", scheduledMovieId);
         return new ResponseEntity<>(seatReservationByScheduledMovieRepository.findBySeatIdInAndScheduledMovieId(seatId, scheduledMovieId), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/cinemaHall/addPerson", method = RequestMethod.POST)
-    public ResponseEntity<Long> addPerson(@RequestBody PersonalDataAndReservationInfo reservationInfo) {
+    public ResponseEntity<Long> addPerson(HttpSession session,@RequestBody PersonalDataAndReservationInfo reservationInfo) {
         PersonalData personalData = new PersonalData(reservationInfo.getName(), reservationInfo.getSurname(), reservationInfo.getPhoneNumber(), reservationInfo.getEmail());
-        personalDataRepository.save(personalData);
+       // personalDataRepository.save(personalData);
+        session.setAttribute("personalData", personalData);
         Reservation reservation = new Reservation(reservationInfo.getChosenMovie(), personalData.getPersonId(), reservationInfo.getChosenSeatId());
-        reservationRepository.save(reservation);
+      //  reservationRepository.save(reservation);
+        session.setAttribute("reservation",reservation);
         return new ResponseEntity<>(reservation.getReservationId(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/reservationSummary/{reservationId}", method = RequestMethod.GET)
-    public ResponseEntity<ReservationSummary> reservationSummary(@PathVariable long reservationId) {
-        TicketData ticketData = ticketDataService.findMovie(reservationId);
-        long personalDataId = reservationRepository.findOne(reservationId).getPersonalDataId();
-        PersonalData personalData = personalDataRepository.findOne(personalDataId);
-        ReservationSummary reservationSummary = new ReservationSummary(ticketData, personalData);
+    @RequestMapping(value = "/reservationSummary", method = RequestMethod.GET)
+    public ResponseEntity<ReservationSummary> reservationSummary(HttpSession session) {
+        TicketData ticketData = ticketDataService.findMovie((long) session.getAttribute("movieId"),(List<Long>)session.getAttribute("seats"));
+//        long personalDataId = reservationRepository.findOne(reservationId).getPersonalDataId();
+//        PersonalData personalData = personalDataRepository.findOne(personalDataId);
+        ReservationSummary reservationSummary = new ReservationSummary(ticketData, (PersonalData) session.getAttribute("personalData"));
         return new ResponseEntity<>(reservationSummary, HttpStatus.OK);
     }
 
 
     @RequestMapping(value = "/payment/{reservationId}", method = RequestMethod.POST)
-    public ResponseEntity<OrderResponse> redirectToPayment(HttpServletResponse response, @PathVariable long reservationId) throws Exception {
+    public ResponseEntity<OrderResponse> redirectToPayment(HttpServletResponse response, HttpSession session, @PathVariable long reservationId) throws Exception {
+
+        //sesja
+        seatReservationByScheduledMovieRepository.setFalseForChosenSeat((List<Long>)session.getAttribute("seats"), (long) session.getAttribute("movieId"));
+        //save reservation,PersonalData
+        personalDataRepository.save((PersonalData) session.getAttribute("personalData"));
+        reservationRepository.save((Reservation) session.getAttribute("reservation"));
+
+        session.invalidate();
+
+
 
         AccessToken accessToken = paymentService.generateAccessToken(clientId, clientSecret);
 
