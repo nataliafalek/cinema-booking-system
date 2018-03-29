@@ -16,11 +16,11 @@ class ReservationSummary extends Component {
     }
 
     componentDidMount() {
-        this.getSummary(this.props.match.params.reservationId)
+        this.getSummary()
     }
 
-    getSummary = (reservationId) => {
-        HttpService.fetchJson(`reservationSummary/${reservationId}`)
+    getSummary = () => {
+        HttpService.fetchJson("reservationSummary")
             .then(data => {
                 console.log("Success - summary: ", data);
                 this.setState({personalData: data.personalData, ticketData: data.ticketData})
@@ -28,7 +28,7 @@ class ReservationSummary extends Component {
     };
 
     handleClick = () => {
-        return HttpService.post(`/payment/${this.props.match.params.reservationId}`)
+        return HttpService.post(`/payment`)
             .then(results => {
                 return results.json();
             }).then(data => {

@@ -4,12 +4,13 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 
-public class Reservation {
+public class Reservation implements Serializable {
     private long chosenMovieId;
 
     private long personalDataId;
@@ -46,4 +47,7 @@ public class Reservation {
         return reservationId;
     }
 
+    public void setPersonalDataId(long personalDataId) {
+        this.personalDataId = personalDataId;
+    }
 }

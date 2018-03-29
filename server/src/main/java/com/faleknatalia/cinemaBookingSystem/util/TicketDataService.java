@@ -33,11 +33,11 @@ public class TicketDataService {
     @Autowired
     SeatReservationByScheduledMovieRepository seatReservationByScheduledMovieRepository;
 
-
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
 
     public TicketData findMovie(long reservationId) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
+
 
         Reservation reservation = reservationRepository.findOne(reservationId);
 
@@ -61,6 +61,26 @@ public class TicketDataService {
         chosenSeats.stream().map(s -> ticketPrices.add(s.getTicketPrice())).collect(Collectors.toList());
 
         return new TicketData(movieTitle, projectionDate, projectionHour, cinemaHall, chosenSeat, ticketPrices);
+    }
+
+    public TicketData findMovie(long chosenMovie, List<Long> seatsIds ) {
+        ScheduledMovie movie = scheduledMovieRepository.findOne(chosenMovie);
+        LocalDateTime movieProjection = movie.getDateOfProjection();
+        String projectionDate = movieProjection.format(formatter);
+        String projectionHour = movieProjection.format(formatterHour);
+
+        String movieTitle = movieRepository.findOne(movie.getMovieId()).getTitle();
+        long cinemaHall = movie.getCinemaHallId();
+        List<Integer> seats = new ArrayList<>();
+//        seatsIds.stream().map(s -> Math.toIntExact(s)).collect(Collectors.toList());
+       seatsIds.stream().map(s -> seats.add(seatRepository.findOne(s).getSeatNumber())).collect(Collectors.toList());
+
+        List<SeatReservationByScheduledMovie> chosenSeats = seatReservationByScheduledMovieRepository
+                .findBySeatIdInAndScheduledMovieId(seatsIds, chosenMovie);
+        List<Integer> ticketPrices = new ArrayList<>();
+        chosenSeats.stream().map(s -> ticketPrices.add(s.getTicketPrice())).collect(Collectors.toList());
+
+        return new TicketData(movieTitle, projectionDate, projectionHour, cinemaHall, seats, ticketPrices);
     }
 
 }

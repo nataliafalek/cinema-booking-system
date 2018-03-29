@@ -7,7 +7,6 @@ import com.faleknatalia.cinemaBookingSystem.repository.*;
 import com.faleknatalia.cinemaBookingSystem.util.TicketData;
 import com.faleknatalia.cinemaBookingSystem.util.TicketDataService;
 import com.faleknatalia.cinemaBookingSystem.util.TicketGeneratorPdf;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -17,11 +16,11 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 //TODO wydzielic do serwisow logike z controllerow
@@ -97,32 +96,55 @@ public class Controllers {
 
     @Transactional
     @RequestMapping(value = "/cinemaHall/seats/choose/{scheduledMovieId}", method = RequestMethod.POST)
-    public ResponseEntity<List<SeatReservationByScheduledMovie>> chosenSeat(@PathVariable long scheduledMovieId, @RequestBody List<Long> seatId) {
-        seatReservationByScheduledMovieRepository.setFalseForChosenSeat(seatId, scheduledMovieId);
+    public ResponseEntity<List<SeatReservationByScheduledMovie>> chosenSeat(HttpSession session, @PathVariable long scheduledMovieId, @RequestBody List<Long> seatId) {
+//        seatReservationByScheduledMovieRepository.setFalseForChosenSeat(seatId, scheduledMovieId);
+
+        session.setAttribute("seats", seatId);
+        session.setAttribute("movieId", scheduledMovieId);
         return new ResponseEntity<>(seatReservationByScheduledMovieRepository.findBySeatIdInAndScheduledMovieId(seatId, scheduledMovieId), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/cinemaHall/addPerson", method = RequestMethod.POST)
-    public ResponseEntity<Long> addPerson(@RequestBody PersonalDataAndReservationInfo reservationInfo) {
+    public ResponseEntity<Long> addPerson(HttpSession session,@RequestBody PersonalDataAndReservationInfo reservationInfo) {
         PersonalData personalData = new PersonalData(reservationInfo.getName(), reservationInfo.getSurname(), reservationInfo.getPhoneNumber(), reservationInfo.getEmail());
-        personalDataRepository.save(personalData);
+       // personalDataRepository.save(personalData);
+        session.setAttribute("personalData", personalData);
         Reservation reservation = new Reservation(reservationInfo.getChosenMovie(), personalData.getPersonId(), reservationInfo.getChosenSeatId());
-        reservationRepository.save(reservation);
+      //  reservationRepository.save(reservation);
+        session.setAttribute("reservation",reservation);
         return new ResponseEntity<>(reservation.getReservationId(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/reservationSummary/{reservationId}", method = RequestMethod.GET)
-    public ResponseEntity<ReservationSummary> reservationSummary(@PathVariable long reservationId) {
-        TicketData ticketData = ticketDataService.findMovie(reservationId);
-        long personalDataId = reservationRepository.findOne(reservationId).getPersonalDataId();
-        PersonalData personalData = personalDataRepository.findOne(personalDataId);
-        ReservationSummary reservationSummary = new ReservationSummary(ticketData, personalData);
+    @RequestMapping(value = "/reservationSummary", method = RequestMethod.GET)
+    public ResponseEntity<ReservationSummary> reservationSummary(HttpSession session) {
+        TicketData ticketData = ticketDataService.findMovie((long) session.getAttribute("movieId"),(List<Long>)session.getAttribute("seats"));
+//        long personalDataId = reservationRepository.findOne(reservationId).getPersonalDataId();
+//        PersonalData personalData = personalDataRepository.findOne(personalDataId);
+        ReservationSummary reservationSummary = new ReservationSummary(ticketData, (PersonalData) session.getAttribute("personalData"));
         return new ResponseEntity<>(reservationSummary, HttpStatus.OK);
     }
 
 
-    @RequestMapping(value = "/payment/{reservationId}", method = RequestMethod.POST)
-    public ResponseEntity<OrderResponse> redirectToPayment(HttpServletResponse response, @PathVariable long reservationId) throws Exception {
+    @Transactional
+    @RequestMapping(value = "/payment", method = RequestMethod.POST)
+    public ResponseEntity<OrderResponse> redirectToPayment(HttpServletResponse response, HttpSession session) throws Exception {
+
+        //sesja
+        seatReservationByScheduledMovieRepository.setFalseForChosenSeat((List<Long>)session.getAttribute("seats"), (long) session.getAttribute("movieId"));
+        //save reservation,PersonalData
+        PersonalData personalData = (PersonalData) session.getAttribute("personalData");
+        personalDataRepository.save(personalData);
+        long personalDataId = personalData.getPersonId();
+        Reservation reservation = (Reservation) session.getAttribute("reservation");
+        reservation.setPersonalDataId(personalDataId);
+        reservationRepository.save(reservation);
+
+        long reservationId = reservation.getReservationId();
+
+
+        session.invalidate();
+
+
 
         AccessToken accessToken = paymentService.generateAccessToken(clientId, clientSecret);
 
@@ -141,8 +163,8 @@ public class Controllers {
             }};
 
             OrderResponseNotification orderResponseNotification = new OrderResponseNotification(
-                    String.valueOf(reservationId),
-                    String.valueOf(reservationId),
+                    String.valueOf(reservation.getReservationId()),
+                    String.valueOf(reservation.getReservationId()),
                     "http://localhost:8080/notify",
                     "127.0.0.1",
                     clientId,
@@ -158,22 +180,14 @@ public class Controllers {
             List<PropertyNotifcation> propertyNotifcationList = new ArrayList<PropertyNotifcation>() {{
                 add(new PropertyNotifcation("PAYMENT_ID", "12345"));
             }};
-
-            NotificationResponse notificationResponse = new NotificationResponse(orderResponseNotification, "2016-03-02T12:58:14.828+01:00", propertyNotifcationList);
-            ObjectMapper mapper = new ObjectMapper();
-            orderRequestDBRepository.save(new OrderRequestsAndResponseDB(notificationResponse.getOrder().getExtOrderId(), reservationId, "response", mapper.writeValueAsString(notificationResponse)));
-
-            notify(notificationResponse);
+            notify(new NotificationResponse(orderResponseNotification, "2016-03-02T12:58:14.828+01:00", propertyNotifcationList));
         }
-
-        OrderResponse orderResponse = paymentService.generateOrder(accessToken, reservationId, clientId);
-
-        return new ResponseEntity<>(orderResponse, HttpStatus.OK);
+        return new ResponseEntity<>(paymentService.generateOrder(accessToken, reservationId,personalDataId, clientId), HttpStatus.OK);
     }
 
 
-    @RequestMapping(value = "/sendEmail/{reservationId}", method = RequestMethod.POST)
-    public void sendEmail(@PathVariable long reservationId) throws Exception {
+    @RequestMapping(value = "/sendEmail", method = RequestMethod.POST)
+    public void sendEmail(long reservationId) throws Exception {
         ByteArrayOutputStream doc = new TicketGeneratorPdf().generateTicket(ticketDataService.findMovie(reservationId));
         long personalDataId = reservationRepository.findOne(reservationId).getPersonalDataId();
         String email = personalDataRepository.findOne(personalDataId).getEmail();

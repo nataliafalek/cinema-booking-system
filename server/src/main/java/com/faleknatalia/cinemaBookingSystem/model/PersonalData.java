@@ -7,9 +7,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 
 @Entity
-public class PersonalData {
+public class PersonalData implements Serializable {
 
     private String name;
     private String surname;

@@ -89,12 +89,9 @@ class PersonalData extends Component {
                         />
                     </div>
                     {this.state.redirect ? <Redirect push
-                                                     to={`/reservationSummary/${this.state.reservationId}`}/> : null}
-                    <div className={"buttons"}>
-
-                        <button className={"summaryButton"} type="submit">Summary</button>
-                        <BackButton/>
-                    </div>
+                                                     to={`/reservationSummary`}/> : null}
+                    <button className={"summaryButton"} type="submit">summary</button>
+                    <BackButton/>
                 </form>
             </div>
         )
