@@ -45,11 +45,11 @@ public class PaymentService {
         return restTemplate.postForObject(url, entity, AccessToken.class);
     }
 
-    public OrderResponse generateOrder(AccessToken token, long reservationId, String clientId) {
+    public OrderResponse generateOrder(AccessToken token, long reservationId, long personalDataId, String clientId) {
 
         //Order data
         Reservation reservation = reservationRepository.findOne(reservationId);
-        PersonalData personalData = personalDataRepository.findOne(reservation.getPersonalDataId());
+        PersonalData personalData = personalDataRepository.findOne(personalDataId);
         List<SeatReservationByScheduledMovie> chosenSeatsPrice = seatReservationByScheduledMovieRepository
                 .findBySeatIdInAndScheduledMovieId(reservation.getChosenSeatId(), reservation.getChosenMovieId());
 

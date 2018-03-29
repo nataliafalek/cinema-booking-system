@@ -41,4 +41,8 @@ public class Reservation implements Serializable {
     public long getReservationId() {
         return reservationId;
     }
+
+    public void setPersonalDataId(long personalDataId) {
+        this.personalDataId = personalDataId;
+    }
 }

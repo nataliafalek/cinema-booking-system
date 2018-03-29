@@ -1,8 +1,10 @@
 const url = `http://localhost:8080/`;
 
 export function fetchJson(path) {
-    return (fetch(url + path)
-        .then(results => {
+    return (fetch(url + path, {
+        method: 'GET',
+        credentials: 'include'
+    }).then(results => {
             return results.json();
         }));
 
@@ -11,6 +13,7 @@ export function fetchJson(path) {
 export function postJson(path, body) {
     return (fetch(url + path, {
         method: "POST",
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -21,6 +24,7 @@ export function postJson(path, body) {
 export function post(path) {
     return (fetch(url + path, {
         method: "POST",
+        credentials: 'include'
 
     }));
 }

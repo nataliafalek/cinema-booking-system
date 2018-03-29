@@ -28,7 +28,7 @@ class ReservationSummary extends Component {
     };
 
     handleClick = () => {
-        return HttpService.post(`/payment/${this.props.match.params.reservationId}`)
+        return HttpService.post(`/payment`)
             .then(results => {
                 return results.json();
             }).then(data => {

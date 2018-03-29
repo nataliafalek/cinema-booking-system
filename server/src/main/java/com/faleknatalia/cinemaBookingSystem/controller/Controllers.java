@@ -61,7 +61,7 @@ public class Controllers {
 
     //TODO optymalizacja - wydzielic metode do serwisu osobnego, tak by efektywnie laczyc ScheduledMovie i ScheduledMovieDetails
     @RequestMapping(value = "/whatsOn", method = RequestMethod.GET)
-    public ResponseEntity<List<ScheduledMovieDetails>> whatsOn(HttpSession session) {
+    public ResponseEntity<List<ScheduledMovieDetails>> whatsOn() {
         DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
 
 
@@ -80,12 +80,12 @@ public class Controllers {
                             );
                         }).collect(Collectors.toList());
         //ustawianie
-        String lol = "lol";
-        session.setAttribute("lolObject", lol);
-        session.setAttribute("movies", scheduledMovieDetails); //zapisywane obiekty musza implenetowac Serializable, bo sa pozniej serializowane w bazie
-
-        //pobieranie
-        session.getAttribute("lolObject");
+//        String lol = "lol";
+//        session.setAttribute("lolObject", lol);
+//        session.setAttribute("movies", scheduledMovieDetails); //zapisywane obiekty musza implenetowac Serializable, bo sa pozniej serializowane w bazie
+//
+//        //pobieranie
+//        session.getAttribute("lolObject");
         return new ResponseEntity<>(scheduledMovieDetails, HttpStatus.OK);
     }
 
@@ -137,14 +137,22 @@ public class Controllers {
     }
 
 
-    @RequestMapping(value = "/payment/{reservationId}", method = RequestMethod.POST)
-    public ResponseEntity<OrderResponse> redirectToPayment(HttpServletResponse response, HttpSession session, @PathVariable long reservationId) throws Exception {
+    @Transactional
+    @RequestMapping(value = "/payment", method = RequestMethod.POST)
+    public ResponseEntity<OrderResponse> redirectToPayment(HttpServletResponse response, HttpSession session) throws Exception {
 
         //sesja
         seatReservationByScheduledMovieRepository.setFalseForChosenSeat((List<Long>)session.getAttribute("seats"), (long) session.getAttribute("movieId"));
         //save reservation,PersonalData
-        personalDataRepository.save((PersonalData) session.getAttribute("personalData"));
-        reservationRepository.save((Reservation) session.getAttribute("reservation"));
+        PersonalData personalData = (PersonalData) session.getAttribute("personalData");
+        personalDataRepository.save(personalData);
+        long personalDataId = personalData.getPersonId();
+        Reservation reservation = (Reservation) session.getAttribute("reservation");
+        reservation.setPersonalDataId(personalDataId);
+        reservationRepository.save(reservation);
+
+        long reservationId = reservation.getReservationId();
+
 
         session.invalidate();
 
@@ -167,8 +175,8 @@ public class Controllers {
             }};
 
             OrderResponseNotification orderResponseNotification = new OrderResponseNotification(
-                    String.valueOf(reservationId),
-                    String.valueOf(reservationId),
+                    String.valueOf(reservation.getReservationId()),
+                    String.valueOf(reservation.getReservationId()),
                     "http://localhost:8080/notify",
                     "127.0.0.1",
                     clientId,
@@ -186,12 +194,12 @@ public class Controllers {
             }};
             notify(new NotificationResponse(orderResponseNotification, "2016-03-02T12:58:14.828+01:00", propertyNotifcationList));
         }
-        return new ResponseEntity<>(paymentService.generateOrder(accessToken, reservationId, clientId), HttpStatus.OK);
+        return new ResponseEntity<>(paymentService.generateOrder(accessToken, reservationId,personalDataId, clientId), HttpStatus.OK);
     }
 
 
-    @RequestMapping(value = "/sendEmail/{reservationId}", method = RequestMethod.POST)
-    public void sendEmail(@PathVariable long reservationId) throws Exception {
+    @RequestMapping(value = "/sendEmail", method = RequestMethod.POST)
+    public void sendEmail(long reservationId) throws Exception {
         ByteArrayOutputStream doc = new TicketGeneratorPdf().generateTicket(ticketDataService.findMovie(reservationId));
         long personalDataId = reservationRepository.findOne(reservationId).getPersonalDataId();
         String email = personalDataRepository.findOne(personalDataId).getEmail();
