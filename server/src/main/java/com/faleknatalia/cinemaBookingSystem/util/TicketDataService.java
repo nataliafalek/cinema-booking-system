@@ -4,7 +4,6 @@ import com.faleknatalia.cinemaBookingSystem.model.Reservation;
 import com.faleknatalia.cinemaBookingSystem.model.ScheduledMovie;
 import com.faleknatalia.cinemaBookingSystem.model.Seat;
 import com.faleknatalia.cinemaBookingSystem.model.SeatReservationByScheduledMovie;
-import com.faleknatalia.cinemaBookingSystem.payment.PaymentService;
 import com.faleknatalia.cinemaBookingSystem.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -52,15 +51,15 @@ public class TicketDataService {
 
 
         List<Seat> seats = seatRepository.findAll(reservation.getChosenSeatId());
-        List<Integer> chosenSeat = new ArrayList<Integer>();
-        seats.stream().map(s -> chosenSeat.add(s.getSeatNumber())).collect(Collectors.toList());
+//        List<Integer> chosenSeats = new ArrayList<Integer>();
+//        seats.stream().map(s -> chosenSeats.add(s.getSeatNumber())).collect(Collectors.toList());
 
         List<SeatReservationByScheduledMovie> chosenSeats = seatReservationByScheduledMovieRepository
                 .findBySeatIdInAndScheduledMovieId(reservation.getChosenSeatId(), reservation.getChosenMovieId());
         List<Integer> ticketPrices = new ArrayList<>();
         chosenSeats.stream().map(s -> ticketPrices.add(s.getTicketPrice())).collect(Collectors.toList());
 
-        return new TicketData(movieTitle, projectionDate, projectionHour, cinemaHall, chosenSeat, ticketPrices);
+        return new TicketData(movieTitle, projectionDate, projectionHour, cinemaHall, seats, ticketPrices);
     }
 
     public TicketData findMovie(long chosenMovie, List<Long> seatsIds ) {
@@ -71,9 +70,9 @@ public class TicketDataService {
 
         String movieTitle = movieRepository.findOne(movie.getMovieId()).getTitle();
         long cinemaHall = movie.getCinemaHallId();
-        List<Integer> seats = new ArrayList<>();
+        List<Seat> seats = new ArrayList<>();
 //        seatsIds.stream().map(s -> Math.toIntExact(s)).collect(Collectors.toList());
-       seatsIds.stream().map(s -> seats.add(seatRepository.findOne(s).getSeatNumber())).collect(Collectors.toList());
+       seatsIds.stream().map(s -> seats.add(seatRepository.findOne(s))).collect(Collectors.toList());
 
         List<SeatReservationByScheduledMovie> chosenSeats = seatReservationByScheduledMovieRepository
                 .findBySeatIdInAndScheduledMovieId(seatsIds, chosenMovie);

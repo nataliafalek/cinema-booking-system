@@ -129,7 +129,7 @@ tr.selectedMovie {
 }
 
 .printedSeats {
-    width: 300px;
+    /*width: 300px;*/
     font-size: 16px;
     background-color: #696C74;
     padding: 10px 10px 10px 10px;
@@ -141,14 +141,30 @@ tr.selectedMovie {
 
 li.freeSeat, li.chosenSeat, li.reservedSeat {
     float: left;
-    width: 56px;
-    height: 56px;
-    display: inline-block;
+    width: max-content;
+    /*display: inline-block;*/
     color: #111111;
-    border: 10px solid #1A2828;
+    border: 10px solid #EA783B;
+    margin: 5px;
     cursor: pointer;
-    text-align: center;
+    /*text-align: center;*/
     background-color: #EA783B;
+
+    list-style-type: none;
+
+
+}
+
+div.CinemaHallRows  {
+
+}
+
+div.CinemaHallRows p {
+    color: black;
+    display: inline-block;
+    /*border: 5px solid #696C74;*/
+    margin: 15px;
+
 
 }
 
@@ -160,11 +176,14 @@ li.freeSeat:before {
 }
 
 li.freeSeat:hover {
+    border: 10px solid #777777;
     background-color: #777777;
+
 }
 
 li.chosenSeat {
     background-color: darkslategray;
+    border: 10px solid darkslategray;
 }
 
 /*li.freeSeat:focus {*/
@@ -173,6 +192,7 @@ li.chosenSeat {
 
 li.reservedSeat {
     background-color: indianred;
+    border: 10px solid indianred;
 
 }
 

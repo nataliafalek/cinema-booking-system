@@ -1,5 +1,6 @@
 package com.faleknatalia.reservationsystem;
 
+import com.faleknatalia.cinemaBookingSystem.model.Seat;
 import com.faleknatalia.cinemaBookingSystem.util.TicketData;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -24,9 +25,9 @@ public class PdfGeneratorTest {
                 System.getProperty("user.dir"));
 
         //Before
-        List<Integer> seats = new ArrayList<Integer>() {{
-            add(12);
-            add(24);
+        List<Seat> seats = new ArrayList<Seat>() {{
+            add(new Seat(12,1,1));
+            add(new Seat(13,2,2));
         }};
 
         List<Integer> prices = new ArrayList<Integer>() {{
@@ -99,7 +100,7 @@ public class PdfGeneratorTest {
         contentStream.newLine();
         contentStream.newLine();
         contentStream.showText("Cinema Hall: " + ticketData.getCinemaHallId() + "  ");
-        contentStream.showText("Seat: " + ticketData.getSeatNumber() + "  ");
+//        contentStream.showText("Seat: " + ticketData.getChosenSeats() + "  ");
         contentStream.showText("Price: $" + ticketData.getTicketPrice());
         contentStream.endText();
         contentStream.close();

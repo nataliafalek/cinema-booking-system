@@ -21,16 +21,19 @@ public class SeatReservationByScheduledMovie {
 
     private int seatNumber;
 
+    private int seatRow;
+
     public SeatReservationByScheduledMovie() {
     }
 
-    public SeatReservationByScheduledMovie(long scheduledMovieId, long cinemaHallId, boolean isFree, int ticketPrice, long seatId, int seatNumber) {
+    public SeatReservationByScheduledMovie(long scheduledMovieId, long cinemaHallId, boolean isFree, int ticketPrice, long seatId, int seatNumber, int seatRow) {
         this.scheduledMovieId = scheduledMovieId;
         this.cinemaHallId = cinemaHallId;
         this.isFree = isFree;
         this.ticketPrice = ticketPrice;
         this.seatId = seatId;
         this.seatNumber = seatNumber;
+        this.seatRow = seatRow;
     }
 
     public long getSeatReservationId() {
@@ -59,5 +62,9 @@ public class SeatReservationByScheduledMovie {
 
     public int getSeatNumber() {
         return seatNumber;
+    }
+
+    public int getSeatRow() {
+        return seatRow;
     }
 }

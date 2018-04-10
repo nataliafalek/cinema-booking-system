@@ -36,8 +36,6 @@ public class CinemaBookingSystemApplication implements CommandLineRunner {
     @Autowired
     CinemaHallRepository cinemaHallRepository;
 
-    @Autowired
-    CinemaHallService cinemaHallService;
 
     @Autowired
     ScheduledMovieService scheduledMovieService;
@@ -64,8 +62,8 @@ public class CinemaBookingSystemApplication implements CommandLineRunner {
         LocalDateTime now = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
 
 
-        CinemaHall cinemaHallOne = cinemaHallService.generateCinemaHall(30);
-        CinemaHall cinemaHallTwo = cinemaHallService.generateCinemaHall(20);
+        CinemaHall cinemaHallOne = new CinemaHallService().generateCinemaHall(5,6);
+        CinemaHall cinemaHallTwo = new CinemaHallService().generateCinemaHall(5,5);
 
 
         cinemaHallRepository.save(cinemaHallOne);

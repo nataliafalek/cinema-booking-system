@@ -38,41 +38,41 @@ class ReservationSummary extends Component {
     };
 
     render() {
+        console.log("this.state.ticketData", this.state.ticketData)
         return this.state.ticketData ? (
             <div className={"summary"}>
                 <div className={"summaryData"}>
                     <h2>Summary</h2>
                     <li>
-                        <text className={"reservationData"}>Reservation id: </text>
-                        {this.props.match.params.reservationId}</li>
-                    <li>
-                        <text className={"reservationData"}>Name: </text>
+                        <text className={"reservationData"}>Name:</text>
                         {this.state.personalData.name}</li>
                     <li>
-                        <text className={"reservationData"}>Surname: </text>
+                        <text className={"reservationData"}>Surname:</text>
                         {this.state.personalData.surname}</li>
                     <li>
-                        <text className={"reservationData"}>Email: </text>
+                        <text className={"reservationData"}>Email:</text>
                         {this.state.personalData.email}</li>
                     <li>
-                        <text className={"reservationData"}>Phone: </text>
+                        <text className={"reservationData"}>Phone:</text>
                         {this.state.personalData.phoneNumber}</li>
                     <li>
-                        <text className={"reservationData"}>Movie: </text>
+                        <text className={"reservationData"}>Movie:</text>
                         "{this.state.ticketData.movieTitle}"
                     </li>
                     <li>
-                        <text className={"reservationData"}>Date of projection: </text>
+                        <text className={"reservationData"}>Date of projection:</text>
                         {this.state.ticketData.projectionDate}</li>
                     <li>
-                        <text className={"reservationData"}>Hour of projection: </text>
+                        <text className={"reservationData"}>Hour of projection:</text>
                         {this.state.ticketData.projectionHour}</li>
                     <li>
-                        <text className={"reservationData"}>Seat Number: &emsp;&emsp; Price: </text>
-                        {this.state.ticketData.seatNumber.map
-                        ((s,idx) => <li
-                            className={"reservationSeat"}>&emsp;{s} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                            ${this.state.ticketData.ticketPrice[idx]}</li>)}</li>
+                        <text className={"reservationData"}>Seat Number: &emsp; Row: &emsp;&emsp;Price:</text>
+                        {this.state.ticketData.chosenSeats.map((seat, idx) => {
+                            return (
+                                <li className={"reservationSeat"}>&emsp;{seat.seatNumber} &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; {seat.rowNumber}&emsp;&emsp;&emsp;&emsp;&emsp;
+                                    ${this.state.ticketData.ticketPrice[idx]}</li>)
+                            }
+                        )}</li>
                 </div>
 
                 {this.state.redirect ? <Redirect push to={`/payment/${this.props.match.params.reservationId}`}/> : null}

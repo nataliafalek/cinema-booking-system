@@ -9,18 +9,17 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+
 public class CinemaHallService {
 
-    @Autowired
-    SeatRepository seatRepository;
-
-    public CinemaHall generateCinemaHall(int howManySeats) {
+    public CinemaHall generateCinemaHall(int rows,int columns) {
         List<Seat> seats = new ArrayList<>();
-        long lastSeatId = seatRepository.countAllBySeatIdIsNotNull();
-        for (int i = (int) lastSeatId; i < howManySeats; i++) {
-            seats.add(new Seat(i - (int) lastSeatId + 1));
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= columns; j++) {
+                seats.add(new Seat(j, i, j));
+            }
         }
         return new CinemaHall(seats);
     }
+
 }

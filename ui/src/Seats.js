@@ -66,28 +66,36 @@ class Seats extends Component {
             <div className={"seats"}>
                 <div className={"printedSeats"}>
                     <div className={"screen"}>Screen</div>
-                    {this.state.cinemaHall ? this.state.cinemaHall.map
-                    ((a, idx) => {
-                            const seatClass = this.state.listOfChosenSeats.includes(a) ? "chosenSeat" : "freeSeat";
-                            return a.free ?
-                                <li className={seatClass} key={idx} onClick={(event => {
-                                    if (!this.state.listOfChosenSeats.includes(a)) {
-                                        const newSeats = this.state.listOfChosenSeats.concat(a)
-                                        this.setState({listOfChosenSeats: newSeats})
-                                    } else {
-                                        const seats = this.state.listOfChosenSeats.filter(s => s !== a)
-                                        this.setState({listOfChosenSeats: seats})
-                                    }
+                    {this.state.cinemaHall ?
+                        this.state.cinemaHall.map((rows, rowIndex) => {
+                            //todo wydzielic do funkcji
+                            const renderedRows = rows.map(seat => {
+                                const seatClass = this.state.listOfChosenSeats.includes(seat) ? "chosenSeat" : "freeSeat";
+                                return seat.free ?
+                                    <li className={seatClass} key={rowIndex} onClick={(event => {
+                                        if (!this.state.listOfChosenSeats.includes(seat)) {
+                                            const newSeats = this.state.listOfChosenSeats.concat(seat)
+                                            this.setState({listOfChosenSeats: newSeats})
+                                        } else {
+                                            const seats = this.state.listOfChosenSeats.filter(s => s !== seat)
+                                            this.setState({listOfChosenSeats: seats})
+                                        }
 
-                                })}> {this.printSeats(a)}</li> :
-                                <li className={"reservedSeat"}> {this.printSeats(a)} </li>
+                                    })}> {this.printSeats(seat)}</li> :
+                                    <li className={"reservedSeat"}> {this.printSeats(seat)} </li>
 
-                        }
-                    ) : null}
+                                }
+                            )
+
+                            return (
+                                <div className={"CinemaHallRows"}>
+                                    {renderedRows}
+                                    <p>{rowIndex + 1}</p>
+                                </div>
+                            )
+                        }) : null}
 
                 </div>
-                {/*{this.state.listOfChosenSeats ? this.state.listOfChosenSeats.map((a, idx) =>*/}
-                {/*<div className={"chosenSeats"} key={idx}>{this.printChosenSeats(a)}</div>) : []}*/}
 
                 {this.state.redirect ? <Redirect push
                                                  to={`/personalData?${queryString.stringify(params)}`}/> : null}

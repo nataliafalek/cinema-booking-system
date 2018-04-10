@@ -1,5 +1,6 @@
 package com.faleknatalia.cinemaBookingSystem.util;
 
+import com.faleknatalia.cinemaBookingSystem.model.Seat;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -24,7 +25,7 @@ public class TicketGeneratorPdf {
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 //        DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
 
-        List<Integer> seatNumbers = ticketData.getSeatNumber();
+        List<Seat> seatNumbers = ticketData.getChosenSeats();
 
 
         //image
@@ -60,7 +61,7 @@ public class TicketGeneratorPdf {
         seatNumbers.stream().forEach(s -> {
             try {
                 contentStream.newLine();
-                String a = "Seat number: " + s.toString() + ", price: $" + ticketData.getTicketPrice().get(seatNumbers.indexOf(s)).toString();
+                String a = "Seat number: " + Integer.toString(s.getSeatNumber()) + ", row: " + Integer.toString(s.getRowNumber()) + ", price: $" + ticketData.getTicketPrice().get(seatNumbers.indexOf(s)).toString();
                 contentStream.showText(a);
 
             } catch (IOException e) {

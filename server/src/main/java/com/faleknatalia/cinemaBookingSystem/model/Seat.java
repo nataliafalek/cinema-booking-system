@@ -14,10 +14,15 @@ public class Seat {
 
     private int seatNumber;
 
-    public Seat(int seatNumber) {
-        this.seatNumber = seatNumber;
-    }
+    private int rowNumber;
 
+    private int columnNumber;
+
+    public Seat(int seatNumber, int rowNumber, int columnNumber) {
+        this.seatNumber = seatNumber;
+        this.rowNumber = rowNumber;
+        this.columnNumber = columnNumber;
+    }
 
     public Seat() {
     }
@@ -31,4 +36,11 @@ public class Seat {
         return seatId;
     }
 
+    public int getRowNumber() {
+        return rowNumber;
+    }
+
+    public int getColumnNumber() {
+        return columnNumber;
+    }
 }

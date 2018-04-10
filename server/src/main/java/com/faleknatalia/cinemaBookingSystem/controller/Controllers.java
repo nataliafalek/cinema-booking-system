@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 //TODO wydzielic do serwisow logike z controllerow
@@ -89,8 +90,12 @@ public class Controllers {
     }
 
     @RequestMapping(value = "/cinemaHall/seats", method = RequestMethod.GET)
-    public ResponseEntity<List<SeatReservationByScheduledMovie>> cinemaHallSeatsState(@RequestParam long scheduledMovieId) {
-        return new ResponseEntity<>(seatReservationByScheduledMovieRepository.findAllByScheduledMovieId(scheduledMovieId), HttpStatus.OK);
+    public ResponseEntity<List<List<SeatReservationByScheduledMovie>>> cinemaHallSeatsState(@RequestParam long scheduledMovieId) {
+        List<SeatReservationByScheduledMovie> cinemaHallSeats= seatReservationByScheduledMovieRepository.findAllByScheduledMovieId(scheduledMovieId);
+        Map<Integer, List<SeatReservationByScheduledMovie>> groupByRow =
+                cinemaHallSeats.stream().collect(Collectors.groupingBy(SeatReservationByScheduledMovie::getSeatRow));
+
+        return new ResponseEntity<>(new ArrayList<>(groupByRow.values()), HttpStatus.OK);
     }
 
 
