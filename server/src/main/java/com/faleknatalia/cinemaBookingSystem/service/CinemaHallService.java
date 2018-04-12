@@ -19,6 +19,16 @@ public class CinemaHallService {
                 seats.add(new Seat(j, i, j));
             }
         }
+        //remove 2 elements from first row
+        seats.remove(0);
+        seats.remove(0);
+        seats.stream()
+                .filter(seat -> seat.getRowNumber()==1)
+                .forEach(seatFromOneRow -> {
+                    int nr = seatFromOneRow.getSeatNumber();
+                    seatFromOneRow.setSeatNumber(nr - 2);
+                });
+
         return new CinemaHall(seats);
     }
 

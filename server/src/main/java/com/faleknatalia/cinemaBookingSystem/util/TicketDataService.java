@@ -55,7 +55,7 @@ public class TicketDataService {
 //        seats.stream().map(s -> chosenSeats.add(s.getSeatNumber())).collect(Collectors.toList());
 
         List<SeatReservationByScheduledMovie> chosenSeats = seatReservationByScheduledMovieRepository
-                .findBySeatIdInAndScheduledMovieId(reservation.getChosenSeatId(), reservation.getChosenMovieId());
+                .findBySeatSeatIdInAndScheduledMovieId(reservation.getChosenSeatId(), reservation.getChosenMovieId());
         List<Integer> ticketPrices = new ArrayList<>();
         chosenSeats.stream().map(s -> ticketPrices.add(s.getTicketPrice())).collect(Collectors.toList());
 
@@ -75,7 +75,7 @@ public class TicketDataService {
        seatsIds.stream().map(s -> seats.add(seatRepository.findOne(s))).collect(Collectors.toList());
 
         List<SeatReservationByScheduledMovie> chosenSeats = seatReservationByScheduledMovieRepository
-                .findBySeatIdInAndScheduledMovieId(seatsIds, chosenMovie);
+                .findBySeatSeatIdInAndScheduledMovieId(seatsIds, chosenMovie);
         List<Integer> ticketPrices = new ArrayList<>();
         chosenSeats.stream().map(s -> ticketPrices.add(s.getTicketPrice())).collect(Collectors.toList());
 

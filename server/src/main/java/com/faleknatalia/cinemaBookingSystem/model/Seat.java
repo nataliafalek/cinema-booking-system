@@ -40,7 +40,21 @@ public class Seat {
         return rowNumber;
     }
 
+    public void setSeatNumber(int seatNumber) {
+        this.seatNumber = seatNumber;
+    }
+
     public int getColumnNumber() {
         return columnNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Seat{" +
+                "seatId=" + seatId +
+                ", seatNumber=" + seatNumber +
+                ", rowNumber=" + rowNumber +
+                ", columnNumber=" + columnNumber +
+                '}';
     }
 }

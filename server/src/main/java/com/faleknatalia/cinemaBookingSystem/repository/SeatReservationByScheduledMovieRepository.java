@@ -12,10 +12,10 @@ import java.util.List;
 public interface SeatReservationByScheduledMovieRepository extends JpaRepository<SeatReservationByScheduledMovie, Long> {
 
     @Modifying
-    @Query("update SeatReservationByScheduledMovie s set s.isFree = false where s.seatId in (?1) and s.scheduledMovieId = ?2")
+    @Query("update SeatReservationByScheduledMovie s set s.isFree = false where s.seat.seatId in (?1) and s.scheduledMovieId = ?2")
     int setFalseForChosenSeat(List<Long> seatId, long scheduledMovieId);
 
     List<SeatReservationByScheduledMovie> findAllByScheduledMovieId(long scheduledMovieId);
 
-    List<SeatReservationByScheduledMovie> findBySeatIdInAndScheduledMovieId(List<Long> seatId, long scheduledMovieId);
+    List<SeatReservationByScheduledMovie> findBySeatSeatIdInAndScheduledMovieId(List<Long> seatId, long scheduledMovieId);
 }

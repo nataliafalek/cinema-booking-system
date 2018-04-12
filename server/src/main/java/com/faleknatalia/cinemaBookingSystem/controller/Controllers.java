@@ -93,7 +93,7 @@ public class Controllers {
     public ResponseEntity<List<List<SeatReservationByScheduledMovie>>> cinemaHallSeatsState(@RequestParam long scheduledMovieId) {
         List<SeatReservationByScheduledMovie> cinemaHallSeats= seatReservationByScheduledMovieRepository.findAllByScheduledMovieId(scheduledMovieId);
         Map<Integer, List<SeatReservationByScheduledMovie>> groupByRow =
-                cinemaHallSeats.stream().collect(Collectors.groupingBy(SeatReservationByScheduledMovie::getSeatRow));
+                cinemaHallSeats.stream().collect(Collectors.groupingBy(seat -> seat.getSeat().getRowNumber()));
 
         return new ResponseEntity<>(new ArrayList<>(groupByRow.values()), HttpStatus.OK);
     }
@@ -102,11 +102,9 @@ public class Controllers {
     @Transactional
     @RequestMapping(value = "/cinemaHall/seats/choose/{scheduledMovieId}", method = RequestMethod.POST)
     public ResponseEntity<List<SeatReservationByScheduledMovie>> chosenSeat(HttpSession session, @PathVariable long scheduledMovieId, @RequestBody List<Long> seatId) {
-//        seatReservationByScheduledMovieRepository.setFalseForChosenSeat(seatId, scheduledMovieId);
-
-        session.setAttribute("seats", seatId);
+    session.setAttribute("seats", seatId);
         session.setAttribute("movieId", scheduledMovieId);
-        return new ResponseEntity<>(seatReservationByScheduledMovieRepository.findBySeatIdInAndScheduledMovieId(seatId, scheduledMovieId), HttpStatus.OK);
+        return new ResponseEntity<>(seatReservationByScheduledMovieRepository.findBySeatSeatIdInAndScheduledMovieId(seatId, scheduledMovieId), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/cinemaHall/addPerson", method = RequestMethod.POST)

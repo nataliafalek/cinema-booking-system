@@ -27,4 +27,6 @@ public class CinemaHall {
     public long getCinemaHallId() {
         return cinemaHallId;
     }
+
+
 }

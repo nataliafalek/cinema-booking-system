@@ -139,10 +139,10 @@ tr.selectedMovie {
 
 }
 
-li.freeSeat, li.chosenSeat, li.reservedSeat {
+li.emptySeat,li.freeSeat, li.chosenSeat, li.reservedSeat {
     float: left;
     width: max-content;
-    /*display: inline-block;*/
+    display: inline-block;
     color: #111111;
     border: 10px solid #EA783B;
     margin: 5px;
@@ -152,11 +152,13 @@ li.freeSeat, li.chosenSeat, li.reservedSeat {
 
     list-style-type: none;
 
-
 }
 
-div.CinemaHallRows  {
-
+li.emptySeat {
+    border: 10px solid #696C74;
+    background-color: #696C74;
+    color: transparent;
+    cursor: default;
 }
 
 div.CinemaHallRows p {
@@ -193,6 +195,7 @@ li.chosenSeat {
 li.reservedSeat {
     background-color: indianred;
     border: 10px solid indianred;
+    cursor: not-allowed;
 
 }
 

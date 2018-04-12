@@ -58,7 +58,7 @@ public class PaymentService {
         Reservation reservation = reservationRepository.findOne(reservationId);
         PersonalData personalData = personalDataRepository.findOne(personalDataId);
         List<SeatReservationByScheduledMovie> seatsReservation = seatReservationByScheduledMovieRepository
-                .findBySeatIdInAndScheduledMovieId(reservation.getChosenSeatId(), reservation.getChosenMovieId());
+                .findBySeatSeatIdInAndScheduledMovieId(reservation.getChosenSeatId(), reservation.getChosenMovieId());
 
         String ticketPriceInCents = String.valueOf(sumOfTicketPrice(seatsReservation) * 100);
         String url = "https://secure.snd.payu.com/api/v2_1/orders";

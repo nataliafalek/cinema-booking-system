@@ -17,23 +17,18 @@ public class SeatReservationByScheduledMovie {
 
     private int ticketPrice;
 
-    private long seatId;
-
-    private int seatNumber;
-
-    private int seatRow;
+    @OneToOne
+    private Seat seat;
 
     public SeatReservationByScheduledMovie() {
     }
 
-    public SeatReservationByScheduledMovie(long scheduledMovieId, long cinemaHallId, boolean isFree, int ticketPrice, long seatId, int seatNumber, int seatRow) {
+    public SeatReservationByScheduledMovie(long scheduledMovieId, long cinemaHallId, boolean isFree, int ticketPrice, Seat seat) {
         this.scheduledMovieId = scheduledMovieId;
         this.cinemaHallId = cinemaHallId;
         this.isFree = isFree;
         this.ticketPrice = ticketPrice;
-        this.seatId = seatId;
-        this.seatNumber = seatNumber;
-        this.seatRow = seatRow;
+        this.seat = seat;
     }
 
     public long getSeatReservationId() {
@@ -56,15 +51,7 @@ public class SeatReservationByScheduledMovie {
         return ticketPrice;
     }
 
-    public long getSeatId() {
-        return seatId;
-    }
-
-    public int getSeatNumber() {
-        return seatNumber;
-    }
-
-    public int getSeatRow() {
-        return seatRow;
+    public Seat getSeat() {
+        return seat;
     }
 }
