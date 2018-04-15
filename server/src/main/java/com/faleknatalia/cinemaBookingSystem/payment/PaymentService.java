@@ -7,6 +7,7 @@ import com.faleknatalia.cinemaBookingSystem.repository.PersonalDataRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.ReservationRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.SeatReservationByScheduledMovieRepository;
 
+import com.faleknatalia.cinemaBookingSystem.repository.TicketPriceRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class PaymentService {
     @Autowired
     OrderRequestDBRepository orderRequestDBRepository;
 
+    @Autowired
+    TicketPriceRepository ticketPriceRepository;
+
 
     public AccessToken generateAccessToken(String client_id, String client_secret) {
         String url = "https://secure.snd.payu.com/pl/standard/user/oauth/authorize";
@@ -68,7 +72,7 @@ public class PaymentService {
         //PRODUCT
         List<Product> products = new ArrayList<>();
         seatsReservation.stream().map(s ->
-                products.add(new Product("Ticket", Integer.toString(s.getTicketPrice() * 100), "1")))
+                products.add(new Product("Ticket", Integer.toString(ticketPriceRepository.findOne(s.getTicketPriceId()).getTicketValue() * 100), "1")))
                 .collect(Collectors.toList());
         String extOrderId = UUID.randomUUID().toString();
         OrderRequest orderRequest = new OrderRequest(
@@ -95,7 +99,7 @@ public class PaymentService {
     private int sumOfTicketPrice(List<SeatReservationByScheduledMovie> chosenSeatsPrice) {
         int sum = 0;
         for (SeatReservationByScheduledMovie s : chosenSeatsPrice) {
-            sum = sum + s.getTicketPrice();
+            sum = sum + ticketPriceRepository.findOne(s.getTicketPriceId()).getTicketValue();
         }
         return sum;
     }

@@ -31,7 +31,7 @@ public class SeatReservationByScheduledMovieService {
                 {
                     List<Seat> seats = cinemaHallRepository.findOne(sm.getCinemaHallId()).getSeats();
                     for (Seat seat : seats) {
-                        seatReservationByScheduledMovies.add(new SeatReservationByScheduledMovie(sm.getScheduledMovieId(), sm.getCinemaHallId(), true, 10, seat));
+                        seatReservationByScheduledMovies.add(new SeatReservationByScheduledMovie(sm.getScheduledMovieId(), sm.getCinemaHallId(), true, 1, seat));
                     }
 
                 }

@@ -9,7 +9,8 @@ class Movies extends Component {
         this.state = {
             movies: [],
             chosenMovie: null,
-            whatsOnByMovies: []
+            whatsOnByMovies: [],
+            ticketPrices: []
         };
     }
 
@@ -22,6 +23,12 @@ class Movies extends Component {
             .then(data => {
                 console.log("Success - list of movies: ", data);
                 this.setState({movies: data})
+            })
+
+          HttpService.fetchJson('ticketPrices')
+            .then(data => {
+              console.log("Success - list of ticket prices: ", data);
+              this.setState({ticketPrices: data})
             })
     }
 
@@ -56,9 +63,7 @@ class Movies extends Component {
                     </div>
                     <div className={"prices"}>
                         <h2> #prices</h2>
-                        <p>Student $10</p>
-                        <p>Junior $10</p>
-                        <p>Senior $10</p>
+                      {this.state.ticketPrices.map(price => <p>{price.ticketName} ${price.ticketValue}</p>)}
                     </div>
                 </div>
                 <div>

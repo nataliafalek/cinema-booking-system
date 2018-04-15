@@ -8,12 +8,12 @@ import {Route, HashRouter, NavLink} from 'react-router-dom';
 import ReservationSummary from "./ReservationSummary";
 import PaymentSuccess from "./PaymentSuccess";
 
-
 class App extends Component {
 
     constructor() {
         super();
         this.state = {};
+
     }
 
 

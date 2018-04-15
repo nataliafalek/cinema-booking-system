@@ -61,6 +61,9 @@ public class Controllers {
     @Autowired
     OrderRequestDBRepository orderRequestDBRepository;
 
+    @Autowired
+    TicketPriceRepository ticketPriceRepository;
+
 
     @Value("${dev_mode}")
     private boolean devMode;
@@ -89,6 +92,12 @@ public class Controllers {
         return new ResponseEntity<>(scheduledMovieDetails, HttpStatus.OK);
     }
 
+    //TicketPrices
+    @RequestMapping(value = "/ticketPrices", method = RequestMethod.GET)
+    public ResponseEntity<List<TicketPrice>> getTicketPrices() {
+        return new ResponseEntity<>(ticketPriceRepository.findAll(), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/cinemaHall/seats", method = RequestMethod.GET)
     public ResponseEntity<List<List<SeatReservationByScheduledMovie>>> cinemaHallSeatsState(@RequestParam long scheduledMovieId) {
         List<SeatReservationByScheduledMovie> cinemaHallSeats= seatReservationByScheduledMovieRepository.findAllByScheduledMovieId(scheduledMovieId);
@@ -101,10 +110,11 @@ public class Controllers {
 
     @Transactional
     @RequestMapping(value = "/cinemaHall/seats/choose/{scheduledMovieId}", method = RequestMethod.POST)
-    public ResponseEntity<List<SeatReservationByScheduledMovie>> chosenSeat(HttpSession session, @PathVariable long scheduledMovieId, @RequestBody List<Long> seatId) {
-    session.setAttribute("seats", seatId);
+    public ResponseEntity<List<SeatReservationByScheduledMovie>> chosenSeat(HttpSession session, @PathVariable long scheduledMovieId, @RequestBody List<ChosenSeatAndPrice> chosenSeatsIds) {
+        List<Long> seatIds = chosenSeatsIds.stream().map(seat -> seat.getSeatId()).collect(Collectors.toList());
+        session.setAttribute("seatsIdsAndPrices", chosenSeatsIds);
         session.setAttribute("movieId", scheduledMovieId);
-        return new ResponseEntity<>(seatReservationByScheduledMovieRepository.findBySeatSeatIdInAndScheduledMovieId(seatId, scheduledMovieId), HttpStatus.OK);
+        return new ResponseEntity<>(seatReservationByScheduledMovieRepository.findBySeatSeatIdInAndScheduledMovieId(seatIds, scheduledMovieId), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/cinemaHall/addPerson", method = RequestMethod.POST)
@@ -120,7 +130,14 @@ public class Controllers {
 
     @RequestMapping(value = "/reservationSummary", method = RequestMethod.GET)
     public ResponseEntity<ReservationSummary> reservationSummary(HttpSession session) {
-        TicketData ticketData = ticketDataService.findMovie((long) session.getAttribute("movieId"),(List<Long>)session.getAttribute("seats"));
+        List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("seatsIdsAndPrices");
+        List<Long> seatIds = chosenSeatAndPrices.stream().map(seat -> seat.getSeatId()).collect(Collectors.toList());
+        List<Integer> ticketPriceValues = new ArrayList<>();
+        chosenSeatAndPrices.stream().map(seat ->
+        {
+            return ticketPriceValues.add(ticketPriceRepository.findOne(seat.getTicketPriceId()).getTicketValue());
+        }).collect(Collectors.toList());
+        TicketData ticketData = ticketDataService.findMovie((long) session.getAttribute("movieId"),seatIds,ticketPriceValues);
 //        long personalDataId = reservationRepository.findOne(reservationId).getPersonalDataId();
 //        PersonalData personalData = personalDataRepository.findOne(personalDataId);
         ReservationSummary reservationSummary = new ReservationSummary(ticketData, (PersonalData) session.getAttribute("personalData"));

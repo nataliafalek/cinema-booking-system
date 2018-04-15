@@ -3,10 +3,8 @@ package com.faleknatalia.cinemaBookingSystem;
 import com.faleknatalia.cinemaBookingSystem.model.CinemaHall;
 import com.faleknatalia.cinemaBookingSystem.model.Movie;
 import com.faleknatalia.cinemaBookingSystem.model.ScheduledMovie;
-import com.faleknatalia.cinemaBookingSystem.repository.CinemaHallRepository;
-import com.faleknatalia.cinemaBookingSystem.repository.MovieRepository;
-import com.faleknatalia.cinemaBookingSystem.repository.ScheduledMovieRepository;
-import com.faleknatalia.cinemaBookingSystem.repository.SeatReservationByScheduledMovieRepository;
+import com.faleknatalia.cinemaBookingSystem.model.TicketPrice;
+import com.faleknatalia.cinemaBookingSystem.repository.*;
 import com.faleknatalia.cinemaBookingSystem.service.CinemaHallService;
 import com.faleknatalia.cinemaBookingSystem.service.ScheduledMovieService;
 import com.faleknatalia.cinemaBookingSystem.service.SeatReservationByScheduledMovieService;
@@ -36,6 +34,8 @@ public class CinemaBookingSystemApplication implements CommandLineRunner {
     @Autowired
     CinemaHallRepository cinemaHallRepository;
 
+    @Autowired
+    TicketPriceRepository ticketPriceRepository;
 
     @Autowired
     ScheduledMovieService scheduledMovieService;
@@ -84,6 +84,13 @@ public class CinemaBookingSystemApplication implements CommandLineRunner {
         weekWhatsOn2.values().stream().forEach(s -> scheduledMovieRepository.save(s));
 
         seatReservationByScheduledMovieRepository.save(seatReservationByScheduledMovieService.findSeatsByScheduledMovieId());
+
+        TicketPrice ticketPriceForStudent = new TicketPrice("student",7);
+        TicketPrice ticketPriceNormal = new TicketPrice("normal",10);
+        TicketPrice ticketPriceForSenior = new TicketPrice("senior",8);
+        ticketPriceRepository.save(ticketPriceNormal);
+        ticketPriceRepository.save(ticketPriceForSenior);
+        ticketPriceRepository.save(ticketPriceForStudent);
 
     }
 

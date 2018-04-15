@@ -32,6 +32,9 @@ public class TicketDataService {
     @Autowired
     SeatReservationByScheduledMovieRepository seatReservationByScheduledMovieRepository;
 
+    @Autowired
+    TicketPriceRepository ticketPriceRepository;
+
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -57,12 +60,12 @@ public class TicketDataService {
         List<SeatReservationByScheduledMovie> chosenSeats = seatReservationByScheduledMovieRepository
                 .findBySeatSeatIdInAndScheduledMovieId(reservation.getChosenSeatId(), reservation.getChosenMovieId());
         List<Integer> ticketPrices = new ArrayList<>();
-        chosenSeats.stream().map(s -> ticketPrices.add(s.getTicketPrice())).collect(Collectors.toList());
+        chosenSeats.stream().map(s -> ticketPrices.add(ticketPriceRepository.findOne(s.getTicketPriceId()).getTicketValue())).collect(Collectors.toList());
 
         return new TicketData(movieTitle, projectionDate, projectionHour, cinemaHall, seats, ticketPrices);
     }
 
-    public TicketData findMovie(long chosenMovie, List<Long> seatsIds ) {
+    public TicketData findMovie(long chosenMovie, List<Long> seatsIds, List<Integer> ticketPrices ) {
         ScheduledMovie movie = scheduledMovieRepository.findOne(chosenMovie);
         LocalDateTime movieProjection = movie.getDateOfProjection();
         String projectionDate = movieProjection.format(formatter);
@@ -76,8 +79,8 @@ public class TicketDataService {
 
         List<SeatReservationByScheduledMovie> chosenSeats = seatReservationByScheduledMovieRepository
                 .findBySeatSeatIdInAndScheduledMovieId(seatsIds, chosenMovie);
-        List<Integer> ticketPrices = new ArrayList<>();
-        chosenSeats.stream().map(s -> ticketPrices.add(s.getTicketPrice())).collect(Collectors.toList());
+//        List<Integer> ticketPrices = new ArrayList<>();
+//        chosenSeats.stream().map(s -> ticketPrices.add(ticketPriceRepository.findOne(s.getTicketPriceId()).getTicketValue())).collect(Collectors.toList());
 
         return new TicketData(movieTitle, projectionDate, projectionHour, cinemaHall, seats, ticketPrices);
     }
