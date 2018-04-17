@@ -25,7 +25,7 @@ class Movies extends Component {
                 this.setState({movies: data})
             })
 
-          HttpService.fetchJson('ticketPrices')
+          HttpService.fetchJson('ticketPriceList')
             .then(data => {
               console.log("Success - list of ticket prices: ", data);
               this.setState({ticketPrices: data})
@@ -63,7 +63,7 @@ class Movies extends Component {
                     </div>
                     <div className={"prices"}>
                         <h2> #prices</h2>
-                      {this.state.ticketPrices.map(price => <p>{price.ticketName} ${price.ticketValue}</p>)}
+                      {this.state.ticketPrices.map(price => <p>{price.ticketType} ${price.ticketValue}</p>)}
                     </div>
                 </div>
                 <div>

@@ -1,15 +1,15 @@
 package com.faleknatalia.cinemaBookingSystem.payment;
 
-public class PropertyNotifcation {
+public class PropertyNotification {
     private String name;
     private String value;
 
-    public PropertyNotifcation(String name, String value) {
+    public PropertyNotification(String name, String value) {
         this.name = name;
         this.value = value;
     }
 
-    public PropertyNotifcation() {
+    public PropertyNotification() {
     }
 
     public String getName() {

@@ -2,7 +2,7 @@ package com.faleknatalia.cinemaBookingSystem.payment;
 
 import com.faleknatalia.cinemaBookingSystem.model.PersonalData;
 import com.faleknatalia.cinemaBookingSystem.model.Reservation;
-import com.faleknatalia.cinemaBookingSystem.model.SeatReservationByScheduledMovie;
+import com.faleknatalia.cinemaBookingSystem.model.TicketPrice;
 import com.faleknatalia.cinemaBookingSystem.repository.PersonalDataRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.ReservationRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.SeatReservationByScheduledMovieRepository;
@@ -61,25 +61,23 @@ public class PaymentService {
         //Order data
         Reservation reservation = reservationRepository.findOne(reservationId);
         PersonalData personalData = personalDataRepository.findOne(personalDataId);
-        List<SeatReservationByScheduledMovie> seatsReservation = seatReservationByScheduledMovieRepository
-                .findBySeatSeatIdInAndScheduledMovieId(reservation.getChosenSeatId(), reservation.getChosenMovieId());
-
-        String ticketPriceInCents = String.valueOf(sumOfTicketPrice(seatsReservation) * 100);
+        List<TicketPrice> ticketPrices =
+                reservation.getChosenSeatsAndPrices().stream().map(chosenSeatAndPrice -> ticketPriceRepository.findOne(chosenSeatAndPrice.getTicketPriceId())).collect(Collectors.toList());
         String url = "https://secure.snd.payu.com/api/v2_1/orders";
         RestTemplate restTemplate = new RestTemplate();
         Buyer buyer = new Buyer(personalData.getEmail(), personalData.getPhoneNumber(), personalData.getName(), personalData.getSurname());
 
         //PRODUCT
         List<Product> products = new ArrayList<>();
-        seatsReservation.stream().map(s ->
-                products.add(new Product("Ticket", Integer.toString(ticketPriceRepository.findOne(s.getTicketPriceId()).getTicketValue() * 100), "1")))
+        ticketPrices.stream().map(ticketPrice ->
+                products.add(new Product("Ticket", Integer.toString(ticketPrice.getTicketValue() * 100), "1")))
                 .collect(Collectors.toList());
         String extOrderId = UUID.randomUUID().toString();
         OrderRequest orderRequest = new OrderRequest(
                 extOrderId,
                 "http://localhost:8080/notify", "127.0.0.1",
                 clientId,
-                "Bilecik do kina", "PLN", ticketPriceInCents, buyer, products, "http://localhost:3000/#/paymentSuccess");
+                "Bilecik do kina", "PLN", Integer.toString(sumOfTicketPrice(ticketPrices) * 100), buyer, products, "http://localhost:3000/#/paymentSuccess");
 
         //zapis do bazy OrderRequest
         ObjectMapper mapper = new ObjectMapper();
@@ -96,10 +94,10 @@ public class PaymentService {
 
     }
 
-    private int sumOfTicketPrice(List<SeatReservationByScheduledMovie> chosenSeatsPrice) {
+    private int sumOfTicketPrice(List<TicketPrice> chosenSeatsPrice) {
         int sum = 0;
-        for (SeatReservationByScheduledMovie s : chosenSeatsPrice) {
-            sum = sum + ticketPriceRepository.findOne(s.getTicketPriceId()).getTicketValue();
+        for (TicketPrice ticketPrice : chosenSeatsPrice) {
+            sum = sum + ticketPrice.getTicketValue();
         }
         return sum;
     }

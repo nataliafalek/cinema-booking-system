@@ -14,7 +14,7 @@ public class OrderRequestsAndResponseDB {
     private String type;
 
     @Lob
-    @Column( length = 100000 )
+    @Column(length = 100000)
     private String orderRequestBody;
 
     public OrderRequestsAndResponseDB(String extOrderId, long reservationId, String type, String orderRequestBody) {

@@ -1,6 +1,9 @@
 package com.faleknatalia.reservationsystem;
 
+import com.faleknatalia.cinemaBookingSystem.model.ChosenSeatAndPrice;
 import com.faleknatalia.cinemaBookingSystem.model.Seat;
+import com.faleknatalia.cinemaBookingSystem.model.TicketPrice;
+import com.faleknatalia.cinemaBookingSystem.util.SeatAndPriceDetails;
 import com.faleknatalia.cinemaBookingSystem.util.TicketData;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -29,15 +32,18 @@ public class PdfGeneratorTest {
             add(new Seat(12,1,1));
             add(new Seat(13,2,2));
         }};
+        List<SeatAndPriceDetails> seatAndPriceDetails = new ArrayList<>();
+        seats.stream().map(seat -> {
+            return seatAndPriceDetails.add(new SeatAndPriceDetails(seat,new TicketPrice("normal",10)));
+        });
 
-        List<Integer> prices = new ArrayList<Integer>() {{
-            add(22);
-            add(22);
+        List<ChosenSeatAndPrice> chosenSeatAndPrices = new ArrayList<ChosenSeatAndPrice>() {{
+            new ChosenSeatAndPrice(12l,1l);
+            new ChosenSeatAndPrice(13l,2l);
         }};
 
-
         LocalDateTime now = LocalDateTime.now();
-        TicketData ticketData = new TicketData("The Prestige", now.format(formatter), now.format(formatterHour), 1l, seats, prices);
+        TicketData ticketData = new TicketData("The Prestige", now.format(formatter), now.format(formatterHour), 1l, seatAndPriceDetails);
 
         //
         generateTicket(ticketData);
@@ -101,7 +107,7 @@ public class PdfGeneratorTest {
         contentStream.newLine();
         contentStream.showText("Cinema Hall: " + ticketData.getCinemaHallId() + "  ");
 //        contentStream.showText("Seat: " + ticketData.getChosenSeats() + "  ");
-        contentStream.showText("Price: $" + ticketData.getTicketPrice());
+        contentStream.showText("Price: $" + ticketData.getSeatAndPriceDetails());
         contentStream.endText();
         contentStream.close();
 

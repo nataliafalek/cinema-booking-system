@@ -1,6 +1,5 @@
 package com.faleknatalia.cinemaBookingSystem.util;
 
-import com.faleknatalia.cinemaBookingSystem.model.Seat;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -9,10 +8,8 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class TicketGeneratorPdf {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TicketGeneratorPdf.class);
@@ -20,31 +17,18 @@ public class TicketGeneratorPdf {
 
     public ByteArrayOutputStream generateTicket(TicketData ticketData) throws Exception {
 
-        //preparing data
-//        LocalDateTime dateOfProjection = ticketData.getProjectionDate();
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//        DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
+        List<SeatAndPriceDetails> chosenSeatAndPrices = ticketData.getSeatAndPriceDetails();
 
-        List<Seat> seatNumbers = ticketData.getChosenSeats();
-
-
-        //image
         PDDocument document = new PDDocument();
         PDPage page = new PDPage();
         document.addPage(page);
 
         PDPageContentStream contentStream = new PDPageContentStream(document, page);
-        //Creating PDImageXObject object
         PDImageXObject pdImage = PDImageXObject.createFromFile(this.getClass().getResource("/static/logo.png").getPath(), document);
-        //Drawing the image in the PDF document
         contentStream.drawImage(pdImage, 60, 618, 100, 100);
 
         contentStream.beginText();
-
-        //Setting the leading
         contentStream.setLeading(14.5f);
-
-        //Setting the position for the line
         contentStream.newLineAtOffset(200, 700);
 
         contentStream.setFont(PDType1Font.COURIER, 16);
@@ -52,17 +36,19 @@ public class TicketGeneratorPdf {
         contentStream.showText("Movie: " + ticketData.getMovieTitle());
         contentStream.newLine();
         contentStream.newLine();
-        contentStream.showText("Date: " + ticketData.getProjectionDate() + "          ");
+        contentStream.showText("Date: " + ticketData.getProjectionDate() + "       ");
         contentStream.showText("Hour: " + ticketData.getProjectionHour());
         contentStream.newLine();
         contentStream.newLine();
         contentStream.showText("Cinema Hall: " + ticketData.getCinemaHallId() + "  ");
         contentStream.newLine();
-        seatNumbers.stream().forEach(s -> {
+        chosenSeatAndPrices.stream().forEach(seatAndPriceDetails -> {
             try {
                 contentStream.newLine();
-                String a = "Seat number: " + Integer.toString(s.getSeatNumber()) + ", row: " + Integer.toString(s.getRowNumber()) + ", price: $" + ticketData.getTicketPrice().get(seatNumbers.indexOf(s)).toString();
-                contentStream.showText(a);
+                String ticketDetails = "Seat nr: " + Integer.toString(seatAndPriceDetails.getSeat().getSeatNumber())
+                        + ", row: " + Integer.toString(seatAndPriceDetails.getSeat().getRowNumber()) + ", " + seatAndPriceDetails.getTicketPrice().getTicketType() +
+                        " $" + Integer.toString(seatAndPriceDetails.getTicketPrice().getTicketValue());
+                contentStream.showText(ticketDetails);
 
             } catch (IOException e) {
                 logger.info("Can't generate ticket", e);

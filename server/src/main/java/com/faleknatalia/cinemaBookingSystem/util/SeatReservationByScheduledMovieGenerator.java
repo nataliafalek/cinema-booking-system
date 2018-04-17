@@ -1,4 +1,4 @@
-package com.faleknatalia.cinemaBookingSystem.service;
+package com.faleknatalia.cinemaBookingSystem.util;
 
 import com.faleknatalia.cinemaBookingSystem.model.ScheduledMovie;
 import com.faleknatalia.cinemaBookingSystem.model.Seat;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class SeatReservationByScheduledMovieService {
+public class SeatReservationByScheduledMovieGenerator {
 
     @Autowired
     ScheduledMovieRepository scheduledMovieRepository;
@@ -24,7 +24,7 @@ public class SeatReservationByScheduledMovieService {
     @Autowired
     CinemaHallRepository cinemaHallRepository;
 
-    public List<SeatReservationByScheduledMovie> findSeatsByScheduledMovieId() {
+    public List<SeatReservationByScheduledMovie> generateSeatsReservationByScheduledMovies() {
         List<ScheduledMovie> scheduledMovies = scheduledMovieRepository.findAll();
         List<SeatReservationByScheduledMovie> seatReservationByScheduledMovies = new ArrayList<>();
         scheduledMovies.forEach(sm ->

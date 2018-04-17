@@ -12,14 +12,14 @@ public class TicketPrice {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long ticketPriceId;
 
-    private String ticketName;
+    private String ticketType;
     private int ticketValue;
 
     public TicketPrice() {
     }
 
-    public TicketPrice(String ticketName, int ticketValue) {
-        this.ticketName = ticketName;
+    public TicketPrice(String ticketType, int ticketValue) {
+        this.ticketType = ticketType;
         this.ticketValue = ticketValue;
     }
 
@@ -27,8 +27,8 @@ public class TicketPrice {
         return ticketPriceId;
     }
 
-    public String getTicketName() {
-        return ticketName;
+    public String getTicketType() {
+        return ticketType;
     }
 
     public int getTicketValue() {

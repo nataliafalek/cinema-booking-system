@@ -76,7 +76,7 @@ class Seats extends Component {
   componentDidMount() {
     this.getHall(this.props.match.params.scheduledMovieId)
 
-    HttpService.fetchJson('ticketPrices')
+    HttpService.fetchJson('ticketPriceList')
       .then(data => {
         this.setState({ticketPrices: data})
       })
@@ -148,7 +148,7 @@ class Seats extends Component {
           <select key={idx} onChange={event => this.selectChange(event, seat)}>
             {this.state.ticketPrices.map(price => {
               return <option value={price.ticketPriceId}>
-                {price.ticketName}
+                {price.ticketType}
               </option>
             })
             }

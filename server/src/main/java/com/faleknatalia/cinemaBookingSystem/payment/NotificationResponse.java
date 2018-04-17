@@ -6,12 +6,12 @@ public class NotificationResponse {
 
     private OrderResponseNotification order;
     private String localReceiptDateTime;
-    private List<PropertyNotifcation> properties;
+    private List<PropertyNotification> properties;
 
     public NotificationResponse() {
     }
 
-    public NotificationResponse(OrderResponseNotification order, String localReceiptDateTime, List<PropertyNotifcation> properties) {
+    public NotificationResponse(OrderResponseNotification order, String localReceiptDateTime, List<PropertyNotification> properties) {
         this.order = order;
         this.localReceiptDateTime = localReceiptDateTime;
         this.properties = properties;
@@ -25,7 +25,7 @@ public class NotificationResponse {
         return localReceiptDateTime;
     }
 
-    public List<PropertyNotifcation> getProperties() {
+    public List<PropertyNotification> getProperties() {
         return properties;
     }
 }

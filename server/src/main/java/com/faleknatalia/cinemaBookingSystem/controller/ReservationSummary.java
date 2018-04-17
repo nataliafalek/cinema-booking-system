@@ -1,5 +1,6 @@
-package com.faleknatalia.cinemaBookingSystem.model;
+package com.faleknatalia.cinemaBookingSystem.controller;
 
+import com.faleknatalia.cinemaBookingSystem.model.PersonalData;
 import com.faleknatalia.cinemaBookingSystem.util.TicketData;
 
 public class ReservationSummary {

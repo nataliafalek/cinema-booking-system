@@ -1,6 +1,5 @@
 package com.faleknatalia.cinemaBookingSystem.payment;
 
-import javax.persistence.*;
 import java.util.List;
 
 public class OrderRequest {

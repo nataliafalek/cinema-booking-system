@@ -1,15 +1,10 @@
 package com.faleknatalia.cinemaBookingSystem.model;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
-
 public class Reservation implements Serializable {
     private long chosenMovieId;
 
@@ -19,13 +14,13 @@ public class Reservation implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long reservationId;
 
-    @ElementCollection(targetClass = Long.class, fetch = FetchType.EAGER)
-    private List<Long> chosenSeatId;
+    @ElementCollection(targetClass = ChosenSeatAndPrice.class, fetch = FetchType.EAGER)
+    private List<ChosenSeatAndPrice> chosenSeatsAndPrices;
 
-    public Reservation(long chosenMovieId, long personalDataId, List<Long> chosenSeatId) {
+    public Reservation(long chosenMovieId, long personalDataId, List<ChosenSeatAndPrice> chosenSeatsAndPrices) {
         this.chosenMovieId = chosenMovieId;
         this.personalDataId = personalDataId;
-        this.chosenSeatId = chosenSeatId;
+        this.chosenSeatsAndPrices = chosenSeatsAndPrices;
     }
 
     public Reservation() {
@@ -39,8 +34,8 @@ public class Reservation implements Serializable {
         return personalDataId;
     }
 
-    public List<Long> getChosenSeatId() {
-        return chosenSeatId;
+    public List<ChosenSeatAndPrice> getChosenSeatsAndPrices() {
+        return chosenSeatsAndPrices;
     }
 
     public long getReservationId() {

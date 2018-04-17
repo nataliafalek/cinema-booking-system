@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 //TODO wydzielic do serwisow logike z controllerow
-
 @RestController
 public class Controllers {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(Controllers.class);
@@ -68,7 +67,6 @@ public class Controllers {
     @Value("${dev_mode}")
     private boolean devMode;
 
-    //TODO optymalizacja - wydzielic metode do serwisu osobnego, tak by efektywnie laczyc ScheduledMovie i ScheduledMovieDetails
     @RequestMapping(value = "/whatsOn", method = RequestMethod.GET)
     public ResponseEntity<List<ScheduledMovieDetails>> whatsOn() {
 
@@ -84,62 +82,50 @@ public class Controllers {
         return new ResponseEntity<>(movieRepository.findAll(), HttpStatus.OK);
     }
 
-    //SCHEDULEDMOVIE DETAILS
     @RequestMapping(value = "/whatsOn/{chosenMovieId}", method = RequestMethod.GET)
-    public ResponseEntity<List<ScheduledMovieDetails>> getWhatsOnByMovie(@PathVariable long chosenMovieId) {
+    public ResponseEntity<List<ScheduledMovieDetails>> whatsOnByMovieId(@PathVariable long chosenMovieId) {
         List<ScheduledMovie> scheduledMovies = scheduledMovieRepository.findAllByMovieId(chosenMovieId);
         List<ScheduledMovieDetails> scheduledMovieDetails = getScheduledMovieDetails(scheduledMovies);
         return new ResponseEntity<>(scheduledMovieDetails, HttpStatus.OK);
     }
 
-    //TicketPrices
-    @RequestMapping(value = "/ticketPrices", method = RequestMethod.GET)
-    public ResponseEntity<List<TicketPrice>> getTicketPrices() {
+
+    @RequestMapping(value = "/ticketPriceList", method = RequestMethod.GET)
+    public ResponseEntity<List<TicketPrice>> ticketPriceList() {
         return new ResponseEntity<>(ticketPriceRepository.findAll(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/cinemaHall/seats", method = RequestMethod.GET)
-    public ResponseEntity<List<List<SeatReservationByScheduledMovie>>> cinemaHallSeatsState(@RequestParam long scheduledMovieId) {
-        List<SeatReservationByScheduledMovie> cinemaHallSeats= seatReservationByScheduledMovieRepository.findAllByScheduledMovieId(scheduledMovieId);
+    public ResponseEntity<List<List<SeatReservationByScheduledMovie>>> seatsByCinemaHallAndMovie(@RequestParam long scheduledMovieId) {
+        List<SeatReservationByScheduledMovie> cinemaHallSeats = seatReservationByScheduledMovieRepository.findAllByScheduledMovieId(scheduledMovieId);
         Map<Integer, List<SeatReservationByScheduledMovie>> groupByRow =
                 cinemaHallSeats.stream().collect(Collectors.groupingBy(seat -> seat.getSeat().getRowNumber()));
-
         return new ResponseEntity<>(new ArrayList<>(groupByRow.values()), HttpStatus.OK);
     }
 
 
     @Transactional
     @RequestMapping(value = "/cinemaHall/seats/choose/{scheduledMovieId}", method = RequestMethod.POST)
-    public ResponseEntity<List<SeatReservationByScheduledMovie>> chosenSeat(HttpSession session, @PathVariable long scheduledMovieId, @RequestBody List<ChosenSeatAndPrice> chosenSeatsIds) {
-        List<Long> seatIds = chosenSeatsIds.stream().map(seat -> seat.getSeatId()).collect(Collectors.toList());
-        session.setAttribute("seatsIdsAndPrices", chosenSeatsIds);
-        session.setAttribute("movieId", scheduledMovieId);
+    public ResponseEntity<List<SeatReservationByScheduledMovie>> chosenSeat(HttpSession session, @PathVariable long scheduledMovieId, @RequestBody List<ChosenSeatAndPrice> chosenSeatsAndPrices) {
+        List<Long> seatIds = chosenSeatsAndPrices.stream().map(seat -> seat.getSeatId()).collect(Collectors.toList());
+        session.setAttribute("chosenSeatsAndPrices", chosenSeatsAndPrices);
+        session.setAttribute("chosenMovieId", scheduledMovieId);
         return new ResponseEntity<>(seatReservationByScheduledMovieRepository.findBySeatSeatIdInAndScheduledMovieId(seatIds, scheduledMovieId), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/cinemaHall/addPerson", method = RequestMethod.POST)
-    public ResponseEntity<Long> addPerson(HttpSession session,@RequestBody PersonalDataAndReservationInfo reservationInfo) {
-        PersonalData personalData = new PersonalData(reservationInfo.getName(), reservationInfo.getSurname(), reservationInfo.getPhoneNumber(), reservationInfo.getEmail());
-       // personalDataRepository.save(personalData);
+    public ResponseEntity<Long> createReservation(HttpSession session, @RequestBody PersonalData personalData) {
         session.setAttribute("personalData", personalData);
-        Reservation reservation = new Reservation(reservationInfo.getChosenMovie(), personalData.getPersonId(), reservationInfo.getChosenSeatId());
-      //  reservationRepository.save(reservation);
-        session.setAttribute("reservation",reservation);
+        List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("chosenSeatsAndPrices");
+        Reservation reservation = new Reservation((long) session.getAttribute("chosenMovieId"), personalData.getPersonId(), chosenSeatAndPrices);
+        session.setAttribute("reservation", reservation);
         return new ResponseEntity<>(reservation.getReservationId(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/reservationSummary", method = RequestMethod.GET)
     public ResponseEntity<ReservationSummary> reservationSummary(HttpSession session) {
-        List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("seatsIdsAndPrices");
-        List<Long> seatIds = chosenSeatAndPrices.stream().map(seat -> seat.getSeatId()).collect(Collectors.toList());
-        List<Integer> ticketPriceValues = new ArrayList<>();
-        chosenSeatAndPrices.stream().map(seat ->
-        {
-            return ticketPriceValues.add(ticketPriceRepository.findOne(seat.getTicketPriceId()).getTicketValue());
-        }).collect(Collectors.toList());
-        TicketData ticketData = ticketDataService.findMovie((long) session.getAttribute("movieId"),seatIds,ticketPriceValues);
-//        long personalDataId = reservationRepository.findOne(reservationId).getPersonalDataId();
-//        PersonalData personalData = personalDataRepository.findOne(personalDataId);
+        List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("chosenSeatsAndPrices");
+        TicketData ticketData = ticketDataService.findMovie((long) session.getAttribute("chosenMovieId"), chosenSeatAndPrices);
         ReservationSummary reservationSummary = new ReservationSummary(ticketData, (PersonalData) session.getAttribute("personalData"));
         return new ResponseEntity<>(reservationSummary, HttpStatus.OK);
     }
@@ -147,25 +133,20 @@ public class Controllers {
 
     @Transactional
     @RequestMapping(value = "/payment", method = RequestMethod.POST)
-    public ResponseEntity<OrderResponse> redirectToPayment(HttpServletResponse response, HttpSession session) throws Exception {
-
-        //sesja
-        seatReservationByScheduledMovieRepository.setFalseForChosenSeat((List<Long>)session.getAttribute("seats"), (long) session.getAttribute("movieId"));
-        //save reservation,PersonalData
+    public ResponseEntity<OrderResponse> saveReservationAndRedirectToPayment(HttpServletResponse response, HttpSession session) throws Exception {
+        List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("chosenSeatsAndPrices");
+        List<Long> chosenSeatsIds = chosenSeatAndPrices.stream().map(chosenSeatAndPrice -> chosenSeatAndPrice.getSeatId()).collect(Collectors.toList());
+        seatReservationByScheduledMovieRepository.setFalseForChosenSeat(chosenSeatsIds, (long) session.getAttribute("chosenMovieId"));
+        //TODO Podmienić ticketPriceId ??
         PersonalData personalData = (PersonalData) session.getAttribute("personalData");
         personalDataRepository.save(personalData);
         long personalDataId = personalData.getPersonId();
         Reservation reservation = (Reservation) session.getAttribute("reservation");
         reservation.setPersonalDataId(personalDataId);
         reservationRepository.save(reservation);
-
         long reservationId = reservation.getReservationId();
 
-
         session.invalidate();
-
-
-
         AccessToken accessToken = paymentService.generateAccessToken(clientId, clientSecret);
 
         if (devMode) {
@@ -197,12 +178,12 @@ public class Controllers {
                     "COMPLETED"
             );
 
-            List<PropertyNotifcation> propertyNotifcationList = new ArrayList<PropertyNotifcation>() {{
-                add(new PropertyNotifcation("PAYMENT_ID", "12345"));
+            List<PropertyNotification> propertyNotificationList = new ArrayList<PropertyNotification>() {{
+                add(new PropertyNotification("PAYMENT_ID", "12345"));
             }};
-            notify(new NotificationResponse(orderResponseNotification, "2016-03-02T12:58:14.828+01:00", propertyNotifcationList));
+            notify(new NotificationResponse(orderResponseNotification, "2016-03-02T12:58:14.828+01:00", propertyNotificationList));
         }
-        return new ResponseEntity<>(paymentService.generateOrder(accessToken, reservationId,personalDataId, clientId), HttpStatus.OK);
+        return new ResponseEntity<>(paymentService.generateOrder(accessToken, reservationId, personalDataId, clientId), HttpStatus.OK);
     }
 
 
@@ -216,25 +197,24 @@ public class Controllers {
 
     @RequestMapping(value = "/notify", method = RequestMethod.POST)
     public void notify(NotificationResponse notificationResponse) throws Exception {
-        //zapis do bazy notification
         if (notificationResponse.getOrder().getStatus().equals("COMPLETED")) {
             sendEmail(Long.parseLong(notificationResponse.getOrder().getExtOrderId()));
         }
-
     }
 
+    //TODO optymalizacja - wydzielic metode do serwisu osobnego, tak by efektywnie laczyc ScheduledMovie i ScheduledMovieDetails
     private List<ScheduledMovieDetails> getScheduledMovieDetails(List<ScheduledMovie> scheduledMovies) {
         return scheduledMovies.stream().map(
-                sm -> {
-                    Movie one = movieRepository.findOne(sm.getMovieId());
+                scheduledMovie -> {
+                    Movie movie = movieRepository.findOne(scheduledMovie.getMovieId());
                     return new ScheduledMovieDetails(
-                            one.getTitle(),
-                            one.getDurationInMinutes(),
-                            sm.getDateOfProjection(),
-                            sm.getScheduledMovieId(),
-                            sm.getDateOfProjection().getDayOfWeek().name(),
-                            sm.getDateOfProjection().format(formatterHour),
-                            one.getDescription()
+                            movie.getTitle(),
+                            movie.getDurationInMinutes(),
+                            scheduledMovie.getDateOfProjection(),
+                            scheduledMovie.getScheduledMovieId(),
+                            scheduledMovie.getDateOfProjection().getDayOfWeek().name(),
+                            scheduledMovie.getDateOfProjection().format(formatterHour),
+                            movie.getDescription()
                     );
                 }).collect(Collectors.toList());
     }

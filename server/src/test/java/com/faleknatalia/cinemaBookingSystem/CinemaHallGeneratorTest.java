@@ -2,19 +2,14 @@ package com.faleknatalia.cinemaBookingSystem;
 
 import com.faleknatalia.cinemaBookingSystem.model.CinemaHall;
 import com.faleknatalia.cinemaBookingSystem.model.Seat;
-import com.faleknatalia.cinemaBookingSystem.service.CinemaHallService;
+import com.faleknatalia.cinemaBookingSystem.util.CinemaHallGenerator;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static java.lang.Boolean.TRUE;
-import static org.junit.Assert.*;
-
-public class CinemaHallServiceTest {
+public class CinemaHallGeneratorTest {
 
 
     @Test
@@ -31,7 +26,7 @@ public class CinemaHallServiceTest {
         CinemaHall cinemaHall = new CinemaHall(seats);
 
         //when
-        CinemaHall cinemaHallAuto = new CinemaHallService().generateCinemaHall(3,2);
+        CinemaHall cinemaHallAuto = new CinemaHallGenerator().generateCinemaHall(3,2);
 
 
 

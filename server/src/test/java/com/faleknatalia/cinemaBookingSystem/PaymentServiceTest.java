@@ -1,5 +1,6 @@
 package com.faleknatalia.cinemaBookingSystem;
 
+import com.faleknatalia.cinemaBookingSystem.model.ChosenSeatAndPrice;
 import com.faleknatalia.cinemaBookingSystem.model.PersonalData;
 import com.faleknatalia.cinemaBookingSystem.model.Reservation;
 import com.faleknatalia.cinemaBookingSystem.payment.AccessToken;
@@ -40,10 +41,10 @@ public class PaymentServiceTest {
         //Before
         PersonalData personalData = new PersonalData("Nati", "Falek", "123456789", "nati@gmail.com");
         personalDataRepository.save(personalData);
-        ArrayList<Long> listOfSeats = new ArrayList<Long>() {{
-            add(20l);
+        ArrayList<ChosenSeatAndPrice> listOfSeatsAndPrices = new ArrayList<ChosenSeatAndPrice>() {{
+            add(new ChosenSeatAndPrice(20l,1l));
         }};
-        Reservation reservation = new Reservation(2, personalData.getPersonId(), listOfSeats);
+        Reservation reservation = new Reservation(2, personalData.getPersonId(), listOfSeatsAndPrices);
         reservationRepository.save(reservation);
 
         AccessToken token = paymentService.generateAccessToken("322611", "7bf401d342210d73b85081c0a2fae474");
