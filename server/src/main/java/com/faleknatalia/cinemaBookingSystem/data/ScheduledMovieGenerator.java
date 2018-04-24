@@ -1,4 +1,4 @@
-package com.faleknatalia.cinemaBookingSystem.util;
+package com.faleknatalia.cinemaBookingSystem.data;
 
 import com.faleknatalia.cinemaBookingSystem.model.Movie;
 import com.faleknatalia.cinemaBookingSystem.model.ScheduledMovie;

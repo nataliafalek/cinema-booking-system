@@ -1,14 +1,14 @@
-package com.faleknatalia.cinemaBookingSystem.controller;
+package com.faleknatalia.cinemaBookingSystem.dto;
 
 import com.faleknatalia.cinemaBookingSystem.model.PersonalData;
 import com.faleknatalia.cinemaBookingSystem.util.TicketData;
 
-public class ReservationSummary {
+public class ReservationSummaryDto {
 
     private TicketData ticketData;
     private PersonalData personalData;
 
-    public ReservationSummary(TicketData ticketData, PersonalData personalData) {
+    public ReservationSummaryDto(TicketData ticketData, PersonalData personalData) {
         this.ticketData = ticketData;
         this.personalData = personalData;
     }

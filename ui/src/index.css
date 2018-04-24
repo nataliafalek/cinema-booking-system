@@ -3,11 +3,6 @@ body {
     padding: 0;
     font-family: sans-serif;
     background-color: #1A2828;
-    /*background-image: url(./assets/background3.jpg);*/
-    /*-webkit-background-size: cover;*/
-    /*-moz-background-size: cover;*/
-    /*-o-background-size: cover;*/
-    /*background-size: cover;*/
 }
 
 /*Navigation Menu*/
@@ -44,10 +39,6 @@ ul.header a.nav {
     text-decoration: none;
 }
 
-/*ul.header a.nav:hover {*/
-/*background-color: #696C74;*/
-/*}*/
-
 /*Schedule*/
 .scheduledMovies {
     width: auto;
@@ -62,8 +53,6 @@ ul.header a.nav {
 }
 
 .daysOfWeek {
-
-    /*margin: 10px;*/
     margin-top: 10px;
     overflow: hidden;
     background-color: #1A2828;
@@ -79,7 +68,6 @@ ul.header a.nav {
     cursor: pointer;
     font-family: "Courier New";
     font-size: 20px;
-
 }
 
 .actualDay {
@@ -92,7 +80,6 @@ ul.header a.nav {
 
 table.scheduledMovies {
     font-family: "Courier New";
-
     border-collapse: collapse;
     width: 100%;
 }
@@ -106,7 +93,6 @@ table.scheduledMovies td, table.scheduledMovies th {
     border-bottom: 2px solid #EA783B;
     font-family: "Courier New";
     font-size: 16px;
-
 }
 
 tr.otherMovies:hover {
@@ -125,33 +111,30 @@ tr.selectedMovie {
     background-color: #cccccc;
     margin-top: 100px;
     margin-bottom: 100px;
-    /*text-align: center;*/
 }
 
 .printedSeats {
-    /*width: 300px;*/
     font-size: 16px;
     background-color: #696C74;
     padding: 10px 10px 10px 10px;
-    display: inline-block;
-    margin-top: 20px;
-    margin-left: 40%;
-
+    /*display: inline-block;*/
+    /*margin-top: 20px;*/
+    display: table;
+    margin: 20px auto;
+    /*margin-left: 40%;*/
 }
 
-li.emptySeat,li.freeSeat, li.chosenSeat, li.reservedSeat {
+li.emptySeat, li.freeSeat, li.chosenSeat, li.reservedSeat {
     float: left;
-    width: max-content;
+    width: 24px;
+    height: 24px;
     display: inline-block;
     color: #111111;
-    border: 10px solid #EA783B;
+    text-align: center;
     margin: 5px;
     cursor: pointer;
-    /*text-align: center;*/
     background-color: #EA783B;
-
     list-style-type: none;
-
 }
 
 li.emptySeat {
@@ -164,57 +147,57 @@ li.emptySeat {
 div.CinemaHallRows p {
     color: black;
     display: inline-block;
-    /*border: 5px solid #696C74;*/
     margin: 15px;
-
-
 }
 
 li.freeSeat:before {
-
     display: block;
     padding-top: 100%;
 
 }
 
 li.freeSeat:hover {
-    border: 10px solid #777777;
+    /*border: 10px solid #777777;*/
     background-color: #777777;
-
 }
 
 li.chosenSeat {
     background-color: darkslategray;
-    border: 10px solid darkslategray;
+    /*border: 10px solid darkslategray;*/
 }
-
-/*li.freeSeat:focus {*/
-/*background-color: red;*/
-/*}*/
 
 li.reservedSeat {
     background-color: indianred;
-    border: 10px solid indianred;
+    /*border: 10px solid indianred;*/
     cursor: not-allowed;
-
 }
 
 li.reservedSeat:before {
     display: block;
     padding-top: 100%;
-
 }
 
 .screen {
     background-color: #AAC5D0;
-    margin: 5px 15px 20px;
+    margin: 5px 20px 40px;
     text-align: center;
 }
 
 .chosenSeats {
-    color: red;
+    color: #1A2828;
     padding: 5px;
     text-align: center;
+    font-family: "Courier New";
+}
+
+.ticketType {
+    margin: 5px;
+    width: 100px;
+    padding: 5px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    height: 34px;
+    font-family: "Courier New";
 }
 
 .buttons {
@@ -228,12 +211,8 @@ li.reservedSeat:before {
     padding: 15px 32px;
     text-align: center;
     text-decoration: none;
-
-    /*display: inline-block;*/
     font-size: 16px;
     margin: 10px 50px 10px 10px;
-    /*-webkit-transition-duration: 0.4s; !* Safari *!*/
-    /*transition-duration: 0.4s;*/
 }
 
 .nextButton, .summaryButton, .payButton {
@@ -266,7 +245,6 @@ li.reservedSeat:before {
 .PersonalDataForm {
     width: 450px;
     font-size: 16px;
-    /*background-color: rgba(41, 42, 36, 0.6);*/
     padding: 30px 30px 15px 30px;
     margin-left: auto;
     margin-right: auto;
@@ -306,7 +284,6 @@ li.reservedSeat:before {
 .summaryData {
     width: 450px;
     font-size: 16px;
-    /*background-color: rgba(41, 42, 36, 0.6);*/
     padding: 30px 30px 15px 30px;
     margin-left: 30%;
 }
@@ -316,7 +293,7 @@ li.reservedSeat:before {
 }
 
 .summaryData li {
-    color: #EA783B;
+    color: #1A2828;
     list-style-type: none;
     padding: 5px;
     border-bottom: 3px solid #777777;
@@ -324,7 +301,7 @@ li.reservedSeat:before {
 }
 
 .reservationData {
-    color: #1A2828;
+    color: #EA783B;
     font-size: 20px
 }
 
@@ -422,10 +399,7 @@ div.gallery div.movieDescription {
 }
 
 .moviesSchedule {
-    /*margin-right: 300px;*/
     border-right: 1px solid #EA783B;
-    /*padding: 1em;*/
-    /*overflow: hidden;*/
     width: 80%;
     height: 200px;
 
@@ -434,9 +408,7 @@ div.gallery div.movieDescription {
 }
 
 .prices {
-
     margin-left: 20%;
-    /*height: 200px;*/
     text-align: center;
 
 }
@@ -496,8 +468,6 @@ div.gallery div.movieDescription {
     width: 100%;
     height: 400px;
     background-color: #cccccc;
-    /*margin-top: 100px;*/
-    /*margin-bottom: 100px;*/
 }
 
 .movieDescImg {
@@ -516,21 +486,14 @@ div.gallery div.movieDescription {
 }
 
 .movieDesc p {
-    /*text-align: center;*/
     font-family: "Courier New";
     color: #1A2828;
 }
-
-/*.projectionHours {*/
-/*!*text-align: center;*!*/
-/*list-style-type: none;*/
-/*font-family: "Courier New";*/
-/*color: #1A2828;*/
-/*}*/
 
 .projectionHours li {
     list-style-type: none;
     font-family: "Courier New";
     color: #1A2828;
     padding: 5px;
+    display: inline-block;
 }

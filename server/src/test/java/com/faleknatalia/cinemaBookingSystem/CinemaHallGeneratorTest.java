@@ -2,7 +2,7 @@ package com.faleknatalia.cinemaBookingSystem;
 
 import com.faleknatalia.cinemaBookingSystem.model.CinemaHall;
 import com.faleknatalia.cinemaBookingSystem.model.Seat;
-import com.faleknatalia.cinemaBookingSystem.util.CinemaHallGenerator;
+import com.faleknatalia.cinemaBookingSystem.data.CinemaHallGenerator;
 import org.junit.Test;
 
 import java.util.ArrayList;

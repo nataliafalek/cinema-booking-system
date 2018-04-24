@@ -1,19 +1,19 @@
 import React, {Component} from 'react';
 
 class BackButton extends Component {
-    static contextTypes = {
-        router: () => null,
-    };
+  static contextTypes = {
+    router: () => null,
+  };
 
-    render() {
-        return (
-            <button
-                className="backButton"
-                onClick={this.context.router.history.goBack}>
-                Back
-            </button>
-        )
-    }
+  render() {
+    return (
+      <button
+        className="backButton"
+        onClick={this.context.router.history.goBack}>
+        Back
+      </button>
+    )
+  }
 }
 
 export default BackButton;

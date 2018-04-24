@@ -10,39 +10,38 @@ import PaymentSuccess from "./PaymentSuccess";
 
 class App extends Component {
 
-    constructor() {
-        super();
-        this.state = {};
+  constructor() {
+    super();
+    this.state = {};
 
-    }
+  }
 
-
-    //TODO stworzyc sesje dla użytkownika
-    render() {
-        return (
-            <div className="App">
-                <HashRouter>
-                    <div>
-                        <ul className="header">
-                            <NavLink className={"nav"} to="/movies"><img src={require('./assets/logo-palmy.jpg')}/>
-                            </NavLink>
-                            <li><NavLink className={"nav"} to="/movies">Movies</NavLink></li>
-                            <li><NavLink className={"nav"} to="/whatsOn">What's On</NavLink></li>
-                        </ul>
-                        <div className="content">
-                            <Route path="/movies" component={Movies}/>
-                            <Route path="/movieDetails/:chosenMovieId/:chosenMovieUrl" component={MovieDetails}/>
-                            <Route path="/whatsOn" component={Schedule}/>
-                            <Route path="/seats/:scheduledMovieId" component={Seats}/>
-                            <Route path="/personalData" component={PersonalData}/>
-                            <Route path="/reservationSummary" component={ReservationSummary}/>
-                            <Route path="/paymentSuccess" component={PaymentSuccess}/>
-                        </div>
-                    </div>
-                </HashRouter>
+  render() {
+    return (
+      <div className="App">
+        <HashRouter>
+          <div>
+            <ul className="header">
+              <NavLink className={"nav"} to="/movies"><img src={require('./assets/logo-palmy.jpg')} alt=""/>
+              </NavLink>
+              <li><NavLink className={"nav"} to="/movies">Movies</NavLink></li>
+              <li><NavLink className={"nav"} to="/whatsOn">What's On</NavLink></li>
+            </ul>
+            <div className="content">
+              <Route path="/movies" component={Movies}/>
+              {/*TODO INACZEJ PRZEKAZYWAC URLA*/}
+              <Route path="/movieDetails/:chosenMovieId/:chosenMovieUrl" component={MovieDetails}/>
+              <Route path="/whatsOn" component={Schedule}/>
+              <Route path="/seats/:scheduledMovieId" component={Seats}/>
+              <Route path="/personalData" component={PersonalData}/>
+              <Route path="/reservationSummary" component={ReservationSummary}/>
+              <Route path="/paymentSuccess" component={PaymentSuccess}/>
             </div>
-        );
-    }
+          </div>
+        </HashRouter>
+      </div>
+    );
+  }
 }
 
 export default App;

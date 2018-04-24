@@ -24,7 +24,7 @@ public class TicketGeneratorPdf {
         document.addPage(page);
 
         PDPageContentStream contentStream = new PDPageContentStream(document, page);
-        PDImageXObject pdImage = PDImageXObject.createFromFile(this.getClass().getResource("/static/logo.png").getPath(), document);
+        PDImageXObject pdImage = PDImageXObject.createFromFile(this.getClass().getResource("/static/logo-palmy.jpg").getPath(), document);
         contentStream.drawImage(pdImage, 60, 618, 100, 100);
 
         contentStream.beginText();

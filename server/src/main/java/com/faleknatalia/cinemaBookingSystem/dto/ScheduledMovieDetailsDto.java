@@ -1,8 +1,8 @@
-package com.faleknatalia.cinemaBookingSystem.controller;
+package com.faleknatalia.cinemaBookingSystem.dto;
 
 import java.time.LocalDateTime;
 
-public class ScheduledMovieDetails {
+public class ScheduledMovieDetailsDto {
 
     private String movieTitle;
     private int movieDurationInMinutes;
@@ -13,7 +13,7 @@ public class ScheduledMovieDetails {
     private String movieDescription;
 
 
-    public ScheduledMovieDetails(String movieTitle, int movieDurationInMinutes, LocalDateTime dateOfProjection, long scheduledMovieId, String dayOfProjection, String hourOfProjection, String movieDescription) {
+    public ScheduledMovieDetailsDto(String movieTitle, int movieDurationInMinutes, LocalDateTime dateOfProjection, long scheduledMovieId, String dayOfProjection, String hourOfProjection, String movieDescription) {
         this.movieTitle = movieTitle;
         this.movieDurationInMinutes = movieDurationInMinutes;
         this.dateOfProjection = dateOfProjection;
