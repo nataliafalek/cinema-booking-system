@@ -24,12 +24,18 @@ class PersonalData extends Component {
       phoneNumber: this.state.phoneNumber,
       email: this.state.email
     };
+    var status = 200;
     HttpService.postJson('cinemaHall/addPerson', person)
       .then(results => {
+        status = results.status;
         return results.text();
       }).then(reservationId => {
-      this.setState({reservationId: reservationId});
-      this.handleOnClick()
+      if (status === 200) {
+        this.setState({reservationId: reservationId});
+        this.handleOnClick()
+      } else {
+        alert("Invalid data form");
+      }
     });
     event.preventDefault()
   };
@@ -50,6 +56,8 @@ class PersonalData extends Component {
               onChange={(event) => {
                 this.setState({name: event.target.value});
               }}
+              pattern={"\\p{L}+"}
+              placeholder={"John"}
               required
             />
             <label htmlFor="surname">Surname</label>
@@ -59,6 +67,8 @@ class PersonalData extends Component {
               onChange={(event) => {
                 this.setState({surname: event.target.value});
               }}
+              pattern={"\\p{L}+"}
+              placeholder={"Doe"}
               required
             />
             <label htmlFor="email">Email</label>
@@ -68,6 +78,8 @@ class PersonalData extends Component {
               onChange={(event) => {
                 this.setState({email: event.target.value});
               }}
+              pattern={new RegExp("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$").ignoreCase}
+              placeholder={"johndoe@gmail.com"}
               required
             />
             <label htmlFor="name">Telephone</label>
@@ -77,6 +89,8 @@ class PersonalData extends Component {
               onChange={(event) => {
                 this.setState({phoneNumber: event.target.value});
               }}
+              pattern="\d{9}|(?:\d{3}-){2}\d{3}"
+              placeholder={"123-456-789 or 123456789"}
               required
             />
           </div>

@@ -1,12 +1,10 @@
 package com.faleknatalia.cinemaBookingSystem.model;
 
-import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
 @Entity
@@ -15,11 +13,8 @@ public class PersonalData implements Serializable {
     private String name;
     private String surname;
 
-    //TODO osobna walidacja dla bazy i frontendu
-    @Pattern(regexp = "(^$|[0-9]{9})")
     private String phoneNumber;
 
-    @Email
     private String email;
 
     @Id

@@ -8,6 +8,7 @@ import com.faleknatalia.cinemaBookingSystem.model.SeatReservationByScheduledMovi
 import com.faleknatalia.cinemaBookingSystem.repository.SeatReservationByScheduledMovieRepository;
 import com.faleknatalia.cinemaBookingSystem.util.TicketData;
 import com.faleknatalia.cinemaBookingSystem.util.TicketDataService;
+import com.faleknatalia.cinemaBookingSystem.validator.PersonalDataValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,8 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import java.util.stream.Collectors;
 
 @RestController
@@ -49,11 +52,16 @@ public class MakeReservationController {
 
     @RequestMapping(value = "/cinemaHall/addPerson", method = RequestMethod.POST)
     public ResponseEntity<Long> createReservation(HttpSession session, @RequestBody PersonalData personalData) {
-        session.setAttribute("personalData", personalData);
-        List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("chosenSeatsAndPrices");
-        Reservation reservation = new Reservation((long) session.getAttribute("chosenMovieId"), personalData.getPersonId(), chosenSeatAndPrices);
-        session.setAttribute("reservation", reservation);
-        return new ResponseEntity<>(reservation.getReservationId(), HttpStatus.OK);
+        Optional<String> validationResult = new PersonalDataValidator().validate(personalData);
+        if (validationResult.isPresent()) {
+            throw new IllegalArgumentException(validationResult.get());
+        } else {
+            session.setAttribute("personalData", personalData);
+            List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("chosenSeatsAndPrices");
+            Reservation reservation = new Reservation((long) session.getAttribute("chosenMovieId"), personalData.getPersonId(), chosenSeatAndPrices);
+            session.setAttribute("reservation", reservation);
+            return new ResponseEntity<>(reservation.getReservationId(), HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "/reservationSummary", method = RequestMethod.GET)
@@ -63,4 +71,6 @@ public class MakeReservationController {
         ReservationSummaryDto reservationSummaryDto = new ReservationSummaryDto(ticketData, (PersonalData) session.getAttribute("personalData"));
         return new ResponseEntity<>(reservationSummaryDto, HttpStatus.OK);
     }
+
+
 }
