@@ -34,18 +34,24 @@ class Schedule extends Component {
       })
   }
 
+  orderByActualDay = () => {
+    const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+    const daysOrder = days.splice(0, days.indexOf(days[new Date().getDay()]));
+    return days.concat(daysOrder);
+  }
 
   render() {
     const grouppedByDay = _.groupBy(this.state.whatsOn, 'dayOfProjection');
     return !_.isEmpty(grouppedByDay) ? (
       <div className={"schedule"}>
         <div className={"daysOfWeek"}>
-          {this.days.map((day, idx) => {
-              const chosenDay = this.state.actualDay === day ? "actualDay" : "otherDays";
-              return <span key={idx} className={chosenDay}
-                           onClick={(event) => this.setState({actualDay: day})}>&emsp;{day}</span>
-            }
-          )}
+          {
+            this.orderByActualDay().map((day, idx) => {
+                const chosenDay = this.state.actualDay === day ? "actualDay" : "otherDays";
+                return <span key={idx} className={chosenDay}
+                             onClick={(event) => this.setState({actualDay: day})}>&emsp;{day}</span>
+              }
+            )}
         </div>
         <table className={"scheduledMovies"}>
           <tbody>
@@ -54,7 +60,7 @@ class Schedule extends Component {
             <th>HOUR</th>
             <th>DURATION</th>
           </tr>
-          {grouppedByDay[this.state.actualDay].map((movie, idx) => {
+          {grouppedByDay[this.state.actualDay] ? grouppedByDay[this.state.actualDay].map((movie, idx) => {
             const selectedMovie = this.state.chosenMovie === movie ? "selectedMovie" : "otherMovies";
             return <tr className={selectedMovie} key={idx} onClick={(event) => {
               this.setState({chosenMovie: movie})
@@ -63,7 +69,7 @@ class Schedule extends Component {
               <td> {movie.hourOfProjection}</td>
               <td> {movie.movieDurationInMinutes} minutes</td>
             </tr>
-          })}
+          }): null}
           </tbody>
         </table>
         <div>

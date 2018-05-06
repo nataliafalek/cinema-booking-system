@@ -22,13 +22,12 @@ class MovieDetails extends Component {
       })
   };
 
-
   render() {
-
+    console.log(this.state.whatsOnByMovies)
     return (
       this.state.whatsOnByMovies ?
         <div className={"movieDetails"}>
-          <div className={"movieDescImg"}><img src={decodeURIComponent(this.props.match.params.chosenMovieUrl)} alt=""/></div>
+          <div className={"movieDescImg"}><img src={decodeURIComponent(this.state.whatsOnByMovies[0].movieImageUrl)} alt=""/></div>
           <div className={"movieDesc"}>
             <h1>"{this.state.whatsOnByMovies[0].movieTitle}"</h1>
             <p> Duration: {this.state.whatsOnByMovies[0].movieDurationInMinutes} minutes </p>

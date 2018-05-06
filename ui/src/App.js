@@ -29,8 +29,8 @@ class App extends Component {
             </ul>
             <div className="content">
               <Route path="/movies" component={Movies}/>
-              {/*TODO INACZEJ PRZEKAZYWAC URLA*/}
-              <Route path="/movieDetails/:chosenMovieId/:chosenMovieUrl" component={MovieDetails}/>
+              <Route exact path="/" component={Movies}/>
+              <Route path="/movieDetails/:chosenMovieId" component={MovieDetails}/>
               <Route path="/whatsOn" component={Schedule}/>
               <Route path="/seats/:scheduledMovieId" component={Seats}/>
               <Route path="/personalData" component={PersonalData}/>

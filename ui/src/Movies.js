@@ -66,7 +66,7 @@ class Movies extends Component {
         <div>
           {this.state.redirect ?
             <Redirect push
-                      to={`/movieDetails/${this.state.chosenMovie.movieId}/${encodeURIComponent(this.state.chosenMovie.imageUrl)}`}/> : null}
+                      to={`/movieDetails/${this.state.chosenMovie.movieId}`}/> : null}
         </div>
       </div>
 

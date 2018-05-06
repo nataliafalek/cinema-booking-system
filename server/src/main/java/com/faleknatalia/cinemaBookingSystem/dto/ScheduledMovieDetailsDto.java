@@ -11,9 +11,9 @@ public class ScheduledMovieDetailsDto {
     private String dayOfProjection;
     private String hourOfProjection;
     private String movieDescription;
+    private String movieImageUrl;
 
-
-    public ScheduledMovieDetailsDto(String movieTitle, int movieDurationInMinutes, LocalDateTime dateOfProjection, long scheduledMovieId, String dayOfProjection, String hourOfProjection, String movieDescription) {
+    public ScheduledMovieDetailsDto(String movieTitle, int movieDurationInMinutes, LocalDateTime dateOfProjection, long scheduledMovieId, String dayOfProjection, String hourOfProjection, String movieDescription, String movieImageUrl) {
         this.movieTitle = movieTitle;
         this.movieDurationInMinutes = movieDurationInMinutes;
         this.dateOfProjection = dateOfProjection;
@@ -21,6 +21,7 @@ public class ScheduledMovieDetailsDto {
         this.dayOfProjection = dayOfProjection;
         this.hourOfProjection = hourOfProjection;
         this.movieDescription = movieDescription;
+        this.movieImageUrl = movieImageUrl;
     }
 
     public String getHourOfProjection() {
@@ -37,6 +38,10 @@ public class ScheduledMovieDetailsDto {
 
     public LocalDateTime getDateOfProjection() {
         return dateOfProjection;
+    }
+
+    public String getMovieImageUrl() {
+        return movieImageUrl;
     }
 
     public long getScheduledMovieId() {
