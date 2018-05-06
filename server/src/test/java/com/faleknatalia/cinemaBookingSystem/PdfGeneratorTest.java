@@ -1,15 +1,19 @@
-package com.faleknatalia.reservationsystem;
+package com.faleknatalia.cinemaBookingSystem;
+
 
 import com.faleknatalia.cinemaBookingSystem.model.Seat;
 import com.faleknatalia.cinemaBookingSystem.model.TicketPrice;
 import com.faleknatalia.cinemaBookingSystem.util.SeatAndPriceDetails;
 import com.faleknatalia.cinemaBookingSystem.util.TicketData;
+
+import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -58,7 +62,8 @@ public class PdfGeneratorTest {
         document.addPage(page);
 
         PDPageContentStream contentStream = new PDPageContentStream(document, page);
-        PDImageXObject pdImage = PDImageXObject.createFromFile("./src/test/resources/static/logo-palmy.jpg", document);
+        byte[] image = IOUtils.toByteArray(new ClassPathResource("/static/logo-palmy.jpg").getInputStream());
+        PDImageXObject pdImage = PDImageXObject.createFromByteArray(document, image, null);
         contentStream.drawImage(pdImage, 60, 621, 100, 100);
         contentStream.beginText();
         contentStream.setLeading(14.5f);

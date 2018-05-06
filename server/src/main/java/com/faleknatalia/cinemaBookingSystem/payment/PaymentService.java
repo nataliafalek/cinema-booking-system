@@ -11,6 +11,7 @@ import com.faleknatalia.cinemaBookingSystem.repository.TicketPriceRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -41,6 +42,9 @@ public class PaymentService {
 
     @Autowired
     TicketPriceRepository ticketPriceRepository;
+
+    @Value("${redirect_url}")
+    private String redirectUrl;
 
 
     public AccessToken generateAccessToken(String client_id, String client_secret) {
@@ -77,7 +81,7 @@ public class PaymentService {
                 extOrderId,
                 "http://localhost:8080/notify", "127.0.0.1",
                 clientId,
-                "Bilecik do kina", "PLN", Integer.toString(sumOfTicketPrice(ticketPrices) * 100), buyer, products, "http://localhost:3000/#/paymentSuccess");
+                "Bilecik do kina", "PLN", Integer.toString(sumOfTicketPrice(ticketPrices) * 100), buyer, products, redirectUrl);
 
         //zapis do bazy OrderRequest
         ObjectMapper mapper = new ObjectMapper();

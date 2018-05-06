@@ -1,10 +1,12 @@
 package com.faleknatalia.cinemaBookingSystem.util;
 
+import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,7 +26,8 @@ public class TicketGeneratorPdf {
         document.addPage(page);
 
         PDPageContentStream contentStream = new PDPageContentStream(document, page);
-        PDImageXObject pdImage = PDImageXObject.createFromFile(this.getClass().getResource("/static/logo-palmy.jpg").getPath(), document);
+        byte[] image = IOUtils.toByteArray(new ClassPathResource("/static/logo-palmy.jpg").getInputStream());
+        PDImageXObject pdImage = PDImageXObject.createFromByteArray(document, image, null);
         contentStream.drawImage(pdImage, 60, 618, 100, 100);
 
         contentStream.beginText();
