@@ -46,6 +46,9 @@ public class PaymentService {
     @Value("${redirect_url}")
     private String redirectUrl;
 
+    @Value("${notify_url}")
+    private String notifyUrl;
+
 
     public AccessToken generateAccessToken(String client_id, String client_secret) {
         String url = "https://secure.snd.payu.com/pl/standard/user/oauth/authorize";
@@ -79,7 +82,7 @@ public class PaymentService {
         String extOrderId = UUID.randomUUID().toString();
         OrderRequest orderRequest = new OrderRequest(
                 extOrderId,
-                "http://localhost:8080/notify", "127.0.0.1",
+                notifyUrl, "127.0.0.1",
                 clientId,
                 "Bilecik do kina", "PLN", Integer.toString(sumOfTicketPrice(ticketPrices) * 100), buyer, products, redirectUrl);
 

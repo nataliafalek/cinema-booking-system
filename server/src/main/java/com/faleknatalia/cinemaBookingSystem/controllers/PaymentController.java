@@ -55,6 +55,9 @@ public class PaymentController {
     @Value("${dev_mode}")
     private boolean devMode;
 
+    @Value("${notify_url}")
+    private String notifyUrl;
+
     @Transactional
     @RequestMapping(value = "/payment", method = RequestMethod.POST)
     public ResponseEntity<OrderResponse> saveReservationAndRedirectToPayment(HttpServletResponse response, HttpSession session) throws Exception {
@@ -90,7 +93,7 @@ public class PaymentController {
             OrderResponseNotification orderResponseNotification = new OrderResponseNotification(
                     String.valueOf(reservation.getReservationId()),
                     String.valueOf(reservation.getReservationId()),
-                    "http://localhost:8080/notify",
+                    notifyUrl,
                     "127.0.0.1",
                     clientId,
                     "bilecik test",
