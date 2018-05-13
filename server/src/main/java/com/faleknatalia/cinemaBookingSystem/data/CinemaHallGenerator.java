@@ -16,7 +16,7 @@ public class CinemaHallGenerator {
                 seats.add(new Seat(j, i, j));
             }
         }
-        //remove 2 elements from first row
+        //TODO tutaj mozesz bardziej poszalec np jakos randomowo usuwac miejsca
         seats.remove(0);
         seats.remove(0);
         seats.stream()

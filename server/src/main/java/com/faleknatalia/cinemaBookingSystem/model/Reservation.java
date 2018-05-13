@@ -1,8 +1,12 @@
 package com.faleknatalia.cinemaBookingSystem.model;
 
+import com.faleknatalia.cinemaBookingSystem.dto.ChosenSeatAndPrice;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+
+//Serializable because it is used in the session
 
 @Entity
 public class Reservation implements Serializable {

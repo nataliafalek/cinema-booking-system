@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class ScheduledMovieGenerator {
@@ -23,8 +25,13 @@ public class ScheduledMovieGenerator {
     @Autowired
     MovieRepository movieRepository;
 
+    public Map<LocalDateTime, List<ScheduledMovie>> generateWeekWhatsOn(long cinemaHallId, LocalDateTime day) {
+        List<LocalDateTime> allDates = Stream.iterate(day, date -> date.plusDays(1)).limit(7).collect(Collectors.toList());
+        Map<LocalDateTime, List<ScheduledMovie>> mappedWeek = allDates.stream().collect(Collectors.toMap(dateTime -> dateTime, dateTime -> generateWhatsOn(cinemaHallId, dateTime)));
+        return mappedWeek;
+    }
 
-    public List<ScheduledMovie> generateWhatsOn(long cinemaHallId, LocalDateTime day) {
+    private List<ScheduledMovie> generateWhatsOn(long cinemaHallId, LocalDateTime day) {
         LocalDateTime lastMovieEnd = day.withHour(12);
         List<ScheduledMovie> scheduledMovies = new ArrayList<>();
         List<Movie> movies = movieRepository.findAll();
@@ -35,27 +42,9 @@ public class ScheduledMovieGenerator {
             LocalDateTime endOfProjection = lastMovieEnd.plusMinutes(movie.getDurationInMinutes() + 15);
             scheduledMovies.add(new ScheduledMovie(lastMovieEnd, cinemaHallId, movie.getMovieId()));
             lastMovieEnd = endOfProjection;
-
         }
 
         return scheduledMovies;
-    }
-
-    public Map<LocalDateTime, List<ScheduledMovie>> generateWeekWhatsOn(long cinemaHallId, LocalDateTime day) {
-        LocalDateTime stop = day.plusWeeks(1);
-
-        List<LocalDateTime> allDates = new ArrayList<>();
-        LocalDateTime ld = day;
-        while (ld.isBefore(stop)) {
-            allDates.add(ld);
-            ld = ld.plusDays(1);
-        }
-
-        Map<LocalDateTime, List<ScheduledMovie>> mappedWeek = new HashMap<>();
-        for (LocalDateTime dateTime : allDates) {
-            mappedWeek.put(dateTime, generateWhatsOn(cinemaHallId, dateTime));
-        }
-        return mappedWeek;
     }
 
 }

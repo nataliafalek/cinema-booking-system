@@ -1,5 +1,6 @@
 package com.faleknatalia.cinemaBookingSystem.util;
 
+import com.faleknatalia.cinemaBookingSystem.dto.ChosenSeatAndPrice;
 import com.faleknatalia.cinemaBookingSystem.model.*;
 import com.faleknatalia.cinemaBookingSystem.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;

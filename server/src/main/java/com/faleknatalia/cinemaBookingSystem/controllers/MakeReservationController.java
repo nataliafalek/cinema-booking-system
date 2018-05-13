@@ -1,7 +1,7 @@
 package com.faleknatalia.cinemaBookingSystem.controllers;
 
 import com.faleknatalia.cinemaBookingSystem.dto.ReservationSummaryDto;
-import com.faleknatalia.cinemaBookingSystem.model.ChosenSeatAndPrice;
+import com.faleknatalia.cinemaBookingSystem.dto.ChosenSeatAndPrice;
 import com.faleknatalia.cinemaBookingSystem.model.PersonalData;
 import com.faleknatalia.cinemaBookingSystem.model.Reservation;
 import com.faleknatalia.cinemaBookingSystem.model.SeatReservationByScheduledMovie;
@@ -45,9 +45,10 @@ public class MakeReservationController {
     @RequestMapping(value = "/cinemaHall/seats/choose/{scheduledMovieId}", method = RequestMethod.POST)
     public ResponseEntity<List<SeatReservationByScheduledMovie>> chosenSeat(HttpSession session, @PathVariable long scheduledMovieId, @RequestBody List<ChosenSeatAndPrice> chosenSeatsAndPrices) {
         List<Long> seatIds = chosenSeatsAndPrices.stream().map(seat -> seat.getSeatId()).collect(Collectors.toList());
+        List<SeatReservationByScheduledMovie> seatSeatIdInAndScheduledMovieId = seatReservationByScheduledMovieRepository.findBySeatSeatIdInAndScheduledMovieId(seatIds, scheduledMovieId);
         session.setAttribute("chosenSeatsAndPrices", chosenSeatsAndPrices);
         session.setAttribute("chosenMovieId", scheduledMovieId);
-        return new ResponseEntity<>(seatReservationByScheduledMovieRepository.findBySeatSeatIdInAndScheduledMovieId(seatIds, scheduledMovieId), HttpStatus.OK);
+        return new ResponseEntity<>(seatSeatIdInAndScheduledMovieId, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/cinemaHall/addPerson", method = RequestMethod.POST)
@@ -56,11 +57,12 @@ public class MakeReservationController {
         if (validationResult.isPresent()) {
             throw new IllegalArgumentException(validationResult.get());
         } else {
-            session.setAttribute("personalData", personalData);
             List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("chosenSeatsAndPrices");
             Reservation reservation = new Reservation((long) session.getAttribute("chosenMovieId"), personalData.getPersonId(), chosenSeatAndPrices);
+            long reservationId = reservation.getReservationId();
+            session.setAttribute("personalData", personalData);
             session.setAttribute("reservation", reservation);
-            return new ResponseEntity<>(reservation.getReservationId(), HttpStatus.OK);
+            return new ResponseEntity<>(reservationId, HttpStatus.OK);
         }
     }
 

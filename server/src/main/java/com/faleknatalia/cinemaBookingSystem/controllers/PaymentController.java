@@ -1,11 +1,13 @@
 package com.faleknatalia.cinemaBookingSystem.controllers;
 
+import com.faleknatalia.cinemaBookingSystem.dto.ChosenSeatAndPrice;
 import com.faleknatalia.cinemaBookingSystem.mail.EmailSender;
 import com.faleknatalia.cinemaBookingSystem.model.*;
 import com.faleknatalia.cinemaBookingSystem.payment.*;
 import com.faleknatalia.cinemaBookingSystem.repository.*;
 import com.faleknatalia.cinemaBookingSystem.util.TicketDataService;
 import com.faleknatalia.cinemaBookingSystem.util.TicketGeneratorPdf;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -24,9 +26,6 @@ import java.util.stream.Collectors;
 //TODO wydzielic do serwisow logike z controllerow
 @RestController
 public class PaymentController {
-    private static final String clientId = "322611";
-    private static final String clientSecret = "7bf401d342210d73b85081c0a2fae474";
-
 
     @Autowired
     private PersonalDataRepository personalDataRepository;
@@ -52,8 +51,17 @@ public class PaymentController {
     @Autowired
     TicketPriceRepository ticketPriceRepository;
 
+    @Autowired
+    NotificationResponseDBRepository notificationResponseDBRepository;
+
     @Value("${dev_mode}")
     private boolean devMode;
+
+    @Value("${clientId}")
+    private String clientId;
+
+    @Value("${clientSecret}")
+    private String clientSecret;
 
     @Value("${notify_url}")
     private String notifyUrl;
@@ -61,56 +69,26 @@ public class PaymentController {
     @Transactional
     @RequestMapping(value = "/payment", method = RequestMethod.POST)
     public ResponseEntity<OrderResponse> saveReservationAndRedirectToPayment(HttpServletResponse response, HttpSession session) throws Exception {
+        PersonalData personalData = (PersonalData) session.getAttribute("personalData");
+        Reservation reservation = (Reservation) session.getAttribute("reservation");
         List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("chosenSeatsAndPrices");
         List<Long> chosenSeatsIds = chosenSeatAndPrices.stream().map(chosenSeatAndPrice -> chosenSeatAndPrice.getSeatId()).collect(Collectors.toList());
+
+        AccessToken accessToken = paymentService.generateAccessToken(clientId, clientSecret);
+
         seatReservationByScheduledMovieRepository.setFalseForChosenSeat(chosenSeatsIds, (long) session.getAttribute("chosenMovieId"));
-        //TODO Podmienić ticketPriceId ??
-        PersonalData personalData = (PersonalData) session.getAttribute("personalData");
         personalDataRepository.save(personalData);
         long personalDataId = personalData.getPersonId();
-        Reservation reservation = (Reservation) session.getAttribute("reservation");
         reservation.setPersonalDataId(personalDataId);
         reservationRepository.save(reservation);
         long reservationId = reservation.getReservationId();
 
-        session.invalidate();
-        AccessToken accessToken = paymentService.generateAccessToken(clientId, clientSecret);
-
         if (devMode) {
-            //KOD DO TESTÓW
-            Buyer buyer = new Buyer(
-                    "naticinema@gmail.com",
-                    "123456789",
-                    "Michał",
-                    "Abcd"
-            );
-
-            PayMethod payMethod = new PayMethod("PBL");
-            List<Product> productList = new ArrayList<Product>() {{
-                add(new Product("ticket", "10", "1"));
-            }};
-
-            OrderResponseNotification orderResponseNotification = new OrderResponseNotification(
-                    String.valueOf(reservation.getReservationId()),
-                    String.valueOf(reservation.getReservationId()),
-                    notifyUrl,
-                    "127.0.0.1",
-                    clientId,
-                    "bilecik test",
-                    "PLN",
-                    "100",
-                    buyer,
-                    payMethod,
-                    productList,
-                    "COMPLETED"
-            );
-
-            List<PropertyNotification> propertyNotificationList = new ArrayList<PropertyNotification>() {{
-                add(new PropertyNotification("PAYMENT_ID", "12345"));
-            }};
-            notify(new NotificationResponse(orderResponseNotification, "2016-03-02T12:58:14.828+01:00", propertyNotificationList));
+            payuTestCode(reservation);
         }
-        return new ResponseEntity<>(paymentService.generateOrder(accessToken, reservationId, personalDataId, clientId), HttpStatus.OK);
+        OrderResponse orderResponse = paymentService.generateOrder(accessToken, reservationId, personalDataId, clientId);
+        session.invalidate();
+        return new ResponseEntity<>(orderResponse, HttpStatus.OK);
     }
 
 
@@ -124,10 +102,46 @@ public class PaymentController {
 
     @RequestMapping(value = "/notify", method = RequestMethod.POST)
     public void notify(NotificationResponse notificationResponse) throws Exception {
+        //TODO te odpowiedzi tez chcemy zapisywac w bazie, chcemy miec cala komunikacje pomiedzy nami i payu w bazie - to jest wazne!
+        ObjectMapper mapper = new ObjectMapper();
+        notificationResponseDBRepository.save(new NotificationResponseDB(notificationResponse.getOrder().getExtOrderId(), mapper.writeValueAsString(notificationResponse)));
         if (notificationResponse.getOrder().getStatus().equals("COMPLETED")) {
             sendEmail(Long.parseLong(notificationResponse.getOrder().getExtOrderId()));
         }
     }
 
+    private void payuTestCode(Reservation reservation) throws Exception {
+        Buyer buyer = new Buyer(
+                "naticinema@gmail.com",
+                "123456789",
+                "Michał",
+                "Abcd"
+        );
+
+        PayMethod payMethod = new PayMethod("PBL");
+        List<Product> productList = new ArrayList<Product>() {{
+            add(new Product("ticket", "10", "1"));
+        }};
+
+        OrderResponseNotification orderResponseNotification = new OrderResponseNotification(
+                String.valueOf(reservation.getReservationId()),
+                String.valueOf(reservation.getReservationId()),
+                notifyUrl,
+                "127.0.0.1",
+                clientId,
+                "bilecik test",
+                "PLN",
+                "100",
+                buyer,
+                payMethod,
+                productList,
+                "COMPLETED"
+        );
+
+        List<PropertyNotification> propertyNotificationList = new ArrayList<PropertyNotification>() {{
+            add(new PropertyNotification("PAYMENT_ID", "12345"));
+        }};
+        notify(new NotificationResponse(orderResponseNotification, "2016-03-02T12:58:14.828+01:00", propertyNotificationList));
+    }
 
 }

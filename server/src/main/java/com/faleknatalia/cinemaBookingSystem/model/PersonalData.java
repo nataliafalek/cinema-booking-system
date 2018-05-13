@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
 
+//Serializable because it is used in the session
 @Entity
 public class PersonalData implements Serializable {
 

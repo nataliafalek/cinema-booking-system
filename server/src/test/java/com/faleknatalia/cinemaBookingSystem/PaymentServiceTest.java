@@ -1,6 +1,6 @@
 package com.faleknatalia.cinemaBookingSystem;
 
-import com.faleknatalia.cinemaBookingSystem.model.ChosenSeatAndPrice;
+import com.faleknatalia.cinemaBookingSystem.dto.ChosenSeatAndPrice;
 import com.faleknatalia.cinemaBookingSystem.model.PersonalData;
 import com.faleknatalia.cinemaBookingSystem.model.Reservation;
 import com.faleknatalia.cinemaBookingSystem.payment.AccessToken;
@@ -8,7 +8,6 @@ import com.faleknatalia.cinemaBookingSystem.payment.OrderResponse;
 import com.faleknatalia.cinemaBookingSystem.payment.PaymentService;
 import com.faleknatalia.cinemaBookingSystem.repository.PersonalDataRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.ReservationRepository;
-import com.faleknatalia.cinemaBookingSystem.repository.SeatReservationByScheduledMovieRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 
 @RunWith(SpringRunner.class)

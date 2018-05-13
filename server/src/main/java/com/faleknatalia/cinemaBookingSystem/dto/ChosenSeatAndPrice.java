@@ -1,7 +1,8 @@
-package com.faleknatalia.cinemaBookingSystem.model;
+package com.faleknatalia.cinemaBookingSystem.dto;
 
 import java.io.Serializable;
 
+//Serializable because it is used in the session
 public class ChosenSeatAndPrice implements Serializable {
 
     private long seatId;

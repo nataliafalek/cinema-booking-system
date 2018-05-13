@@ -49,32 +49,31 @@ public class PaymentService {
     @Value("${notify_url}")
     private String notifyUrl;
 
+    @Value("${paymentAuthorizationUrl}")
+    private String paymentAuthorizationUrl;
+
+    @Value("${createOrderUrl}")
+    private String createOrderUrl;
 
     public AccessToken generateAccessToken(String client_id, String client_secret) {
-        String url = "https://secure.snd.payu.com/pl/standard/user/oauth/authorize";
-
         RestTemplate restTemplate = new RestTemplate();
 
-        String requestJson = String.format("grant_type=client_credentials&client_id=%s&client_secret=%s", client_id, client_secret);
+        String request = String.format("grant_type=client_credentials&client_id=%s&client_secret=%s", client_id, client_secret);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
-        return restTemplate.postForObject(url, entity, AccessToken.class);
+        HttpEntity<String> entity = new HttpEntity<>(request, headers);
+        return restTemplate.postForObject(paymentAuthorizationUrl, entity, AccessToken.class);
     }
 
     public OrderResponse generateOrder(AccessToken token, long reservationId, long personalDataId, String clientId) throws JsonProcessingException {
-
-        //Order data
         Reservation reservation = reservationRepository.findOne(reservationId);
         PersonalData personalData = personalDataRepository.findOne(personalDataId);
         List<TicketPrice> ticketPrices =
                 reservation.getChosenSeatsAndPrices().stream().map(chosenSeatAndPrice -> ticketPriceRepository.findOne(chosenSeatAndPrice.getTicketPriceId())).collect(Collectors.toList());
-        String url = "https://secure.snd.payu.com/api/v2_1/orders";
-        RestTemplate restTemplate = new RestTemplate();
+
         Buyer buyer = new Buyer(personalData.getEmail(), personalData.getPhoneNumber(), personalData.getName(), personalData.getSurname());
 
-        //PRODUCT
         List<Product> products = new ArrayList<>();
         ticketPrices.stream().map(ticketPrice ->
                 products.add(new Product("Ticket", Integer.toString(ticketPrice.getTicketValue() * 100), "1")))
@@ -86,7 +85,6 @@ public class PaymentService {
                 clientId,
                 "Bilecik do kina", "PLN", Integer.toString(sumOfTicketPrice(ticketPrices) * 100), buyer, products, redirectUrl);
 
-        //zapis do bazy OrderRequest
         ObjectMapper mapper = new ObjectMapper();
         orderRequestDBRepository.save(new OrderRequestsAndResponseDB(extOrderId, reservationId, "request", mapper.writeValueAsString(orderRequest)));
 
@@ -95,10 +93,9 @@ public class PaymentService {
         headers.set("Authorization", "Bearer " + token.getAccess_token());
 
         HttpEntity<OrderRequest> entity = new HttpEntity<>(orderRequest, headers);
+        RestTemplate restTemplate = new RestTemplate();
 
-
-        return restTemplate.postForObject(url, entity, OrderResponse.class);
-
+        return restTemplate.postForObject(createOrderUrl, entity, OrderResponse.class);
     }
 
     private int sumOfTicketPrice(List<TicketPrice> chosenSeatsPrice) {
