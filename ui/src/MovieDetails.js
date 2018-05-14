@@ -27,7 +27,7 @@ class MovieDetails extends Component {
     return (
       this.state.whatsOnByMovies ?
         <div className={"movieDetails"}>
-          <div className={"movieDescImg"}><img src={decodeURIComponent(this.state.whatsOnByMovies[0].movieImageUrl)} alt=""/></div>
+         <img src={decodeURIComponent(this.state.whatsOnByMovies[0].movieImageUrl)} alt=""/>
           <div className={"movieDesc"}>
             <h1>"{this.state.whatsOnByMovies[0].movieTitle}"</h1>
             <p> Duration: {this.state.whatsOnByMovies[0].movieDurationInMinutes} minutes </p>

@@ -6,14 +6,12 @@ body {
 }
 
 /*Navigation Menu*/
+
 ul.header {
     list-style-type: none;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #1A2828;
-    border-bottom: 2px solid #EA783B;;
-
 }
 
 ul.header li {
@@ -157,18 +155,15 @@ li.freeSeat:before {
 }
 
 li.freeSeat:hover {
-    /*border: 10px solid #777777;*/
     background-color: #777777;
 }
 
 li.chosenSeat {
     background-color: darkslategray;
-    /*border: 10px solid darkslategray;*/
 }
 
 li.reservedSeat {
     background-color: indianred;
-    /*border: 10px solid indianred;*/
     cursor: not-allowed;
 }
 
@@ -343,14 +338,14 @@ div.gallery div.movieDescription {
     width: 24.99999%;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 600px) {
     .responsive {
         width: 49.99999%;
         margin: 6px 0;
     }
 }
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 600px) {
     .responsive {
         width: 100%;
     }
@@ -470,13 +465,6 @@ div.gallery div.movieDescription {
     background-color: #cccccc;
 }
 
-.movieDescImg {
-    width: 15%;
-    height: 200px;
-    margin: 60px 60px 0 60px;
-    float: left;
-}
-
 .movieDesc h1 {
     padding: 10px;
     color: #EA783B;
@@ -488,6 +476,13 @@ div.gallery div.movieDescription {
 .movieDesc p {
     font-family: "Courier New";
     color: #1A2828;
+
+}
+
+.movieDetails img {
+    margin-top: 5%;
+    margin-right: 2%;
+    float: left;
 }
 
 .projectionHours li {
@@ -497,3 +492,76 @@ div.gallery div.movieDescription {
     padding: 5px;
     display: inline-block;
 }
+
+@media only screen and (max-width: 600px) {
+    /* For mobile phones: */
+    ul.header img {
+        width: 30%;
+    }
+
+    ul.header a.nav {
+        padding: 5px;
+    }
+
+    li.emptySeat, li.freeSeat, li.chosenSeat, li.reservedSeat {
+        width: 19px;
+        height: 19px;
+        margin: 2px;
+    }
+
+    li.emptySeat {
+        border: 5px solid #696C74;
+    }
+
+    div.CinemaHallRows p {
+        margin: 4px;
+    }
+
+    .summary {
+        width: 100%;
+        height: auto;
+        background-color: #cccccc;
+        margin-top: 10px;
+        margin-bottom: 0;
+
+    }
+
+    .summaryData {
+        width: 100%;
+        margin-left: 0;
+
+    }
+
+    .reservationData {
+        color: #EA783B;
+        font-size: 16px
+    }
+
+    .summaryData li {
+        color: #1A2828;
+        list-style-type: none;
+        padding: 5px;
+        border-bottom: 2px solid #777777;
+        font-size: 12px
+
+    }
+
+    .moviesSchedule {
+        width: 100%;
+        float: none;
+    }
+
+    .prices {
+        width: 100%;
+        margin: 0;
+        text-align: center;
+    }
+
+    .movieDetails img {
+        margin-top: 25%;
+        width: 30%;
+    }
+
+}
+
+
