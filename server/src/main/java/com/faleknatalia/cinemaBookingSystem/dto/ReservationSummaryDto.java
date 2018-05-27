@@ -1,7 +1,7 @@
 package com.faleknatalia.cinemaBookingSystem.dto;
 
 import com.faleknatalia.cinemaBookingSystem.model.PersonalData;
-import com.faleknatalia.cinemaBookingSystem.util.TicketData;
+import com.faleknatalia.cinemaBookingSystem.ticket.TicketData;
 
 public class ReservationSummaryDto {
 

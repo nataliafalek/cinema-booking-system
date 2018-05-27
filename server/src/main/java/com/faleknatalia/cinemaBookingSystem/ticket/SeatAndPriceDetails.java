@@ -1,4 +1,4 @@
-package com.faleknatalia.cinemaBookingSystem.util;
+package com.faleknatalia.cinemaBookingSystem.ticket;
 
 import com.faleknatalia.cinemaBookingSystem.model.Seat;
 import com.faleknatalia.cinemaBookingSystem.model.TicketPrice;

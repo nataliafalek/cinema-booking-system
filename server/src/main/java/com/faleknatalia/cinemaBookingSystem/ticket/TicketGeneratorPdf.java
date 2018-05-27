@@ -1,4 +1,4 @@
-package com.faleknatalia.cinemaBookingSystem.util;
+package com.faleknatalia.cinemaBookingSystem.ticket;
 
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;

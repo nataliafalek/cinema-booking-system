@@ -1,25 +1,25 @@
-package com.faleknatalia.cinemaBookingSystem.payment;
+package com.faleknatalia.cinemaBookingSystem.payment.model;
 
 import java.util.List;
 
-public class OrderRequest {
+public class OrderResponseNotification {
 
-
+    private String orderId;
     private String extOrderId;
     private String notifyUrl;
+
     private String customerIp;
     private String merchantPosId;
     private String description;
     private String currencyCode;
     private String totalAmount;
-
     private Buyer buyer;
+    private PayMethod payMethod;
+    private List<Product> products = null;
+    private String status;
 
-    private List<Product> products;
-
-    private String continueUrl;
-
-    public OrderRequest(String extOrderId, String notifyUrl, String customerIp, String merchantPosId, String description, String currencyCode, String totalAmount, Buyer buyer, List<Product> products, String continueUrl) {
+    public OrderResponseNotification(String orderId, String extOrderId, String notifyUrl, String customerIp, String merchantPosId, String description, String currencyCode, String totalAmount, Buyer buyer, PayMethod payMethod, List<Product> products, String status) {
+        this.orderId = orderId;
         this.extOrderId = extOrderId;
         this.notifyUrl = notifyUrl;
         this.customerIp = customerIp;
@@ -28,11 +28,24 @@ public class OrderRequest {
         this.currencyCode = currencyCode;
         this.totalAmount = totalAmount;
         this.buyer = buyer;
+        this.payMethod = payMethod;
         this.products = products;
-        this.continueUrl = continueUrl;
+        this.status = status;
     }
 
-    public OrderRequest() {
+    public OrderResponseNotification() {
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public String getExtOrderId() {
+        return extOrderId;
+    }
+
+    public String getNotifyUrl() {
+        return notifyUrl;
     }
 
     public String getCustomerIp() {
@@ -59,20 +72,15 @@ public class OrderRequest {
         return buyer;
     }
 
+    public PayMethod getPayMethod() {
+        return payMethod;
+    }
+
     public List<Product> getProducts() {
         return products;
     }
 
-    public String getContinueUrl() {
-        return continueUrl;
+    public String getStatus() {
+        return status;
     }
-
-    public String getExtOrderId() {
-        return extOrderId;
-    }
-
-    public String getNotifyUrl() {
-        return notifyUrl;
-    }
-
 }

@@ -16,6 +16,7 @@ import java.io.InputStream;
 
 @Component
 public class EmailSender {
+    //TODO Pomysl - mozna by dodac do maila qrcode z identyfikatorem transakcji - jak w lunie
 
     @Autowired
     private JavaMailSender javaMailSender;

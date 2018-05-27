@@ -1,4 +1,4 @@
-package com.faleknatalia.cinemaBookingSystem.util;
+package com.faleknatalia.cinemaBookingSystem.ticket;
 
 import java.util.List;
 

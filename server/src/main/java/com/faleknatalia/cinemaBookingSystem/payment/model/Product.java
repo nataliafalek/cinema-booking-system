@@ -1,4 +1,4 @@
-package com.faleknatalia.cinemaBookingSystem.payment;
+package com.faleknatalia.cinemaBookingSystem.payment.model;
 
 
 public class Product {

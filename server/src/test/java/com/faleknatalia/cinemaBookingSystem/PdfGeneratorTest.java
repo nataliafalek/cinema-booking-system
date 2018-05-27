@@ -3,8 +3,8 @@ package com.faleknatalia.cinemaBookingSystem;
 
 import com.faleknatalia.cinemaBookingSystem.model.Seat;
 import com.faleknatalia.cinemaBookingSystem.model.TicketPrice;
-import com.faleknatalia.cinemaBookingSystem.util.SeatAndPriceDetails;
-import com.faleknatalia.cinemaBookingSystem.util.TicketData;
+import com.faleknatalia.cinemaBookingSystem.ticket.SeatAndPriceDetails;
+import com.faleknatalia.cinemaBookingSystem.ticket.TicketData;
 
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;

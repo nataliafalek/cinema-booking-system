@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,7 +24,8 @@ public class ScheduledMovieGenerator {
 
     public Map<LocalDateTime, List<ScheduledMovie>> generateWeekWhatsOn(long cinemaHallId, LocalDateTime day) {
         List<LocalDateTime> allDates = Stream.iterate(day, date -> date.plusDays(1)).limit(7).collect(Collectors.toList());
-        Map<LocalDateTime, List<ScheduledMovie>> mappedWeek = allDates.stream().collect(Collectors.toMap(dateTime -> dateTime, dateTime -> generateWhatsOn(cinemaHallId, dateTime)));
+        Map<LocalDateTime, List<ScheduledMovie>> mappedWeek = allDates.stream().collect(Collectors
+                .toMap(dateTime -> dateTime, dateTime -> generateWhatsOn(cinemaHallId, dateTime)));
         return mappedWeek;
     }
 
