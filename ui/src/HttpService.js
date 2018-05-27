@@ -1,5 +1,5 @@
- const url = `http://localhost:8080/`;
-// const url = `/`;
+//const url = `http://localhost:8080/`;
+const url = `/`;
 
 export function fetchJson(path) {
   return (fetch(url + path, {

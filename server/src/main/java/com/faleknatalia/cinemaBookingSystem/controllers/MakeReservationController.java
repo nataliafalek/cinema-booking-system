@@ -16,10 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import java.util.stream.Collectors;
 
@@ -52,14 +49,14 @@ public class MakeReservationController {
     }
 
     @RequestMapping(value = "/cinemaHall/addPerson", method = RequestMethod.POST)
-    public ResponseEntity<Long> createReservation(HttpSession session, @RequestBody PersonalData personalData) {
+    public ResponseEntity<String> createReservation(HttpSession session, @RequestBody PersonalData personalData) {
         Optional<String> validationResult = new PersonalDataValidator().validate(personalData);
         if (validationResult.isPresent()) {
             throw new IllegalArgumentException(validationResult.get());
         } else {
             List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("chosenSeatsAndPrices");
             Reservation reservation = new Reservation((long) session.getAttribute("chosenMovieId"), personalData.getPersonId(), chosenSeatAndPrices);
-            long reservationId = reservation.getReservationId();
+            String reservationId = reservation.getReservationId();
             session.setAttribute("personalData", personalData);
             session.setAttribute("reservation", reservation);
             return new ResponseEntity<>(reservationId, HttpStatus.OK);

@@ -1,6 +1,7 @@
 package com.faleknatalia.cinemaBookingSystem.model;
 
 import com.faleknatalia.cinemaBookingSystem.dto.ChosenSeatAndPrice;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,9 +15,11 @@ public class Reservation implements Serializable {
 
     private long personalDataId;
 
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long reservationId;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    private String reservationId;
 
     @ElementCollection(targetClass = ChosenSeatAndPrice.class, fetch = FetchType.EAGER)
     private List<ChosenSeatAndPrice> chosenSeatsAndPrices;
@@ -42,7 +45,7 @@ public class Reservation implements Serializable {
         return chosenSeatsAndPrices;
     }
 
-    public long getReservationId() {
+    public String getReservationId() {
         return reservationId;
     }
 

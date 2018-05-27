@@ -36,8 +36,8 @@ public class TicketDataService {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
 
-    public TicketData findMovie(long reservationId) {
-        Reservation reservation = reservationRepository.findOne(reservationId);
+    public TicketData findMovie(String extOrderId) {
+        Reservation reservation = reservationRepository.findByReservationId(extOrderId);
         long chosenMovie = reservation.getChosenMovieId();
         ScheduledMovie movie = scheduledMovieRepository.findOne(chosenMovie);
         LocalDateTime movieProjection = movie.getDateOfProjection();

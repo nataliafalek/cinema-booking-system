@@ -66,8 +66,8 @@ public class PaymentService {
         return restTemplate.postForObject(paymentAuthorizationUrl, entity, AccessToken.class);
     }
 
-    public OrderResponse generateOrder(AccessToken token, long reservationId, long personalDataId, String clientId) throws JsonProcessingException {
-        Reservation reservation = reservationRepository.findOne(reservationId);
+    public OrderResponse generateOrder(AccessToken token, String reservationId, long personalDataId, String clientId) throws JsonProcessingException {
+        Reservation reservation = reservationRepository.findByReservationId(reservationId);
         PersonalData personalData = personalDataRepository.findOne(personalDataId);
         List<TicketPrice> ticketPrices =
                 reservation.getChosenSeatsAndPrices().stream().map(chosenSeatAndPrice -> ticketPriceRepository.findOne(chosenSeatAndPrice.getTicketPriceId())).collect(Collectors.toList());
@@ -78,7 +78,7 @@ public class PaymentService {
         ticketPrices.stream().map(ticketPrice ->
                 products.add(new Product("Ticket", Integer.toString(ticketPrice.getTicketValue() * 100), "1")))
                 .collect(Collectors.toList());
-        String extOrderId = UUID.randomUUID().toString();
+        String extOrderId = reservation.getReservationId();
         OrderRequest orderRequest = new OrderRequest(
                 extOrderId,
                 notifyUrl, "127.0.0.1",
@@ -86,7 +86,7 @@ public class PaymentService {
                 "Bilecik do kina", "PLN", Integer.toString(sumOfTicketPrice(ticketPrices) * 100), buyer, products, redirectUrl);
 
         ObjectMapper mapper = new ObjectMapper();
-        orderRequestDBRepository.save(new OrderRequestsAndResponseDB(extOrderId, reservationId, "request", mapper.writeValueAsString(orderRequest)));
+        orderRequestDBRepository.save(new OrderRequestsAndResponseDB(extOrderId, "request", mapper.writeValueAsString(orderRequest)));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

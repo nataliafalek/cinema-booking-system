@@ -8,6 +8,9 @@ import com.faleknatalia.cinemaBookingSystem.repository.*;
 import com.faleknatalia.cinemaBookingSystem.util.TicketDataService;
 import com.faleknatalia.cinemaBookingSystem.util.TicketGeneratorPdf;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,9 @@ import java.util.stream.Collectors;
 //TODO wydzielic do serwisow logike z controllerow
 @RestController
 public class PaymentController {
+
+    private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
+
 
     @Autowired
     private PersonalDataRepository personalDataRepository;
@@ -81,7 +87,7 @@ public class PaymentController {
         long personalDataId = personalData.getPersonId();
         reservation.setPersonalDataId(personalDataId);
         reservationRepository.save(reservation);
-        long reservationId = reservation.getReservationId();
+        String reservationId = reservation.getReservationId();
 
         if (devMode) {
             payuTestCode(reservation);
@@ -93,21 +99,24 @@ public class PaymentController {
 
 
     @RequestMapping(value = "/sendEmail", method = RequestMethod.POST)
-    public void sendEmail(long reservationId) throws Exception {
-        ByteArrayOutputStream doc = new TicketGeneratorPdf().generateTicket(ticketDataService.findMovie(reservationId));
-        long personalDataId = reservationRepository.findOne(reservationId).getPersonalDataId();
+    public void sendEmail(String extOrderId) throws Exception {
+        ByteArrayOutputStream doc = new TicketGeneratorPdf().generateTicket(ticketDataService.findMovie(extOrderId));
+        long personalDataId = reservationRepository.findByReservationId(extOrderId).getPersonalDataId();
         String email = personalDataRepository.findOne(personalDataId).getEmail();
         emailSender.sendEmail(email, "NatiCinema cinema ticket", "Please take this ticket and show before projection of the movie.", doc);
     }
 
     @RequestMapping(value = "/notify", method = RequestMethod.POST)
-    public void notify(NotificationResponse notificationResponse) throws Exception {
-        //TODO te odpowiedzi tez chcemy zapisywac w bazie, chcemy miec cala komunikacje pomiedzy nami i payu w bazie - to jest wazne!
-        ObjectMapper mapper = new ObjectMapper();
-        notificationResponseDBRepository.save(new NotificationResponseDB(notificationResponse.getOrder().getExtOrderId(), mapper.writeValueAsString(notificationResponse)));
-        if (notificationResponse.getOrder().getStatus().equals("COMPLETED")) {
-            sendEmail(Long.parseLong(notificationResponse.getOrder().getExtOrderId()));
+    public void notify(@RequestBody String notificationResponse) throws Exception {
+        JSONObject jsonObject = new JSONObject(notificationResponse);
+        JSONObject order = jsonObject.getJSONObject("order");
+        String extOrderId = order.getString("extOrderId");
+        notificationResponseDBRepository.save(new NotificationResponseDB(extOrderId, notificationResponse));
+        if (order.getString("status").equals("COMPLETED")) {
+            sendEmail(extOrderId);
         }
+
+        logger.info("PayU notification response: \n" + notificationResponse);
     }
 
     private void payuTestCode(Reservation reservation) throws Exception {
@@ -141,7 +150,10 @@ public class PaymentController {
         List<PropertyNotification> propertyNotificationList = new ArrayList<PropertyNotification>() {{
             add(new PropertyNotification("PAYMENT_ID", "12345"));
         }};
-        notify(new NotificationResponse(orderResponseNotification, "2016-03-02T12:58:14.828+01:00", propertyNotificationList));
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        notify(mapper.writeValueAsString(new NotificationResponse(orderResponseNotification, "2016-03-02T12:58:14.828+01:00", propertyNotificationList)));
     }
 
 }
