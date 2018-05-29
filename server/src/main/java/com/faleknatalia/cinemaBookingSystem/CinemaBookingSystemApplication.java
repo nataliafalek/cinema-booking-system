@@ -71,21 +71,25 @@ public class CinemaBookingSystemApplication implements CommandLineRunner {
             }};
 
             List<TicketPrice> ticketPrices = new ArrayList<TicketPrice>() {{
-                add(new TicketPrice("student", 7));
                 add(new TicketPrice("normal", 10));
+                add(new TicketPrice("student", 7));
                 add(new TicketPrice("senior", 8));
             }};
 
             cinemaHallRepository.save(cinemaHalls);
             movieRepository.save(allMovies);
 
-            Map<LocalDateTime, List<ScheduledMovie>> weekWhatsOnForFirstCinemaHall = scheduledMovieGenerator.generateWeekWhatsOn(1, LocalDateTime.now().withMinute(0).withSecond(0).withNano(0));
-            Map<LocalDateTime, List<ScheduledMovie>> weekWhatsOnForSecondCinemaHall = scheduledMovieGenerator.generateWeekWhatsOn(2, LocalDateTime.now().withMinute(0).withSecond(0).withNano(0));
+            Map<LocalDateTime, List<ScheduledMovie>> weekWhatsOnForFirstCinemaHall =
+                    scheduledMovieGenerator.generateWeekWhatsOn(cinemaHalls.get(0).getCinemaHallId(), LocalDateTime.now().withMinute(0).withSecond(0).withNano(0));
+            Map<LocalDateTime, List<ScheduledMovie>> weekWhatsOnForSecondCinemaHall =
+                    scheduledMovieGenerator.generateWeekWhatsOn(cinemaHalls.get(1).getCinemaHallId(), LocalDateTime.now().withMinute(0).withSecond(0).withNano(0));
 
-            weekWhatsOnForFirstCinemaHall.values().stream().forEach(scheduledMovie -> scheduledMovieRepository.save(scheduledMovie));
-            weekWhatsOnForSecondCinemaHall.values().stream().forEach(scheduledMovie -> scheduledMovieRepository.save(scheduledMovie));
-            seatReservationByScheduledMovieRepository.save(seatReservationByScheduledMovieGenerator.generateSeatsReservationByScheduledMovies());
+            weekWhatsOnForFirstCinemaHall.values().stream()
+                    .forEach(scheduledMovie -> scheduledMovieRepository.save(scheduledMovie));
+            weekWhatsOnForSecondCinemaHall.values().stream()
+                    .forEach(scheduledMovie -> scheduledMovieRepository.save(scheduledMovie));
             ticketPriceRepository.save(ticketPrices);
+            seatReservationByScheduledMovieRepository.save(seatReservationByScheduledMovieGenerator.generateSeatsReservationByScheduledMovies());
         }
     }
 

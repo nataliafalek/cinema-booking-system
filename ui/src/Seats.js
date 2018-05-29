@@ -72,6 +72,7 @@ class Seats extends Component {
     HttpService.fetchJson('ticketPriceList')
       .then(data => {
         this.setState({ticketPrices: data})
+        console.log("ticketPrices", this.state.ticketPrices)
       })
   }
 
@@ -83,6 +84,7 @@ class Seats extends Component {
     const ticketPrice = this.state.ticketPrices.filter(ticketPrice =>
       // TODO Zamienic na ==
       ticketPrice.ticketPriceId == priceId);
+    console.log("ticketPrice", ticketPrice)
     return ticketPrice[0].ticketValue
   }
 
@@ -125,6 +127,7 @@ class Seats extends Component {
         }
 
       </div>
+      {console.log("chosenSeats",this.state.chosenSeats)}
       {this.state.chosenSeats ? this.state.chosenSeats.map((seat, idx) =>
         <div className={"chosenSeats"} key={idx}>
           {this.printChosenSeats(seat)}, Type:
@@ -136,7 +139,7 @@ class Seats extends Component {
             })}
           </select>
           , price: ${this.getTicketPrice(seat.ticketPriceId)}
-        </div>) : []}
+        </div>) : [] }
 
       {this.state.redirect ? <Redirect push to={'/personalData'}/> : null}
       <div className={"buttons"}>

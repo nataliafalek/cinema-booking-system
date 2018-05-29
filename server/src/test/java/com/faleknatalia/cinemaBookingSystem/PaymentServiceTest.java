@@ -8,6 +8,7 @@ import com.faleknatalia.cinemaBookingSystem.payment.model.OrderResponse;
 import com.faleknatalia.cinemaBookingSystem.payment.PaymentService;
 import com.faleknatalia.cinemaBookingSystem.repository.PersonalDataRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.ReservationRepository;
+import com.faleknatalia.cinemaBookingSystem.repository.TicketPriceRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class PaymentServiceTest {
 
     @Autowired
     private PersonalDataRepository personalDataRepository;
+
+    @Autowired
+    private TicketPriceRepository ticketPriceRepository;
 
     @Test
     public void getAccessToken() throws Exception {

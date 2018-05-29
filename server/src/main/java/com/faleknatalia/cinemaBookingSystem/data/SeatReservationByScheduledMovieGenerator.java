@@ -5,6 +5,7 @@ import com.faleknatalia.cinemaBookingSystem.model.Seat;
 import com.faleknatalia.cinemaBookingSystem.model.SeatReservationByScheduledMovie;
 import com.faleknatalia.cinemaBookingSystem.repository.CinemaHallRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.ScheduledMovieRepository;
+import com.faleknatalia.cinemaBookingSystem.repository.TicketPriceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,9 @@ public class SeatReservationByScheduledMovieGenerator {
 
     @Autowired
     private ScheduledMovieRepository scheduledMovieRepository;
+
+    @Autowired
+    private TicketPriceRepository ticketPriceRepository;
 
 
     @Autowired
@@ -33,6 +37,6 @@ public class SeatReservationByScheduledMovieGenerator {
     }
 
     private SeatReservationByScheduledMovie newSeat(ScheduledMovie scheduledMovie, Seat seat) {
-        return new SeatReservationByScheduledMovie(scheduledMovie.getScheduledMovieId(), scheduledMovie.getCinemaHallId(), true, 1, seat);
+        return new SeatReservationByScheduledMovie(scheduledMovie.getScheduledMovieId(), scheduledMovie.getCinemaHallId(), true, ticketPriceRepository.findAll().get(0).getTicketPriceId(), seat);
     }
 }
