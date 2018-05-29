@@ -25,25 +25,25 @@ import java.util.Map;
 public class CinemaBookingSystemApplication implements CommandLineRunner {
 
     @Autowired
-    MovieRepository movieRepository;
+    private MovieRepository movieRepository;
 
     @Autowired
-    ScheduledMovieRepository scheduledMovieRepository;
+    private ScheduledMovieRepository scheduledMovieRepository;
 
     @Autowired
-    CinemaHallRepository cinemaHallRepository;
+    private CinemaHallRepository cinemaHallRepository;
 
     @Autowired
-    TicketPriceRepository ticketPriceRepository;
+    private TicketPriceRepository ticketPriceRepository;
 
     @Autowired
-    ScheduledMovieGenerator scheduledMovieGenerator;
+    private ScheduledMovieGenerator scheduledMovieGenerator;
 
     @Autowired
-    SeatReservationByScheduledMovieGenerator seatReservationByScheduledMovieGenerator;
+    private SeatReservationByScheduledMovieGenerator seatReservationByScheduledMovieGenerator;
 
     @Autowired
-    SeatReservationByScheduledMovieRepository seatReservationByScheduledMovieRepository;
+    private SeatReservationByScheduledMovieRepository seatReservationByScheduledMovieRepository;
 
     @Value("${generateSampleData}")
     private boolean generateSampleData;

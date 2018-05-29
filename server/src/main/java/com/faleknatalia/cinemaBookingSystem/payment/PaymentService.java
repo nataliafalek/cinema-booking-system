@@ -7,7 +7,6 @@ import com.faleknatalia.cinemaBookingSystem.payment.model.*;
 import com.faleknatalia.cinemaBookingSystem.payment.repository.OrderRequestDBRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.PersonalDataRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.ReservationRepository;
-import com.faleknatalia.cinemaBookingSystem.repository.SeatReservationByScheduledMovieRepository;
 
 import com.faleknatalia.cinemaBookingSystem.repository.TicketPriceRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,8 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,19 +27,16 @@ import java.util.stream.Collectors;
 public class PaymentService {
 
     @Autowired
-    ReservationRepository reservationRepository;
+    private ReservationRepository reservationRepository;
 
     @Autowired
-    PersonalDataRepository personalDataRepository;
+    private PersonalDataRepository personalDataRepository;
 
     @Autowired
-    SeatReservationByScheduledMovieRepository seatReservationByScheduledMovieRepository;
+    private OrderRequestDBRepository orderRequestDBRepository;
 
     @Autowired
-    OrderRequestDBRepository orderRequestDBRepository;
-
-    @Autowired
-    TicketPriceRepository ticketPriceRepository;
+    private TicketPriceRepository ticketPriceRepository;
 
     @Value("${redirect_url}")
     private String redirectUrl;
@@ -78,9 +72,8 @@ public class PaymentService {
 
         Buyer buyer = new Buyer(personalData.getEmail(), personalData.getPhoneNumber(), personalData.getName(), personalData.getSurname());
 
-        List<Product> products = new ArrayList<>();
-        ticketPrices.stream().map(ticketPrice ->
-                products.add(new Product("Ticket", toCents(ticketPrice.getTicketValue()), "1")))
+        List<Product> products = ticketPrices.stream().map(ticketPrice ->
+                 new Product("Ticket", toCents(ticketPrice.getTicketValue()), "1"))
                 .collect(Collectors.toList());
         String extOrderId = reservation.getReservationId();
         OrderRequest orderRequest = new OrderRequest(

@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
 public class MakeReservationController {
 
     @Autowired
-    SeatReservationByScheduledMovieRepository seatReservationByScheduledMovieRepository;
+    private SeatReservationByScheduledMovieRepository seatReservationByScheduledMovieRepository;
 
     @Autowired
-    TicketDataService ticketDataService;
+    private TicketDataService ticketDataService;
 
     @RequestMapping(value = "/cinemaHall/seats", method = RequestMethod.GET)
     public ResponseEntity<List<List<SeatReservationByScheduledMovie>>> seatsByCinemaHallAndMovie(@RequestParam long scheduledMovieId) {

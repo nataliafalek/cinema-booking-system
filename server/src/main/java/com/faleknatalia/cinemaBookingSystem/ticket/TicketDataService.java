@@ -15,22 +15,19 @@ import java.util.stream.Collectors;
 public class TicketDataService {
 
     @Autowired
-    ReservationRepository reservationRepository;
+    private ReservationRepository reservationRepository;
 
     @Autowired
-    ScheduledMovieRepository scheduledMovieRepository;
+    private ScheduledMovieRepository scheduledMovieRepository;
 
     @Autowired
-    MovieRepository movieRepository;
+    private MovieRepository movieRepository;
 
     @Autowired
-    SeatRepository seatRepository;
+    private SeatRepository seatRepository;
 
     @Autowired
-    SeatReservationByScheduledMovieRepository seatReservationByScheduledMovieRepository;
-
-    @Autowired
-    TicketPriceRepository ticketPriceRepository;
+    private TicketPriceRepository ticketPriceRepository;
 
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");

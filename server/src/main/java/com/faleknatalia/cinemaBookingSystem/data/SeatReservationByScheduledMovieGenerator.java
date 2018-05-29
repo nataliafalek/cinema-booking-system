@@ -5,12 +5,9 @@ import com.faleknatalia.cinemaBookingSystem.model.Seat;
 import com.faleknatalia.cinemaBookingSystem.model.SeatReservationByScheduledMovie;
 import com.faleknatalia.cinemaBookingSystem.repository.CinemaHallRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.ScheduledMovieRepository;
-import com.faleknatalia.cinemaBookingSystem.repository.SeatRepository;
-import com.sun.java.swing.plaf.windows.WindowsTreeUI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,13 +15,11 @@ import java.util.stream.Collectors;
 public class SeatReservationByScheduledMovieGenerator {
 
     @Autowired
-    ScheduledMovieRepository scheduledMovieRepository;
+    private ScheduledMovieRepository scheduledMovieRepository;
+
 
     @Autowired
-    SeatRepository seatRepository;
-
-    @Autowired
-    CinemaHallRepository cinemaHallRepository;
+    private CinemaHallRepository cinemaHallRepository;
 
     public List<SeatReservationByScheduledMovie> generateSeatsReservationByScheduledMovies() {
         List<ScheduledMovie> scheduledMovies = scheduledMovieRepository.findAll();

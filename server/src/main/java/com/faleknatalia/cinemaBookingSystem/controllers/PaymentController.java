@@ -52,16 +52,16 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @Autowired
-    EmailSender emailSender;
+    private EmailSender emailSender;
 
     @Autowired
-    OrderRequestDBRepository orderRequestDBRepository;
+    private OrderRequestDBRepository orderRequestDBRepository;
 
     @Autowired
-    TicketPriceRepository ticketPriceRepository;
+    private TicketPriceRepository ticketPriceRepository;
 
     @Autowired
-    NotificationResponseDBRepository notificationResponseDBRepository;
+    private NotificationResponseDBRepository notificationResponseDBRepository;
 
     @Value("${dev_mode}")
     private boolean devMode;

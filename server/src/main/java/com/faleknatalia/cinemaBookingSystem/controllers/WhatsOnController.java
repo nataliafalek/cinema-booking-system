@@ -23,10 +23,10 @@ public class WhatsOnController {
     private static final DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
 
     @Autowired
-    MovieRepository movieRepository;
+    private MovieRepository movieRepository;
 
     @Autowired
-    ScheduledMovieRepository scheduledMovieRepository;
+    private ScheduledMovieRepository scheduledMovieRepository;
 
     @RequestMapping(value = "/whatsOn", method = RequestMethod.GET)
     public ResponseEntity<List<ScheduledMovieDetailsDto>> whatsOn() {

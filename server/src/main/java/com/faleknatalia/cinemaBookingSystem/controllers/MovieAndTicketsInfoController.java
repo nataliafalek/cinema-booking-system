@@ -17,10 +17,10 @@ import java.util.List;
 public class MovieAndTicketsInfoController {
 
     @Autowired
-    MovieRepository movieRepository;
+    private MovieRepository movieRepository;
 
     @Autowired
-    TicketPriceRepository ticketPriceRepository;
+    private TicketPriceRepository ticketPriceRepository;
 
     @RequestMapping(value = "/movies", method = RequestMethod.GET)
     public ResponseEntity<List<Movie>> getMovies() {

@@ -2,7 +2,6 @@ package com.faleknatalia.cinemaBookingSystem.data;
 
 import com.faleknatalia.cinemaBookingSystem.model.Movie;
 import com.faleknatalia.cinemaBookingSystem.model.ScheduledMovie;
-import com.faleknatalia.cinemaBookingSystem.repository.CinemaHallRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,11 +15,9 @@ import java.util.stream.Stream;
 @Component
 public class ScheduledMovieGenerator {
 
-    @Autowired
-    CinemaHallRepository cinemaHallRepository;
 
     @Autowired
-    MovieRepository movieRepository;
+    private MovieRepository movieRepository;
 
     public Map<LocalDateTime, List<ScheduledMovie>> generateWeekWhatsOn(long cinemaHallId, LocalDateTime day) {
         List<LocalDateTime> allDates = Stream.iterate(day, date -> date.plusDays(1)).limit(7).collect(Collectors.toList());

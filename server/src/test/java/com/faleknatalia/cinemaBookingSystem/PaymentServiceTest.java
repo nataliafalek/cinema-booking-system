@@ -25,13 +25,13 @@ import java.util.ArrayList;
 public class PaymentServiceTest {
 
     @Autowired
-    PaymentService paymentService;
+    private PaymentService paymentService;
 
     @Autowired
-    ReservationRepository reservationRepository;
+    private ReservationRepository reservationRepository;
 
     @Autowired
-    PersonalDataRepository personalDataRepository;
+    private PersonalDataRepository personalDataRepository;
 
     @Test
     public void getAccessToken() throws Exception {
