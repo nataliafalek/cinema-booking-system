@@ -53,7 +53,7 @@ public class PaymentServiceTest {
 
         System.out.println(token.getAccess_token());
 
-        OrderResponse response = paymentService.generateOrder(token, reservation.getReservationId(),personalData.getPersonId(), "322611");
+        OrderResponse response = paymentService.sendOrder(token, reservation.getReservationId(),personalData.getPersonId(), "322611");
 
         System.out.println(response.getRedirectUri());
     }

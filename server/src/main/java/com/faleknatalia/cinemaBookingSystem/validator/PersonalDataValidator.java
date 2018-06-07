@@ -16,7 +16,7 @@ public class PersonalDataValidator {
         Matcher matcherEmailAddress = validEmailAddressRegex.matcher(personalData.getEmail());
         Matcher matcherName = validNameRegex.matcher(personalData.getName());
         Matcher matcherSurname = validNameRegex.matcher(personalData.getSurname());
-        if(matcherPhoneNumber.matches() && matcherEmailAddress.matches()
+        if (matcherPhoneNumber.matches() && matcherEmailAddress.matches()
                 && matcherName.matches() && matcherSurname.matches()) {
             return Optional.empty();
         } else {

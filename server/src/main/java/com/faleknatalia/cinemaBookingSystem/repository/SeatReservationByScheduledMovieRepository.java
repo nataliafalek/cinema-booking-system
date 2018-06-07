@@ -13,7 +13,7 @@ public interface SeatReservationByScheduledMovieRepository extends JpaRepository
 
     @Modifying
     @Query("update SeatReservationByScheduledMovie s set s.isFree = false where s.seat.seatId in (?1) and s.scheduledMovieId = ?2")
-    int setFalseForChosenSeat(List<Long> seatId, long scheduledMovieId);
+    int reserveSeat(List<Long> seatId, long scheduledMovieId);
 
     List<SeatReservationByScheduledMovie> findAllByScheduledMovieId(long scheduledMovieId);
 

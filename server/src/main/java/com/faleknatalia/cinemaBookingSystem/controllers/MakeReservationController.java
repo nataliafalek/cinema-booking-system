@@ -50,7 +50,7 @@ public class MakeReservationController {
 
     @RequestMapping(value = "/cinemaHall/addPerson", method = RequestMethod.POST)
     public ResponseEntity<String> createReservation(HttpSession session, @RequestBody PersonalData personalData) {
-        Optional<String> validationResult = new PersonalDataValidator().validate(personalData);
+        Optional<String> validationResult = PersonalDataValidator.validate(personalData);
         if (validationResult.isPresent()) {
             throw new IllegalArgumentException(validationResult.get());
         } else {

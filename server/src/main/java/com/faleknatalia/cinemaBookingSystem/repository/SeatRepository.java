@@ -12,7 +12,7 @@ import java.util.List;
 public interface SeatRepository extends JpaRepository<Seat, Long> {
 //    @Modifying
 //    @Query("update Seat s set s.isFree = false where s.seatId = ?1")
-//    int setFalseForChosenSeat(long seatId);
+//    int reserveSeat(long seatId);
 
     long countAllBySeatIdIsNotNull();
 

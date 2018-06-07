@@ -6,7 +6,6 @@ import com.faleknatalia.cinemaBookingSystem.model.*;
 import com.faleknatalia.cinemaBookingSystem.payment.*;
 import com.faleknatalia.cinemaBookingSystem.payment.model.*;
 import com.faleknatalia.cinemaBookingSystem.payment.repository.NotificationResponseDBRepository;
-import com.faleknatalia.cinemaBookingSystem.payment.repository.OrderRequestDBRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.*;
 import com.faleknatalia.cinemaBookingSystem.ticket.TicketDataService;
 import com.faleknatalia.cinemaBookingSystem.ticket.TicketGeneratorPdf;
@@ -55,13 +54,8 @@ public class PaymentController {
     private EmailSender emailSender;
 
     @Autowired
-    private OrderRequestDBRepository orderRequestDBRepository;
-
-    @Autowired
-    private TicketPriceRepository ticketPriceRepository;
-
-    @Autowired
     private NotificationResponseDBRepository notificationResponseDBRepository;
+
 
     @Value("${dev_mode}")
     private boolean devMode;
@@ -85,7 +79,7 @@ public class PaymentController {
 
         AccessToken accessToken = paymentService.generateAccessToken(clientId, clientSecret);
 
-        seatReservationByScheduledMovieRepository.setFalseForChosenSeat(chosenSeatsIds, (long) session.getAttribute("chosenMovieId"));
+        seatReservationByScheduledMovieRepository.reserveSeat(chosenSeatsIds, (long) session.getAttribute("chosenMovieId"));
         personalDataRepository.save(personalData);
         long personalDataId = personalData.getPersonId();
         reservation.setPersonalDataId(personalDataId);
@@ -93,9 +87,9 @@ public class PaymentController {
         String reservationId = reservation.getReservationId();
 
         if (devMode) {
-            payuTestCode(reservation);
+            invokeNotifyAsPayu(reservation);
         }
-        OrderResponse orderResponse = paymentService.generateOrder(accessToken, reservationId, personalDataId, clientId);
+        OrderResponse orderResponse = paymentService.sendOrder(accessToken, reservationId, personalDataId, clientId);
         session.invalidate();
         return new ResponseEntity<>(orderResponse, HttpStatus.OK);
     }
@@ -122,7 +116,13 @@ public class PaymentController {
         logger.info("PayU notification response: \n" + notificationResponse);
     }
 
-    private void payuTestCode(Reservation reservation) throws Exception {
+    private void invokeNotifyAsPayu(Reservation reservation) throws Exception {
+        NotificationResponse notificationResponse = testNotificationResponse(reservation);
+        ObjectMapper mapper = new ObjectMapper();
+        notify(mapper.writeValueAsString(notificationResponse));
+    }
+
+    private NotificationResponse testNotificationResponse(Reservation reservation) {
         Buyer buyer = new Buyer(
                 "naticinema@gmail.com",
                 "123456789",
@@ -154,9 +154,7 @@ public class PaymentController {
             add(new PropertyNotification("PAYMENT_ID", "12345"));
         }};
 
-        ObjectMapper mapper = new ObjectMapper();
-
-        notify(mapper.writeValueAsString(new NotificationResponse(orderResponseNotification, "2016-03-02T12:58:14.828+01:00", propertyNotificationList)));
+        return new NotificationResponse(orderResponseNotification, "2016-03-02T12:58:14.828+01:00", propertyNotificationList);
     }
 
 }
