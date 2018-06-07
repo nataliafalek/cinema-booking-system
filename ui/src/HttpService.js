@@ -1,5 +1,4 @@
-//const url = `http://localhost:8080/`;
-const url = `/`;
+const url = process.env.REACT_APP_API_URL;
 
 export function fetchJson(path) {
   return (fetch(url + path, {
