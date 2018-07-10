@@ -24,18 +24,16 @@ class PersonalData extends Component {
       phoneNumber: this.state.phoneNumber,
       email: this.state.email
     };
-    var status = 200;
     HttpService.postJson('cinemaHall/addPerson', person)
       .then(results => {
-        status = results.status;
-        return results.text();
+        if (results.status === 200) {
+          return results.text();
+        } else {
+          alert("Invalid data form")
+        }
       }).then(reservationId => {
-      if (status === 200) {
         this.setState({reservationId: reservationId});
         this.handleOnClick()
-      } else {
-        alert("Invalid data form");
-      }
     });
     event.preventDefault()
   };

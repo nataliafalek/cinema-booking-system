@@ -11,8 +11,7 @@ class Seats extends Component {
     this.state = {
       chosenSeats: [],
       cinemaHall: [],
-      ticketPrices: [],
-      seatsWithChosenPrices: []
+      ticketPrices: []
     };
   }
 
@@ -39,18 +38,19 @@ class Seats extends Component {
       })
   };
 
-  renderSeat = (oneSeat, rowIndex, colIndex) => {
-    const seat = oneSeat[0];
+  renderSeat = (seat, rowIndex, colIndex) => {
     const seatClass = this.state.chosenSeats.includes(seat) ? "chosenSeat" : "freeSeat";
     if (seat) {
       return seat.free ?
         <li className={seatClass} key={`${rowIndex}${colIndex}`} onClick={(event => {
+
           if (!this.state.chosenSeats.includes(seat)) {
             const newSeats = this.state.chosenSeats.concat(seat);
             this.setState({chosenSeats: newSeats})
           } else {
             const seats = this.state.chosenSeats.filter(s => s !== seat);
             this.setState({chosenSeats: seats})
+
           }
 
         })}>{seat.seat.seatNumber}</li> :
@@ -60,10 +60,10 @@ class Seats extends Component {
   };
 
   findSeat = (hall, rowNumber, colNumber) => {
-    //TODO ZAMIENIC NA ===
     const filteredList = Object.keys(hall).filter(key => key == rowNumber - 1);
     const row = filteredList ? hall[filteredList] : null;
-    return row ? row.filter(element => element.seat.columnNumber == colNumber) : null;
+    const rowList = row ? row.filter(element => element.seat.columnNumber == colNumber) : null;
+    return rowList[0];
   };
 
 
@@ -72,7 +72,6 @@ class Seats extends Component {
     HttpService.fetchJson('ticketPriceList')
       .then(data => {
         this.setState({ticketPrices: data})
-        console.log("ticketPrices", this.state.ticketPrices)
       })
   }
 
@@ -84,7 +83,6 @@ class Seats extends Component {
     const ticketPrice = this.state.ticketPrices.filter(ticketPrice =>
       // TODO Zamienic na ==
       ticketPrice.ticketPriceId == priceId);
-    console.log("ticketPrice", ticketPrice)
     return ticketPrice[0].ticketValue
   }
 
@@ -93,13 +91,15 @@ class Seats extends Component {
     const newChosenSeats = this.state.chosenSeats.map(chosenSeat => {
       {
         if (chosenSeat.seat.seatId === seat.seat.seatId) {
-          chosenSeat.ticketPriceId = selectedPrice;
-          return chosenSeat;
+          return {
+            ...chosenSeat,
+            ticketPriceId: selectedPrice
+          }
         }
         return chosenSeat;
       }
     });
-    this.setState({seatsWithChosenPrices: newChosenSeats});
+     this.setState({chosenSeats: newChosenSeats});
   }
 
   render() {
@@ -116,7 +116,7 @@ class Seats extends Component {
           maxCinemaHallSeats.map((rowNumber, rowIndexMax) => {
             const row = rowNumber.map((columnNumber, colIndex) => {
               const seat = this.findSeat(this.state.cinemaHall, rowIndexMax + 1, columnNumber)
-              return this.renderSeat(seat, rowIndexMax, colIndex) ? this.renderSeat(seat, rowIndexMax, colIndex) :
+              return seat ? this.renderSeat(seat, rowIndexMax, colIndex) :
                 <li key={`${rowIndexMax}${colIndex}`} className={"emptySeat"}>0</li>;
             });
             return (<div className={"CinemaHallRows"} key={`${rowIndexMax}`}>
@@ -127,7 +127,6 @@ class Seats extends Component {
         }
 
       </div>
-      {console.log("chosenSeats",this.state.chosenSeats)}
       {this.state.chosenSeats ? this.state.chosenSeats.map((seat, idx) =>
         <div className={"chosenSeats"} key={idx}>
           {this.printChosenSeats(seat)}, Type:

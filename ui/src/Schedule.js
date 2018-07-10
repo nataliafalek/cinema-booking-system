@@ -35,7 +35,7 @@ class Schedule extends Component {
   }
 
   orderByActualDay = () => {
-    const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+    const days = _.cloneDeep(this.days)
     const daysOrder = days.splice(0, days.indexOf(days[new Date().getDay()]));
     return days.concat(daysOrder);
   }
@@ -47,8 +47,8 @@ class Schedule extends Component {
         <div className={"daysOfWeek"}>
           {
             this.orderByActualDay().map((day, idx) => {
-                const chosenDay = this.state.actualDay === day ? "actualDay" : "otherDays";
-                return <span key={idx} className={chosenDay}
+                const dayClass = this.state.actualDay === day ? "actualDay" : "otherDays";
+                return <span key={idx} className={dayClass}
                              onClick={(event) => this.setState({actualDay: day})}>&emsp;{day}</span>
               }
             )}
@@ -61,8 +61,8 @@ class Schedule extends Component {
             <th>DURATION</th>
           </tr>
           {grouppedByDay[this.state.actualDay] ? grouppedByDay[this.state.actualDay].map((movie, idx) => {
-            const selectedMovie = this.state.chosenMovie === movie ? "selectedMovie" : "otherMovies";
-            return <tr className={selectedMovie} key={idx} onClick={(event) => {
+            const movieClass = this.state.chosenMovie === movie ? "selectedMovie" : "otherMovies";
+            return <tr className={movieClass} key={idx} onClick={(event) => {
               this.setState({chosenMovie: movie})
             }}>
               <td> {movie.movieTitle}</td>

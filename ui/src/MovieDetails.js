@@ -23,7 +23,6 @@ class MovieDetails extends Component {
   };
 
   render() {
-    console.log(this.state.whatsOnByMovies)
     return (
       this.state.whatsOnByMovies ?
         <div className={"movieDetails"}>
