@@ -9,8 +9,7 @@ class ChosenSeatsList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ticketPrices: [],
-      chosenSeat: []
+      ticketPrices: []
     };
   }
 
@@ -52,9 +51,9 @@ class ChosenSeatsList extends Component {
     return ticketPrice[0].ticketValue
   }
 
-  selectChange = (event, seat) => {
+  calculateNewChosenSeats = (event, seat) => {
     const selectedPrice = event.target.value;
-    const newChosenSeats =  this.props.chosenSeats.map(chosenSeat => {
+    const newChosenSeats = this.props.chosenSeats.map(chosenSeat => {
       {
         if (chosenSeat.seat.seatId === seat.seat.seatId) {
           return {
@@ -64,10 +63,8 @@ class ChosenSeatsList extends Component {
         }
         return chosenSeat;
       }
-
     });
-       this.setState({chosenSeats: newChosenSeats});
-       console.log("chosenSeats", this.state.chosenSeats)
+    return newChosenSeats
   }
 
   render() {
@@ -76,7 +73,10 @@ class ChosenSeatsList extends Component {
     {this.props.chosenSeats ? this.props.chosenSeats.map((seat, idx) =>
         <div className={"chosenSeats"} key={idx}>
           Seat number: {seat.seat.seatNumber}, row: {seat.seat.rowNumber}, Type:
-          <select className={"ticketType"} key={idx} onChange={event => this.selectChange(event, seat)}>
+          <select className={"ticketType"} key={idx} onChange={event => {
+            const newChosenSeats = this.calculateNewChosenSeats(event, seat)
+            this.props.chosenSeatsChanged(newChosenSeats)
+          }}>
             {this.state.ticketPrices.map((price, ticketIdx) => {
               return <option key={ticketIdx} value={price.ticketPriceId}>
                 {price.ticketType}

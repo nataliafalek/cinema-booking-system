@@ -19,18 +19,17 @@ class CinemaHall extends Component {
   };
 
   renderSeat = (seat, rowIndex, colIndex) => {
-    const seatClass = this.state.chosenSeats.includes(seat) ? "chosenSeat" : "freeSeat";
+    const includesSeat = this.state.chosenSeats.map(chosenSeat => chosenSeat.seat.seatId).includes(seat.seat.seatId);
+    const seatClass = includesSeat ? "chosenSeat" : "freeSeat";
     if (seat) {
       return seat.free ?
         <li className={seatClass} key={`${rowIndex}${colIndex}`} onClick={(event => {
-
-          if (!this.state.chosenSeats.includes(seat)) {
+          if (!includesSeat) {
             const newSeats = this.state.chosenSeats.concat(seat);
             this.setState({chosenSeats: newSeats})
           } else {
-            const seats = this.state.chosenSeats.filter(s => s !== seat);
+            const seats = this.state.chosenSeats.filter(s => s.seat.seatId !== seat.seat.seatId);
             this.setState({chosenSeats: seats})
-
           }
 
         })}>{seat.seat.seatNumber}</li> :
@@ -49,6 +48,10 @@ class CinemaHall extends Component {
 
   componentDidMount() {
     this.getHall(this.props.match.params.scheduledMovieId)
+  }
+
+  chosenSeatsChanged = (newChosenSeats) => {
+    this.setState({chosenSeats: newChosenSeats})
   }
 
 
@@ -78,7 +81,9 @@ class CinemaHall extends Component {
         }
 
       </div>
-      <ChosenSeatsList chosenSeats = {this.state.chosenSeats} scheduledMovieId = {this.props.match.params.scheduledMovieId} />
+      <ChosenSeatsList chosenSeatsChanged={(newChosenSeats) => this.chosenSeatsChanged(newChosenSeats)}
+                       chosenSeats={this.state.chosenSeats}
+                       scheduledMovieId={this.props.match.params.scheduledMovieId}/>
     </div>
 
   }
