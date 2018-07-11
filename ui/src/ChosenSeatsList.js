@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import * as HttpService from "./HttpService";
 import './index.css';
-import {Redirect} from 'react-router-dom';
-import BackButton from "./BackButton";
 
 class ChosenSeatsList extends Component {
 
@@ -13,26 +11,6 @@ class ChosenSeatsList extends Component {
     };
   }
 
-
-  chooseSeats = (seats) => {
-    const chosenSeatIds = seats.map(seat => {
-      return {seatId: seat.seat.seatId, ticketPriceId: seat.ticketPriceId}
-    });
-    return HttpService.postJson(`cinemaHall/seats/choose/${this.props.scheduledMovieId}`, chosenSeatIds)
-      .then(data => {
-        if (data.status === 200) {
-          this.setState({redirect: true});
-        }
-      })
-  };
-
-  componentWillReceiveProps(nextProps){
-    if(nextProps.chosenSeats!==this.props.chosenSeats){
-      //Perform some operation
-      this.setState({chosenSeat: this.props.chosenSeats });
-    }
-  }
-
   componentDidMount() {
     HttpService.fetchJson('ticketPriceList')
       .then(data => {
@@ -40,9 +18,6 @@ class ChosenSeatsList extends Component {
       })
   }
 
-  handleOnClick = () => {
-    this.chooseSeats(this.props.chosenSeats);
-  };
 
   getTicketPrice = (priceId) => {
     const ticketPrice = this.state.ticketPrices.filter(ticketPrice =>
@@ -68,9 +43,9 @@ class ChosenSeatsList extends Component {
   }
 
   render() {
-  return <div>
+    return <div>
 
-    {this.props.chosenSeats ? this.props.chosenSeats.map((seat, idx) =>
+      {this.props.chosenSeats ? this.props.chosenSeats.map((seat, idx) =>
         <div className={"chosenSeats"} key={idx}>
           Seat number: {seat.seat.seatNumber}, row: {seat.seat.rowNumber}, Type:
           <select className={"ticketType"} key={idx} onChange={event => {
@@ -84,16 +59,8 @@ class ChosenSeatsList extends Component {
             })}
           </select>
           , price: ${this.getTicketPrice(seat.ticketPriceId)}
-        </div>) : [] }
+        </div>) : []}
 
-      {this.state.redirect ? <Redirect push to={'/personalData'}/> : null}
-      <div className={"buttons"}>
-        <BackButton/>
-        <button className={"nextButton"} disabled={this.props.chosenSeats.length === 0}
-                onClick={this.handleOnClick}
-                type="button">Next
-        </button>
-      </div>
     </div>;
   }
 
