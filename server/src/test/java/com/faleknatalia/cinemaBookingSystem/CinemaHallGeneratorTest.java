@@ -26,7 +26,7 @@ public class CinemaHallGeneratorTest {
         CinemaHall cinemaHall = new CinemaHall(seats);
 
         //when
-        CinemaHall cinemaHallAuto = new CinemaHallGenerator().generateCinemaHall(3,2);
+        CinemaHall cinemaHallAuto = new CinemaHallGenerator().generateCinemaHall(3,2,1);
 
 
 

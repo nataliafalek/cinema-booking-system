@@ -69,8 +69,8 @@ public class CinemaBookingSystemApplication implements CommandLineRunner {
                     );
 
             List<CinemaHall> cinemaHalls = Arrays.asList(
-                    new CinemaHallGenerator().generateCinemaHall(7, 12),
-                    new CinemaHallGenerator().generateCinemaHall(8, 14)
+                    new CinemaHallGenerator().generateCinemaHall(7, 12, 4),
+                    new CinemaHallGenerator().generateCinemaHall(8, 14, 6)
             );
 
             List<TicketPrice> ticketPrices = Arrays.asList(
