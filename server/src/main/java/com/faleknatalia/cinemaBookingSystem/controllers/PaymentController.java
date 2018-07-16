@@ -56,6 +56,8 @@ public class PaymentController {
     @Autowired
     private NotificationResponseDBRepository notificationResponseDBRepository;
 
+    @Autowired
+    private TicketPriceRepository ticketPriceRepository;
 
     @Value("${dev_mode}")
     private boolean devMode;
@@ -87,8 +89,9 @@ public class PaymentController {
         String reservationId = reservation.getReservationId();
 
         if (devMode) {
-            invokeNotifyAsPayu(reservation);
+            invokeNotifyAsPayu(reservation, personalData, chosenSeatAndPrices);
         }
+
         OrderResponse orderResponse = paymentService.sendOrder(accessToken, reservationId, personalDataId, clientId);
         session.invalidate();
         return new ResponseEntity<>(orderResponse, HttpStatus.OK);
@@ -116,24 +119,25 @@ public class PaymentController {
         logger.info("PayU notification response: \n" + notificationResponse);
     }
 
-    private void invokeNotifyAsPayu(Reservation reservation) throws Exception {
-        NotificationResponse notificationResponse = testNotificationResponse(reservation);
+    private void invokeNotifyAsPayu(Reservation reservation, PersonalData personalData, List<ChosenSeatAndPrice> chosenSeatAndPrices) throws Exception {
+        NotificationResponse notificationResponse = testNotificationResponse(reservation, personalData, chosenSeatAndPrices);
         ObjectMapper mapper = new ObjectMapper();
         notify(mapper.writeValueAsString(notificationResponse));
     }
 
-    private NotificationResponse testNotificationResponse(Reservation reservation) {
+    private NotificationResponse testNotificationResponse(Reservation reservation, PersonalData personalData, List<ChosenSeatAndPrice> chosenSeatAndPrices) {
         Buyer buyer = new Buyer(
-                "naticinema@gmail.com",
-                "123456789",
-                "Michał",
-                "Abcd"
+                personalData.getEmail(),
+                personalData.getPhoneNumber(),
+                personalData.getName(),
+                personalData.getSurname()
         );
 
         PayMethod payMethod = new PayMethod("PBL");
-        List<Product> productList = new ArrayList<Product>() {{
-            add(new Product("ticket", "10", "1"));
-        }};
+
+        List<Product> productList = chosenSeatAndPrices.stream().map(chosenSeatAndPrice ->
+                new Product("ticket", String.valueOf(ticketPriceRepository.findOne(chosenSeatAndPrice.getTicketPriceId()).getTicketValue()), "1")
+        ).collect(Collectors.toList());
 
         OrderResponseNotification orderResponseNotification = new OrderResponseNotification(
                 String.valueOf(reservation.getReservationId()),
