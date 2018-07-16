@@ -24,7 +24,7 @@ public class CinemaHallGenerator {
 
 
         for (int i = 1; i <= howManySeatsRemove; i++) {
-            int randomNumber = ThreadLocalRandom.current().nextInt(0, seats.size() - 1);
+            int randomNumber = ThreadLocalRandom.current().nextInt(1, seats.size() - 1);
             seats.remove(randomNumber);
             removedSeats.add(seats.get(randomNumber));
         }
