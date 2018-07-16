@@ -1,7 +1,7 @@
 package com.faleknatalia.cinemaBookingSystem.controllers;
 
-import com.faleknatalia.cinemaBookingSystem.dto.ReservationSummaryDto;
 import com.faleknatalia.cinemaBookingSystem.dto.ChosenSeatAndPrice;
+import com.faleknatalia.cinemaBookingSystem.dto.ReservationSummaryDto;
 import com.faleknatalia.cinemaBookingSystem.model.PersonalData;
 import com.faleknatalia.cinemaBookingSystem.model.Reservation;
 import com.faleknatalia.cinemaBookingSystem.model.SeatReservationByScheduledMovie;
@@ -16,8 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -55,7 +57,7 @@ public class MakeReservationController {
             throw new IllegalArgumentException(validationResult.get());
         } else {
             List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("chosenSeatsAndPrices");
-            Reservation reservation = new Reservation((long) session.getAttribute("chosenMovieId"), personalData.getPersonId(), chosenSeatAndPrices);
+            Reservation reservation = new Reservation((long) session.getAttribute("chosenMovieId"), personalData, chosenSeatAndPrices);
             String reservationId = reservation.getReservationId();
             session.setAttribute("personalData", personalData);
             session.setAttribute("reservation", reservation);

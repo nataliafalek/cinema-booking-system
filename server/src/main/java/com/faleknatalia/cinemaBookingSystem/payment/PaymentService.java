@@ -1,22 +1,19 @@
 package com.faleknatalia.cinemaBookingSystem.payment;
 
+import com.faleknatalia.cinemaBookingSystem.constants.Constants;
 import com.faleknatalia.cinemaBookingSystem.model.PersonalData;
 import com.faleknatalia.cinemaBookingSystem.model.Reservation;
 import com.faleknatalia.cinemaBookingSystem.model.TicketPrice;
 import com.faleknatalia.cinemaBookingSystem.payment.model.*;
 import com.faleknatalia.cinemaBookingSystem.payment.repository.OrderRequestDBRepository;
-import com.faleknatalia.cinemaBookingSystem.repository.PersonalDataRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.ReservationRepository;
-
 import com.faleknatalia.cinemaBookingSystem.repository.TicketPriceRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,9 +29,6 @@ public class PaymentService {
     private ReservationRepository reservationRepository;
 
     @Autowired
-    private PersonalDataRepository personalDataRepository;
-
-    @Autowired
     private OrderRequestDBRepository orderRequestDBRepository;
 
     @Autowired
@@ -43,20 +37,8 @@ public class PaymentService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${redirect_url}")
-    private String redirectUrl;
-
-    @Value("${notify_url}")
-    private String notifyUrl;
-
-    @Value("${paymentAuthorizationUrl}")
-    private String paymentAuthorizationUrl;
-
-    @Value("${createOrderUrl}")
-    private String createOrderUrl;
-
-    @Value("${paymentCustomerIp}")
-    private String customerIp;
+    @Autowired
+    private Constants constants;
 
     public AccessToken generateAccessToken(String client_id, String client_secret) {
 
@@ -65,11 +47,11 @@ public class PaymentService {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         HttpEntity<String> entity = new HttpEntity<>(request, headers);
-        return restTemplate.postForObject(paymentAuthorizationUrl, entity, AccessToken.class);
+        return restTemplate.postForObject(constants.getPaymentAuthorizationUrl(), entity, AccessToken.class);
     }
 
-    public OrderResponse sendOrder(AccessToken token, String reservationId, long personalDataId, String clientId) throws JsonProcessingException {
-        OrderRequest orderRequest = generateOrderRequest(reservationId, personalDataId, clientId);
+    public OrderResponse sendOrder(AccessToken token, String reservationId, String clientId) throws JsonProcessingException {
+        OrderRequest orderRequest = generateOrderRequest(reservationId, clientId);
         ObjectMapper mapper = new ObjectMapper();
         orderRequestDBRepository.save(new OrderRequestsAndResponseDB(orderRequest.getExtOrderId(), "request", mapper.writeValueAsString(orderRequest)));
         return httpPostPayuOrder(token, orderRequest);
@@ -91,12 +73,12 @@ public class PaymentService {
 
         HttpEntity<OrderRequest> entity = new HttpEntity<>(orderRequest, headers);
 
-        return restTemplate.postForObject(createOrderUrl, entity, OrderResponse.class);
+        return restTemplate.postForObject(constants.getCreateOrderUrl(), entity, OrderResponse.class);
     }
 
-    private OrderRequest generateOrderRequest(String reservationId, long personalDataId, String clientId) {
+    private OrderRequest generateOrderRequest(String reservationId, String clientId) {
         Reservation reservation = reservationRepository.findByReservationId(reservationId);
-        PersonalData personalData = personalDataRepository.findOne(personalDataId);
+        PersonalData personalData = reservation.getPersonalData();
         List<TicketPrice> ticketPrices =
                 reservation.getChosenSeatsAndPrices().stream().map(chosenSeatAndPrice -> ticketPriceRepository.findOne(chosenSeatAndPrice.getTicketPriceId())).collect(Collectors.toList());
 
@@ -108,9 +90,9 @@ public class PaymentService {
         String extOrderId = reservation.getReservationId();
         return new OrderRequest(
                 extOrderId,
-                notifyUrl, customerIp,
+                constants.getNotifyUrl(), constants.getCustomerIp(),
                 clientId,
-                "Bilecik do kina", "PLN", toCents(sumOfTicketPrice(ticketPrices)), buyer, products, redirectUrl);
+                "Bilecik do kina", "PLN", toCents(sumOfTicketPrice(ticketPrices)), buyer, products, constants.getRedirectUrl());
 
     }
 

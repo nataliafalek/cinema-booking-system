@@ -1,12 +1,15 @@
 package com.faleknatalia.cinemaBookingSystem.controllers;
 
+import com.faleknatalia.cinemaBookingSystem.constants.Constants;
 import com.faleknatalia.cinemaBookingSystem.dto.ChosenSeatAndPrice;
 import com.faleknatalia.cinemaBookingSystem.mail.EmailSender;
-import com.faleknatalia.cinemaBookingSystem.model.*;
-import com.faleknatalia.cinemaBookingSystem.payment.*;
+import com.faleknatalia.cinemaBookingSystem.model.Reservation;
+import com.faleknatalia.cinemaBookingSystem.payment.NotificationResponseDB;
+import com.faleknatalia.cinemaBookingSystem.payment.PaymentService;
 import com.faleknatalia.cinemaBookingSystem.payment.model.*;
 import com.faleknatalia.cinemaBookingSystem.payment.repository.NotificationResponseDBRepository;
-import com.faleknatalia.cinemaBookingSystem.repository.*;
+import com.faleknatalia.cinemaBookingSystem.repository.ReservationRepository;
+import com.faleknatalia.cinemaBookingSystem.repository.SeatReservationByScheduledMovieRepository;
 import com.faleknatalia.cinemaBookingSystem.ticket.TicketDataService;
 import com.faleknatalia.cinemaBookingSystem.ticket.TicketGeneratorPdf;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,12 +17,13 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -28,15 +32,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//TODO wydzielic do serwisow logike z controllerow
 @RestController
 public class PaymentController {
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
-
-
-    @Autowired
-    private PersonalDataRepository personalDataRepository;
 
     @Autowired
     private ReservationRepository reservationRepository;
@@ -56,41 +55,18 @@ public class PaymentController {
     @Autowired
     private NotificationResponseDBRepository notificationResponseDBRepository;
 
-
-    @Value("${dev_mode}")
-    private boolean devMode;
-
-    @Value("${clientId}")
-    private String clientId;
-
-    @Value("${clientSecret}")
-    private String clientSecret;
-
-    @Value("${notify_url}")
-    private String notifyUrl;
+    @Autowired
+    private Constants constants;
 
     @Transactional
     @RequestMapping(value = "/payment", method = RequestMethod.POST)
     public ResponseEntity<OrderResponse> saveReservationAndRedirectToPayment(HttpServletResponse response, HttpSession session) throws Exception {
-        PersonalData personalData = (PersonalData) session.getAttribute("personalData");
-        Reservation reservation = (Reservation) session.getAttribute("reservation");
-        List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("chosenSeatsAndPrices");
-        List<Long> chosenSeatsIds = chosenSeatAndPrices.stream().map(chosenSeatAndPrice -> chosenSeatAndPrice.getSeatId()).collect(Collectors.toList());
-
-        AccessToken accessToken = paymentService.generateAccessToken(clientId, clientSecret);
-
-        seatReservationByScheduledMovieRepository.reserveSeat(chosenSeatsIds, (long) session.getAttribute("chosenMovieId"));
-        personalDataRepository.save(personalData);
-        long personalDataId = personalData.getPersonId();
-        reservation.setPersonalDataId(personalDataId);
-        reservationRepository.save(reservation);
-        String reservationId = reservation.getReservationId();
-
-        if (devMode) {
+        Reservation reservation = saveReservation(session);
+        AccessToken accessToken = paymentService.generateAccessToken(constants.getClientId(), constants.getClientSecret());
+        if (constants.isDevMode()) {
             invokeNotifyAsPayu(reservation);
         }
-        OrderResponse orderResponse = paymentService.sendOrder(accessToken, reservationId, personalDataId, clientId);
-        session.invalidate();
+        OrderResponse orderResponse = paymentService.sendOrder(accessToken, reservation.getReservationId(), constants.getClientId());
         return new ResponseEntity<>(orderResponse, HttpStatus.OK);
     }
 
@@ -98,8 +74,7 @@ public class PaymentController {
     @RequestMapping(value = "/sendEmail", method = RequestMethod.POST)
     public void sendEmail(String extOrderId) throws Exception {
         ByteArrayOutputStream doc = new TicketGeneratorPdf().generateTicket(ticketDataService.findMovie(extOrderId));
-        long personalDataId = reservationRepository.findByReservationId(extOrderId).getPersonalDataId();
-        String email = personalDataRepository.findOne(personalDataId).getEmail();
+        String email = reservationRepository.findByReservationId(extOrderId).getPersonalData().getEmail();
         emailSender.sendEmail(email, "NatiCinema cinema ticket", "Please take this ticket and show before projection of the movie.", doc);
     }
 
@@ -112,7 +87,6 @@ public class PaymentController {
         if (order.getString("status").equals("COMPLETED")) {
             sendEmail(extOrderId);
         }
-
         logger.info("PayU notification response: \n" + notificationResponse);
     }
 
@@ -138,9 +112,9 @@ public class PaymentController {
         OrderResponseNotification orderResponseNotification = new OrderResponseNotification(
                 String.valueOf(reservation.getReservationId()),
                 String.valueOf(reservation.getReservationId()),
-                notifyUrl,
+                constants.getNotifyUrl(),
                 "127.0.0.1",
-                clientId,
+                constants.getClientId(),
                 "bilecik test",
                 "PLN",
                 "100",
@@ -155,6 +129,18 @@ public class PaymentController {
         }};
 
         return new NotificationResponse(orderResponseNotification, "2016-03-02T12:58:14.828+01:00", propertyNotificationList);
+    }
+
+    private Reservation saveReservation(HttpSession session) {
+        Reservation reservation = (Reservation) session.getAttribute("reservation");
+        List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("chosenSeatsAndPrices");
+        List<Long> chosenSeatsIds = chosenSeatAndPrices.stream().map(chosenSeatAndPrice -> chosenSeatAndPrice.getSeatId()).collect(Collectors.toList());
+
+        long chosenMovieId = (long) session.getAttribute("chosenMovieId");
+        seatReservationByScheduledMovieRepository.reserveSeat(chosenSeatsIds, chosenMovieId);
+        reservationRepository.save(reservation);
+        session.invalidate();
+        return reservation;
     }
 
 }

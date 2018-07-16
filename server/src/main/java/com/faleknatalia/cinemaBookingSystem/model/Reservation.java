@@ -13,8 +13,7 @@ import java.util.List;
 public class Reservation implements Serializable {
     private long chosenMovieId;
 
-    private long personalDataId;
-
+    private PersonalData personalData;
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -24,9 +23,9 @@ public class Reservation implements Serializable {
     @ElementCollection(targetClass = ChosenSeatAndPrice.class, fetch = FetchType.EAGER)
     private List<ChosenSeatAndPrice> chosenSeatsAndPrices;
 
-    public Reservation(long chosenMovieId, long personalDataId, List<ChosenSeatAndPrice> chosenSeatsAndPrices) {
+    public Reservation(long chosenMovieId, PersonalData personalData, List<ChosenSeatAndPrice> chosenSeatsAndPrices) {
         this.chosenMovieId = chosenMovieId;
-        this.personalDataId = personalDataId;
+        this.personalData = personalData;
         this.chosenSeatsAndPrices = chosenSeatsAndPrices;
     }
 
@@ -37,8 +36,12 @@ public class Reservation implements Serializable {
         return chosenMovieId;
     }
 
-    public long getPersonalDataId() {
-        return personalDataId;
+    public PersonalData getPersonalData() {
+        return personalData;
+    }
+
+    public void setPersonalData(PersonalData personalData) {
+        this.personalData = personalData;
     }
 
     public List<ChosenSeatAndPrice> getChosenSeatsAndPrices() {
@@ -49,7 +52,5 @@ public class Reservation implements Serializable {
         return reservationId;
     }
 
-    public void setPersonalDataId(long personalDataId) {
-        this.personalDataId = personalDataId;
-    }
+
 }

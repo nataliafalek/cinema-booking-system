@@ -6,9 +6,7 @@ import com.faleknatalia.cinemaBookingSystem.model.Reservation;
 import com.faleknatalia.cinemaBookingSystem.payment.model.AccessToken;
 import com.faleknatalia.cinemaBookingSystem.payment.model.OrderResponse;
 import com.faleknatalia.cinemaBookingSystem.payment.PaymentService;
-import com.faleknatalia.cinemaBookingSystem.repository.PersonalDataRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.ReservationRepository;
-import com.faleknatalia.cinemaBookingSystem.repository.TicketPriceRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,29 +29,23 @@ public class PaymentServiceTest {
     @Autowired
     private ReservationRepository reservationRepository;
 
-    @Autowired
-    private PersonalDataRepository personalDataRepository;
-
-    @Autowired
-    private TicketPriceRepository ticketPriceRepository;
 
     @Test
     public void getAccessToken() throws Exception {
 
         //Before
         PersonalData personalData = new PersonalData("Nati", "Falek", "123456789", "nati@gmail.com");
-        personalDataRepository.save(personalData);
         ArrayList<ChosenSeatAndPrice> listOfSeatsAndPrices = new ArrayList<ChosenSeatAndPrice>() {{
             add(new ChosenSeatAndPrice(20l,1l));
         }};
-        Reservation reservation = new Reservation(2, personalData.getPersonId(), listOfSeatsAndPrices);
+        Reservation reservation = new Reservation(2, personalData, listOfSeatsAndPrices);
         reservationRepository.save(reservation);
 
         AccessToken token = paymentService.generateAccessToken("322611", "7bf401d342210d73b85081c0a2fae474");
 
         System.out.println(token.getAccess_token());
 
-        OrderResponse response = paymentService.sendOrder(token, reservation.getReservationId(),personalData.getPersonId(), "322611");
+        OrderResponse response = paymentService.sendOrder(token, reservation.getReservationId(), "322611");
 
         System.out.println(response.getRedirectUri());
     }
