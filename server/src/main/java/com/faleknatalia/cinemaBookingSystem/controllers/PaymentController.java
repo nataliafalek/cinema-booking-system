@@ -73,7 +73,7 @@ public class PaymentController {
 
     @Transactional
     @RequestMapping(value = "/payment", method = RequestMethod.POST)
-    public ResponseEntity<OrderResponse> saveReservationAndRedirectToPayment(HttpServletResponse response, HttpSession session) throws Exception {
+    public ResponseEntity<OrderResponse> saveReservationAndRedirectToPayment(HttpSession session) throws Exception {
         PersonalData personalData = (PersonalData) session.getAttribute("personalData");
         Reservation reservation = (Reservation) session.getAttribute("reservation");
         List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("chosenSeatsAndPrices");

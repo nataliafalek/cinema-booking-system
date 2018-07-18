@@ -1,6 +1,8 @@
 package com.faleknatalia.cinemaBookingSystem.payment.model;
 
 
+import java.util.Objects;
+
 public class OrderResponse {
 
 
@@ -35,4 +37,20 @@ public class OrderResponse {
         return redirectUri;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderResponse that = (OrderResponse) o;
+        return Objects.equals(orderId, that.orderId) &&
+                Objects.equals(extOrderId, that.extOrderId) &&
+                Objects.equals(statusCode, that.statusCode) &&
+                Objects.equals(redirectUri, that.redirectUri);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(orderId, extOrderId, statusCode, redirectUri);
+    }
 }
