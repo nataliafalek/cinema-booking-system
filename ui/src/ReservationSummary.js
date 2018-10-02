@@ -66,7 +66,8 @@ class ReservationSummary extends Component {
             <em className={"reservationData"}>Seat Nr: &emsp; Row: &emsp;&emsp;Type:&emsp;&emsp;Price:</em>
             {this.state.ticketData.seatAndPriceDetails.map((seatAndPrice, idx) => {
                 return (
-                  <li key={idx} className={"reservationSeat"}>&emsp;{seatAndPrice.seat.seatNumber} &emsp;&emsp;&emsp;&emsp;&emsp; {seatAndPrice.seat.rowNumber}&emsp;&emsp;&emsp;&emsp;
+                  <li key={idx}
+                      className={"reservationSeat"}>&emsp;{seatAndPrice.seat.seatNumber} &emsp;&emsp;&emsp;&emsp;&emsp; {seatAndPrice.seat.rowNumber}&emsp;&emsp;&emsp;&emsp;
                     {seatAndPrice.ticketPrice.ticketType}&emsp;&emsp;&emsp;  {seatAndPrice.ticketPrice.ticketValue}</li>)
               }
             )}</li>

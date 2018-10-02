@@ -10,6 +10,7 @@ import com.faleknatalia.cinemaBookingSystem.payment.model.*;
 import com.faleknatalia.cinemaBookingSystem.payment.repository.NotificationResponseDBRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.ReservationRepository;
 import com.faleknatalia.cinemaBookingSystem.repository.SeatReservationByScheduledMovieRepository;
+import com.faleknatalia.cinemaBookingSystem.session.SessionService;
 import com.faleknatalia.cinemaBookingSystem.ticket.TicketDataService;
 import com.faleknatalia.cinemaBookingSystem.ticket.TicketGeneratorPdf;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -132,11 +133,10 @@ public class PaymentController {
     }
 
     private Reservation saveReservation(HttpSession session) {
-        Reservation reservation = (Reservation) session.getAttribute("reservation");
-        List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("chosenSeatsAndPrices");
+        Reservation reservation = SessionService.getReservation(session);
+        List<ChosenSeatAndPrice> chosenSeatAndPrices = SessionService.getChosenSeatsAndPrices(session);
+        long chosenMovieId = SessionService.getChosenMovieId(session);
         List<Long> chosenSeatsIds = chosenSeatAndPrices.stream().map(chosenSeatAndPrice -> chosenSeatAndPrice.getSeatId()).collect(Collectors.toList());
-
-        long chosenMovieId = (long) session.getAttribute("chosenMovieId");
         seatReservationByScheduledMovieRepository.reserveSeat(chosenSeatsIds, chosenMovieId);
         reservationRepository.save(reservation);
         session.invalidate();

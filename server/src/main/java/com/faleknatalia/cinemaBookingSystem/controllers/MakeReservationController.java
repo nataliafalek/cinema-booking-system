@@ -6,6 +6,7 @@ import com.faleknatalia.cinemaBookingSystem.model.PersonalData;
 import com.faleknatalia.cinemaBookingSystem.model.Reservation;
 import com.faleknatalia.cinemaBookingSystem.model.SeatReservationByScheduledMovie;
 import com.faleknatalia.cinemaBookingSystem.repository.SeatReservationByScheduledMovieRepository;
+import com.faleknatalia.cinemaBookingSystem.session.SessionService;
 import com.faleknatalia.cinemaBookingSystem.ticket.TicketData;
 import com.faleknatalia.cinemaBookingSystem.ticket.TicketDataService;
 import com.faleknatalia.cinemaBookingSystem.validator.PersonalDataValidator;
@@ -32,21 +33,28 @@ public class MakeReservationController {
     private TicketDataService ticketDataService;
 
     @RequestMapping(value = "/cinemaHall/seats", method = RequestMethod.GET)
-    public ResponseEntity<List<List<SeatReservationByScheduledMovie>>> seatsByCinemaHallAndMovie(@RequestParam long scheduledMovieId) {
+    public ResponseEntity<List<List<SeatReservationByScheduledMovie>>> seatsByCinemaHallAndMovie(HttpSession session, @RequestParam long scheduledMovieId) {
         List<SeatReservationByScheduledMovie> cinemaHallSeats = seatReservationByScheduledMovieRepository.findAllByScheduledMovieId(scheduledMovieId);
         Map<Integer, List<SeatReservationByScheduledMovie>> groupByRow =
                 cinemaHallSeats.stream().collect(Collectors.groupingBy(seat -> seat.getSeat().getRowNumber()));
+        Long extractedChosenMovieId = Optional.ofNullable(SessionService.getChosenMovieId(session)).orElse(0L);
+        List<ChosenSeatAndPrice> extractedChosenSeatsAndPrices = SessionService.getChosenSeatsAndPrices(session);
+        List<ChosenSeatAndPrice> chosenSeatAndPrices = Optional.ofNullable(extractedChosenSeatsAndPrices).orElseGet(ArrayList::new);
+        if (extractedChosenMovieId != 0L && extractedChosenMovieId != scheduledMovieId && !chosenSeatAndPrices.isEmpty()) {
+            SessionService.removeChosenSeatsAndPrice(session);
+            SessionService.removePersonalData(session);
+            SessionService.removeReservation(session);
+        }
+        SessionService.setChosenMovieId(session, scheduledMovieId);
         return new ResponseEntity<>(new ArrayList<>(groupByRow.values()), HttpStatus.OK);
     }
-
 
     @Transactional
     @RequestMapping(value = "/cinemaHall/seats/choose/{scheduledMovieId}", method = RequestMethod.POST)
     public ResponseEntity<List<SeatReservationByScheduledMovie>> chosenSeat(HttpSession session, @PathVariable long scheduledMovieId, @RequestBody List<ChosenSeatAndPrice> chosenSeatsAndPrices) {
         List<Long> seatIds = chosenSeatsAndPrices.stream().map(seat -> seat.getSeatId()).collect(Collectors.toList());
         List<SeatReservationByScheduledMovie> seatSeatIdInAndScheduledMovieId = seatReservationByScheduledMovieRepository.findBySeatSeatIdInAndScheduledMovieId(seatIds, scheduledMovieId);
-        session.setAttribute("chosenSeatsAndPrices", chosenSeatsAndPrices);
-        session.setAttribute("chosenMovieId", scheduledMovieId);
+        SessionService.setChosenSeatsAndPrices(session, chosenSeatsAndPrices);
         return new ResponseEntity<>(seatSeatIdInAndScheduledMovieId, HttpStatus.OK);
     }
 
@@ -56,22 +64,23 @@ public class MakeReservationController {
         if (validationResult.isPresent()) {
             throw new IllegalArgumentException(validationResult.get());
         } else {
-            List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("chosenSeatsAndPrices");
-            Reservation reservation = new Reservation((long) session.getAttribute("chosenMovieId"), personalData, chosenSeatAndPrices);
+            List<ChosenSeatAndPrice> chosenSeatAndPrices = SessionService.getChosenSeatsAndPrices(session);
+            long chosenMovieId = SessionService.getChosenMovieId(session);
+            Reservation reservation = new Reservation(chosenMovieId, personalData, chosenSeatAndPrices);
             String reservationId = reservation.getReservationId();
-            session.setAttribute("personalData", personalData);
-            session.setAttribute("reservation", reservation);
+            SessionService.setPersonalData(session, personalData);
+            SessionService.setReservation(session, reservation);
             return new ResponseEntity<>(reservationId, HttpStatus.OK);
         }
     }
 
     @RequestMapping(value = "/reservationSummary", method = RequestMethod.GET)
     public ResponseEntity<ReservationSummaryDto> reservationSummary(HttpSession session) {
-        List<ChosenSeatAndPrice> chosenSeatAndPrices = (List<ChosenSeatAndPrice>) session.getAttribute("chosenSeatsAndPrices");
-        TicketData ticketData = ticketDataService.findMovie((long) session.getAttribute("chosenMovieId"), chosenSeatAndPrices);
-        ReservationSummaryDto reservationSummaryDto = new ReservationSummaryDto(ticketData, (PersonalData) session.getAttribute("personalData"));
+        List<ChosenSeatAndPrice> chosenSeatAndPrices = SessionService.getChosenSeatsAndPrices(session);
+        long chosenMovieId = SessionService.getChosenMovieId(session);
+        TicketData ticketData = ticketDataService.findMovie(chosenMovieId, chosenSeatAndPrices);
+        PersonalData personalData = SessionService.getPersonalData(session);
+        ReservationSummaryDto reservationSummaryDto = new ReservationSummaryDto(ticketData, personalData);
         return new ResponseEntity<>(reservationSummaryDto, HttpStatus.OK);
     }
-
-
 }

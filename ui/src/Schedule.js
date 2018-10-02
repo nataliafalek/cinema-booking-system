@@ -31,6 +31,14 @@ class Schedule extends Component {
     HttpService.fetchJson('whatsOn')
       .then(data => {
         this.setState({whatsOn: data})
+      });
+
+    HttpService.fetchJson('session')
+      .then(data => {
+        if (data && data.status !== 500) {
+          this.setState({chosenMovie: data.chosenMovieId})
+          this.setState({actualDay: data.dayOfProjection})
+        }
       })
   }
 
@@ -38,7 +46,7 @@ class Schedule extends Component {
     const days = _.cloneDeep(this.days)
     const daysOrder = days.splice(0, days.indexOf(days[new Date().getDay()]));
     return days.concat(daysOrder);
-  }
+  };
 
   render() {
     const grouppedByDay = _.groupBy(this.state.whatsOn, 'dayOfProjection');
@@ -61,23 +69,24 @@ class Schedule extends Component {
             <th>DURATION</th>
           </tr>
           {grouppedByDay[this.state.actualDay] ? grouppedByDay[this.state.actualDay].map((movie, idx) => {
-            const movieClass = this.state.chosenMovie === movie ? "selectedMovie" : "otherMovies";
-            return <tr className={movieClass} key={idx} onClick={(event) => {
-              this.setState({chosenMovie: movie})
+            const movieClass = this.state.chosenMovie === movie.scheduledMovieId ? "selectedMovie" : "otherMovies";
+            return <tr className={movieClass}
+                       key={idx} onClick={(event) => {
+              this.setState({chosenMovie: movie.scheduledMovieId})
             }}>
               <td> {movie.movieTitle}</td>
               <td> {movie.hourOfProjection}</td>
               <td> {movie.movieDurationInMinutes} minutes</td>
             </tr>
-          }): null}
+          }) : null}
           </tbody>
         </table>
         <div>
         </div>
-        {this.state.redirect ? <Redirect push to={`/seats/${this.state.chosenMovie.scheduledMovieId}`}/> : null}
+        {this.state.redirect ? <Redirect push to={`/seats/${this.state.chosenMovie}`}/> : null}
         <div className={"buttons"}>
           <BackButton/>
-          <button className={"nextButton"} disabled={!((this.state.chosenMovie || {}).scheduledMovieId)}
+          <button className={"nextButton"} disabled={!((this.state.chosenMovie || {}))}
                   onClick={this.handleOnClick}
                   type="button">Next
           </button>

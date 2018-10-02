@@ -16,6 +16,17 @@ class PersonalData extends Component {
     }
   }
 
+  componentDidMount() {
+    HttpService.fetchJson('session')
+      .then(data => {
+        if (data.personalData) {
+          this.setState({name: data.personalData.name})
+          this.setState({surname: data.personalData.surname})
+          this.setState({phoneNumber: data.personalData.phoneNumber})
+          this.setState({email: data.personalData.email})
+        }
+      })
+  }
 
   addPerson = (event) => {
     const person = {
@@ -32,8 +43,8 @@ class PersonalData extends Component {
           alert("Invalid data form")
         }
       }).then(reservationId => {
-        this.setState({reservationId: reservationId});
-        this.handleOnClick()
+      this.setState({reservationId: reservationId});
+      this.handleOnClick()
     });
     event.preventDefault()
   };

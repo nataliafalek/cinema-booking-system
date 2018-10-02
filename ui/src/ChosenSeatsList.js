@@ -7,7 +7,8 @@ class ChosenSeatsList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ticketPrices: []
+      ticketPrices: [],
+      chosenPriceList: []
     };
   }
 
@@ -16,18 +17,23 @@ class ChosenSeatsList extends Component {
       .then(data => {
         this.setState({ticketPrices: data})
       })
+
+    HttpService.fetchJson('session')
+      .then(data => {
+        if (data.chosenPriceList && data.status !== 500) {
+          this.setState({chosenPriceList: data.chosenPriceList})
+        }
+      })
   }
 
 
   getTicketPrice = (priceId) => {
     const ticketPrice = this.state.ticketPrices.filter(ticketPrice =>
-      // TODO Zamienic na ==
       ticketPrice.ticketPriceId == priceId);
-    return ticketPrice[0].ticketValue
+    return ticketPrice.length != 0 ? ticketPrice[0].ticketValue : [];
   }
 
-  calculateNewChosenSeats = (event, seat) => {
-    const selectedPrice = event.target.value;
+  calculateNewChosenSeats = (event, seat, selectedPrice) => {
     const newChosenSeats = this.props.chosenSeats.map(chosenSeat => {
       {
         if (chosenSeat.seat.seatId === seat.seat.seatId) {
@@ -43,20 +49,19 @@ class ChosenSeatsList extends Component {
   }
 
   render() {
+    console.log("this.props.chosenSeats", this.props.chosenSeats)
     return <div>
-
       {this.props.chosenSeats ? this.props.chosenSeats.map((seat, idx) =>
         <div className={"chosenSeats"} key={idx}>
           Seat number: {seat.seat.seatNumber}, row: {seat.seat.rowNumber}, Type:
           <select className={"ticketType"} key={idx} onChange={event => {
-            const newChosenSeats = this.calculateNewChosenSeats(event, seat)
+            const newChosenSeats = this.calculateNewChosenSeats(event, seat, event.target.value)
             this.props.chosenSeatsChanged(newChosenSeats)
-          }}>
-            {this.state.ticketPrices.map((price, ticketIdx) => {
-              return <option key={ticketIdx} value={price.ticketPriceId}>
-                {price.ticketType}
-              </option>
-            })}
+          }}> {this.state.ticketPrices.map((price, ticketIdx) => {
+            return <option key={ticketIdx} value={price.ticketPriceId}>
+              {price.ticketType}
+            </option>
+          })}
           </select>
           , price: ${this.getTicketPrice(seat.ticketPriceId)}
         </div>) : []}

@@ -3,7 +3,7 @@ import PersonalData from "./PersonalData";
 import Schedule from "./Schedule";
 import Movies from "./Movies";
 import MovieDetails from "./MovieDetails";
-import {Route, HashRouter, NavLink} from 'react-router-dom';
+import {HashRouter, NavLink, Route} from 'react-router-dom';
 import ReservationSummary from "./ReservationSummary";
 import PaymentSuccess from "./PaymentSuccess";
 import SeatReservation from "./SeatReservation";

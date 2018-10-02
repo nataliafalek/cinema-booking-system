@@ -14,7 +14,6 @@ class CinemaHall extends Component {
     HttpService.fetchJson(`cinemaHall/seats?scheduledMovieId=${scheduledMovieId}`)
       .then(data => {
         this.setState({cinemaHall: data})
-        console.log("cinemahAll",this.state.cinemaHall)
       })
   };
 
@@ -33,9 +32,8 @@ class CinemaHall extends Component {
             const seats = this.state.chosenSeats.filter(s => s.seat.seatId !== seat.seat.seatId);
             this.setState({chosenSeats: seats})
             this.props.chosenSeats(seats)
-
           }
-        })} >{seat.seat.seatNumber} </li> :
+        })}>{seat.seat.seatNumber} </li> :
         <li className={"reservedSeat"}> {seat.seat.seatNumber} </li>
     }
 
@@ -52,6 +50,13 @@ class CinemaHall extends Component {
 
   componentDidMount() {
     this.getHall(this.props.scheduledMovieId)
+    HttpService.fetchJson('session')
+      .then(data => {
+        if (data && data.status !== 500 && data.chosenMovieId == this.props.scheduledMovieId) {
+          this.setState({chosenSeats: data.chosenSeats})
+          this.props.chosenSeats(data.chosenSeats)
+        }
+      })
   }
 
   render() {

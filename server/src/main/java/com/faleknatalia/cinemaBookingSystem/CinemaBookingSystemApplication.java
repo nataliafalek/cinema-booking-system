@@ -1,10 +1,13 @@
 package com.faleknatalia.cinemaBookingSystem;
 
-import com.faleknatalia.cinemaBookingSystem.model.*;
-import com.faleknatalia.cinemaBookingSystem.repository.*;
 import com.faleknatalia.cinemaBookingSystem.data.CinemaHallGenerator;
 import com.faleknatalia.cinemaBookingSystem.data.ScheduledMovieGenerator;
 import com.faleknatalia.cinemaBookingSystem.data.SeatReservationByScheduledMovieGenerator;
+import com.faleknatalia.cinemaBookingSystem.model.CinemaHall;
+import com.faleknatalia.cinemaBookingSystem.model.Movie;
+import com.faleknatalia.cinemaBookingSystem.model.ScheduledMovie;
+import com.faleknatalia.cinemaBookingSystem.model.TicketPrice;
+import com.faleknatalia.cinemaBookingSystem.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -69,8 +72,8 @@ public class CinemaBookingSystemApplication implements CommandLineRunner {
                     );
 
             List<CinemaHall> cinemaHalls = Arrays.asList(
-                    new CinemaHallGenerator().generateCinemaHall(7, 12),
-                    new CinemaHallGenerator().generateCinemaHall(8, 14)
+                    new CinemaHallGenerator().generateCinemaHall(6, 8),
+                    new CinemaHallGenerator().generateCinemaHall(8, 10)
             );
 
             List<TicketPrice> ticketPrices = Arrays.asList(
