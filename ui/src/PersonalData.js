@@ -13,6 +13,7 @@ class PersonalData extends Component {
       phoneNumber: '',
       email: '',
       reservationId: '',
+      error: ''
     }
   }
 
@@ -38,14 +39,17 @@ class PersonalData extends Component {
     HttpService.postJson('cinemaHall/addPerson', person)
       .then(results => {
         if (results.status === 200) {
-          return results.text();
-        } else {
-          alert("Invalid data form")
+          return results.text()
+            .then(reservationId => {
+              this.setState({reservationId: reservationId});
+              this.handleOnClick()
+            });
         }
-      }).then(reservationId => {
-      this.setState({reservationId: reservationId});
-      this.handleOnClick()
-    });
+        return results.json()
+          .then(error => {
+            this.setState({error: error.message});
+          })
+      });
     event.preventDefault()
   };
 
@@ -58,6 +62,7 @@ class PersonalData extends Component {
       <div className={"personalData"}>
         <form onSubmit={this.addPerson}>
           <div className={"PersonalDataForm"}>
+            <div className={"error"}>{this.state.error}</div>
             <label htmlFor="name">Name</label>
             <input
               type="text"
@@ -65,8 +70,7 @@ class PersonalData extends Component {
               onChange={(event) => {
                 this.setState({name: event.target.value});
               }}
-              pattern={"\\p{L}+"}
-              placeholder={"John"}
+              pattern={"\\p{L}+)\\s?(\\p{L}+)?"}
               required
             />
             <label htmlFor="surname">Surname</label>
@@ -76,8 +80,7 @@ class PersonalData extends Component {
               onChange={(event) => {
                 this.setState({surname: event.target.value});
               }}
-              pattern={"\\p{L}+"}
-              placeholder={"Doe"}
+              pattern={"(\\p{L}+)(-|\\s)?(\\p{L}+)?"}
               required
             />
             <label htmlFor="email">Email</label>
@@ -87,8 +90,7 @@ class PersonalData extends Component {
               onChange={(event) => {
                 this.setState({email: event.target.value});
               }}
-              pattern={new RegExp("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$").ignoreCase}
-              placeholder={"johndoe@gmail.com"}
+              pattern={"[^@]+@[^@]+\\.[a-zA-Z]{2,}"}
               required
             />
             <label htmlFor="name">Telephone</label>
@@ -98,8 +100,7 @@ class PersonalData extends Component {
               onChange={(event) => {
                 this.setState({phoneNumber: event.target.value});
               }}
-              pattern="\d{9}|(?:\d{3}-){2}\d{3}"
-              placeholder={"123-456-789 or 123456789"}
+              pattern="(?<!\w)(\(?(\+|00)?48\)?)?[ -]?\d{3}[ -]?\d{3}[ -]?\d{3}(?!\w)"
               required
             />
           </div>

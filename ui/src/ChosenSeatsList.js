@@ -49,7 +49,6 @@ class ChosenSeatsList extends Component {
   }
 
   render() {
-    console.log("this.props.chosenSeats", this.props.chosenSeats)
     return <div>
       {this.props.chosenSeats ? this.props.chosenSeats.map((seat, idx) =>
         <div className={"chosenSeats"} key={idx}>

@@ -245,6 +245,11 @@ li.reservedSeat:before {
     margin-right: auto;
 }
 
+div.error {
+    color: red;
+    font-size: 20px;
+}
+
 .PersonalDataForm label {
     font-size: 20px;
     padding: 5px;
