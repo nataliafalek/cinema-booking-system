@@ -7,25 +7,24 @@ import {HashRouter, NavLink, Route} from 'react-router-dom';
 import ReservationSummary from "./ReservationSummary";
 import PaymentSuccess from "./PaymentSuccess";
 import SeatReservation from "./SeatReservation";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap-theme.min.css';
 
 class App extends Component {
-
   constructor() {
     super();
     this.state = {};
-
   }
 
   render() {
-    return (
-      <div className="App">
+    return <div className={"myApp"}>
+      <main role="main">
         <HashRouter>
           <div>
             <ul className="header">
-              <NavLink className={"nav"} to="/movies"><img src={require('./assets/logo-palmy.jpg')} alt=""/>
-              </NavLink>
-              <li><NavLink className={"nav"} to="/movies">Movies</NavLink></li>
-              <li><NavLink className={"nav"} to="/whatsOn">What's On</NavLink></li>
+              <li><NavLink className={"nav"} id="brand" to="/"> <span
+                className={"glyphicon glyphicon-star"}></span> NatiCinema</NavLink></li>
+              <li><NavLink className={"nav"} to="/whatsOn"> repertuar</NavLink></li>
             </ul>
             <div className="content">
               <Route path="/movies" component={Movies}/>
@@ -39,8 +38,16 @@ class App extends Component {
             </div>
           </div>
         </HashRouter>
-      </div>
-    );
+        <footer>
+          <div className="footer-copyright text-center py-3">
+            <a href="https://github.com/nataliafalek/cinema-booking-system">
+              <span className={"glyphicon glyphicon-heart"}></span>
+              Github
+            </a>
+          </div>
+        </footer>
+      </main>
+    </div>
   }
 }
 

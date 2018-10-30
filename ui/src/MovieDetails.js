@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import * as HttpService from "./HttpService";
+import {Media} from 'react-bootstrap';
 
 class MovieDetails extends Component {
   constructor() {
@@ -13,7 +14,7 @@ class MovieDetails extends Component {
   today = () => {
     const date = new Date();
     return this.days[date.getDay()];
-  }
+  };
 
   componentDidMount() {
     HttpService.fetchJson(`whatsOn/${this.props.match.params.chosenMovieId}`)
@@ -25,26 +26,28 @@ class MovieDetails extends Component {
   render() {
     return (
       this.state.whatsOnByMovies ?
-        <div className={"movieDetails"}>
-          <img src={decodeURIComponent(this.state.whatsOnByMovies[0].movieImageUrl)} alt=""/>
-          <div className={"movieDesc"}>
-            <h1>"{this.state.whatsOnByMovies[0].movieTitle}"</h1>
-            <p> Duration: {this.state.whatsOnByMovies[0].movieDurationInMinutes} minutes </p>
-            <p> Description: {this.state.whatsOnByMovies[0].movieDescription}</p>
-            <p>Today's projection: </p>
-          </div>
-          <div className={"projectionHours"}>
-            {this.state.whatsOnByMovies.map((movie, idx) =>
-              movie.dayOfProjection === this.today() ?
-                <li key={idx}>{movie.hourOfProjection}</li>
-                : null
-            )}
-          </div>
+        <div className={"container"}>
+          <Media>
+            <Media.Left>
+              <img src={decodeURIComponent(this.state.whatsOnByMovies[0].movieImageUrl)} alt="thumbnail"/>
+            </Media.Left>
+            <Media.Body>
+              <Media.Heading>"{this.state.whatsOnByMovies[0].movieTitle}"</Media.Heading>
+              <p> Czas trwania: {this.state.whatsOnByMovies[0].movieDurationInMinutes} minutes </p>
+              <p> Opis: {this.state.whatsOnByMovies[0].movieDescription}</p>
+              <p>Dzisiejsze seanse: </p>
+              <div>
+                {this.state.whatsOnByMovies.map((movie, idx) =>
+                  movie.dayOfProjection === this.today() ?
+                    <li key={idx}>{movie.hourOfProjection}</li>
+                    : null
+                )}
+              </div>
+            </Media.Body>
+          </Media>
         </div> : null
-
     );
   }
 }
-
 
 export default MovieDetails;

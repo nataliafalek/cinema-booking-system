@@ -59,11 +59,12 @@ class PersonalData extends Component {
 
   render() {
     return (
-      <div className={"personalData"}>
+      <div className={"container"}>
+        <h3>#Uzupełnij dane</h3>
         <form onSubmit={this.addPerson}>
           <div className={"PersonalDataForm"}>
             <div className={"error"}>{this.state.error}</div>
-            <label htmlFor="name">Name</label>
+            <label htmlFor="name">Imię</label>
             <input
               type="text"
               value={this.state.name}
@@ -73,7 +74,7 @@ class PersonalData extends Component {
               pattern={"\\p{L}+)\\s?(\\p{L}+)?"}
               required
             />
-            <label htmlFor="surname">Surname</label>
+            <label htmlFor="surname">nazwisko</label>
             <input
               type="text"
               value={this.state.surname}
@@ -93,7 +94,7 @@ class PersonalData extends Component {
               pattern={"[^@]+@[^@]+\\.[a-zA-Z]{2,}"}
               required
             />
-            <label htmlFor="name">Telephone</label>
+            <label htmlFor="name">Numer telefonu</label>
             <input
               type="tel"
               value={this.state.phoneNumber}
@@ -104,15 +105,15 @@ class PersonalData extends Component {
               required
             />
           </div>
-          {this.state.redirect ? <Redirect push
-                                           to={`/reservationSummary`}/> : null}
-          <button className={"summaryButton"} type="submit">summary</button>
-          <BackButton/>
+          <div className={"container"}>
+            {this.state.redirect ? <Redirect push to={`/reservationSummary`}/> : null}
+            <button className={"summaryButton"} type="submit">Podsumowanie</button>
+            <BackButton/>
+          </div>
         </form>
       </div>
     )
   }
-
 }
 
 export default PersonalData;

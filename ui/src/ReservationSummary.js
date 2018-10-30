@@ -5,7 +5,6 @@ import BackButton from "./BackButton";
 
 
 class ReservationSummary extends Component {
-
   constructor() {
     super();
     this.state = {
@@ -32,59 +31,56 @@ class ReservationSummary extends Component {
       }).then(data => {
         window.location = data.redirectUri
       });
-
   };
 
   render() {
     return this.state.ticketData ? (
-      <div className={"summary"}>
+      <div className={"container"}>
+        <h3>#podsumowanie transakcji</h3>
         <div className={"summaryData"}>
-          <h2>Summary</h2>
           <li>
-            <em className={"reservationData"}>Name:</em>
+            <em className={"reservationData"}>Imię:</em>
             {this.state.personalData.name}</li>
           <li>
-            <em className={"reservationData"}>Surname:</em>
+            <em className={"reservationData"}>Nazwisko:</em>
             {this.state.personalData.surname}</li>
           <li>
             <em className={"reservationData"}>Email:</em>
             {this.state.personalData.email}</li>
           <li>
-            <em className={"reservationData"}>Phone:</em>
+            <em className={"reservationData"}>Numer telefonu:</em>
             {this.state.personalData.phoneNumber}</li>
           <li>
-            <em className={"reservationData"}>Movie:</em>
+            <em className={"reservationData"}>Tytuł filmu:</em>
             "{this.state.ticketData.movieTitle}"
           </li>
           <li>
-            <em className={"reservationData"}>Date of projection:</em>
+            <em className={"reservationData"}>Data:</em>
             {this.state.ticketData.projectionDate}</li>
           <li>
-            <em className={"reservationData"}>Hour of projection:</em>
+            <em className={"reservationData"}>Godzina:</em>
             {this.state.ticketData.projectionHour}</li>
           <li>
-            <em className={"reservationData"}>Seat Nr: &emsp; Row: &emsp;&emsp;Type:&emsp;&emsp;Price:</em>
+            <em className={"reservationData"}>Nr: &emsp; Rząd: &emsp;Typ:&emsp;&emsp;Cena:</em>
             {this.state.ticketData.seatAndPriceDetails.map((seatAndPrice, idx) => {
                 return (
                   <li key={idx}
-                      className={"reservationSeat"}>&emsp;{seatAndPrice.seat.seatNumber} &emsp;&emsp;&emsp;&emsp;&emsp; {seatAndPrice.seat.rowNumber}&emsp;&emsp;&emsp;&emsp;
-                    {seatAndPrice.ticketPrice.ticketType}&emsp;&emsp;&emsp;  {seatAndPrice.ticketPrice.ticketValue}</li>)
+                      className={"reservationSeat"}>{seatAndPrice.seat.seatNumber} &emsp;&emsp; {seatAndPrice.seat.rowNumber}&emsp;&emsp;&emsp;&emsp;
+                    {seatAndPrice.ticketPrice.ticketType}&emsp;&emsp;  {seatAndPrice.ticketPrice.ticketValue}</li>)
               }
             )}</li>
         </div>
 
         {this.state.redirect ? <Redirect push to={`/payment/${this.props.match.params.reservationId}`}/> : null}
-        <div className={"buttons"}>
-
-          <BackButton/>
-          <button className={"payButton"} type="button" onClick={this.handleClick}>Pay</button>
+        <div className={"container"}>
+          <div className={"buttons"}>
+            <BackButton/>
+            <button className={"payButton"} type="button" onClick={this.handleClick}>Zapłać</button>
+          </div>
         </div>
-
       </div>
     ) : null;
   }
-
-
 }
 
 export default ReservationSummary;

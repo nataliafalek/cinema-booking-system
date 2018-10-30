@@ -76,7 +76,7 @@ public class PaymentController {
     public void sendEmail(String extOrderId) throws Exception {
         ByteArrayOutputStream doc = new TicketGeneratorPdf().generateTicket(ticketDataService.findMovie(extOrderId));
         String email = reservationRepository.findByReservationId(extOrderId).getPersonalData().getEmail();
-        emailSender.sendEmail(email, "NatiCinema cinema ticket", "Please take this ticket and show before projection of the movie.", doc);
+        emailSender.sendEmail(email, "Potwierdzenie zakupu biletu", "Dziekujemy za Twoj zakup. Ponizej znajdziesz bilet w postaci pdf, ktory mozesz wydrukowac lub zapisac w telefonie. Wystarczy, ze pokazesz go przed wejsciem na sale.", doc);
     }
 
     @RequestMapping(value = "/notify", method = RequestMethod.POST)

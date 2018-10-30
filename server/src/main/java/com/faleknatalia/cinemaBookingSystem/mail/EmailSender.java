@@ -16,8 +16,6 @@ import java.io.InputStream;
 
 @Component
 public class EmailSender {
-    //TODO Pomysl - mozna by dodac do maila qrcode z identyfikatorem transakcji - jak w lunie
-
     @Autowired
     private JavaMailSender javaMailSender;
 
@@ -30,11 +28,9 @@ public class EmailSender {
             helper.setText(content, true);
             InputStream is = new ByteArrayInputStream(doc.toByteArray());
             helper.addAttachment("ticket.pdf", new ByteArrayResource(IOUtils.toByteArray(is)));
-
         } catch (MessagingException | IOException e) {
             e.printStackTrace();
         }
-
         javaMailSender.send(mail);
     }
 }

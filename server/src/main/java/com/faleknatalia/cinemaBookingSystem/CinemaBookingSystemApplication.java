@@ -63,23 +63,21 @@ public class CinemaBookingSystemApplication implements CommandLineRunner {
 
             List<Movie> allMovies =
                     Arrays.asList(
-                            new Movie("The Prestige", "After a tragic accident two stage magicians engage in a battle to create the ultimate illusion whilst sacrificing everything they have to outwit the other.", 120, "http://1.fwcdn.pl/po/99/45/259945/7536864.6.jpg"),
-                            new Movie("Catch me if you can", "A seasoned FBI agent pursues Frank Abagnale Jr. who, before this 19th birthday, successfully forged millions of dollars' worth of checks while posing as a Pan Am pilot, a doctor, and a legal prosecutor.", 125, "http://1.fwcdn.pl/po/23/62/32362/7519166.6.jpg"),
-                            new Movie("12 Angry Men", "A jury holdout attempts to prevent a miscarriage of justice by forcing his colleagues to reconsider the evidence.", 95, "http://1.fwcdn.pl/po/07/01/30701/7492190.6.jpg"),
-                            new Movie("The Silence of the Lambs", "A young F.B.I. cadet must receive the help of an incarcerated and manipulative cannibal killer to help catch another serial killer, a madman who skins his victims.", 120, "http://1.fwcdn.pl/po/10/47/1047/7714177.6.jpg"),
-                            new Movie("Life of Brian", "Born on the original Christmas in the stable next door to Jesus, Brian of Nazareth spends his life being mistaken for a messiah.", 95, "http://1.fwcdn.pl/po/10/99/1099/7364767.6.jpg"),
-                            new Movie("Coco", "Aspiring musician Miguel, confronted with his family's ancestral ban on music, enters the Land of the Dead to find his great-great-grandfather, a legendary singer.", 120, "http://1.fwcdn.pl/po/22/60/752260/7813486.6.jpg")
+                            new Movie("Kler", "Życie trzech księży ulega zmianie, kiedy ich drogi krzyżują się ponownie.", 135, "https://1.fwcdn.pl/po/04/02/810402/7856555.6.jpg"),
+                            new Movie("Zimna Wojna", "Historia wielkiej i trudnej miłości dwojga ludzi, którzy nie potrafią być ze sobą i jednocześnie nie mogą bez siebie żyć. W tle wydarzenia zimnej wojny lat 50. w Polsce, Berlinie, Jugosławii i Paryżu.", 85, "https://1.fwcdn.pl/po/40/39/764039/7845442.6.jpg"),
+                            new Movie("Bohemian Rhapsody", "Dzięki oryginalnemu brzmieniu Queen staje się jednym z najpopularniejszych zespołów w historii muzyki.", 135, "https://1.fwcdn.pl/po/92/01/619201/7845376.6.jpg"),
+                            new Movie("Ocean ognia", "Kapitan okrętu podwodnego współpracuje z drużyną Navy SEAL w celu uratowania prezydenta Rosji, który podczas zamachu wzięty został do niewoli.", 125, "https://1.fwcdn.pl/po/83/54/618354/7860787.6.jpg")
                     );
 
             List<CinemaHall> cinemaHalls = Arrays.asList(
-                    new CinemaHallGenerator().generateCinemaHall(6, 8),
-                    new CinemaHallGenerator().generateCinemaHall(8, 10)
+                    new CinemaHallGenerator().generateCinemaHall(8, 10),
+                    new CinemaHallGenerator().generateCinemaHall(12, 12)
             );
 
             List<TicketPrice> ticketPrices = Arrays.asList(
-                    new TicketPrice("normal", 10),
-                    new TicketPrice("student", 7),
-                    new TicketPrice("senior", 8)
+                    new TicketPrice("normalny", 25),
+                    new TicketPrice("ulgowy", 18),
+                    new TicketPrice("studencki", 17)
             );
 
             cinemaHallRepository.save(cinemaHalls);

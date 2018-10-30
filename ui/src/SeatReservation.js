@@ -13,15 +13,14 @@ class SeatReservation extends Component {
 
   chosenSeatsChanged = (chosenSeats) => {
     this.setState({chosenSeats: chosenSeats})
-  }
-
+  };
 
   render() {
     return (
+      <div className={"container"}>
       <div className={"seats"}>
         <CinemaHall scheduledMovieId={this.props.match.params.scheduledMovieId}
                     chosenSeats={(chosenSeats) => this.chosenSeatsChanged(chosenSeats)}/>
-
         <ChosenSeatsList
           chosenSeatsChanged={(newChosenSeats) => this.chosenSeatsChanged(newChosenSeats)}
           chosenSeats={this.state.chosenSeats}
@@ -32,9 +31,9 @@ class SeatReservation extends Component {
           scheduledMovieId={this.props.match.params.scheduledMovieId}
         />
       </div>
+      </div>
     );
   }
-
 }
 
 

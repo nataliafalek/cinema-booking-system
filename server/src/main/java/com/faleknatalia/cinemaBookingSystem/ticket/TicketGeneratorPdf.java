@@ -36,21 +36,21 @@ public class TicketGeneratorPdf {
 
         contentStream.setFont(PDType1Font.COURIER, 16);
 
-        contentStream.showText("Movie: " + ticketData.getMovieTitle());
+        contentStream.showText("Tytul: " + ticketData.getMovieTitle());
         contentStream.newLine();
         contentStream.newLine();
-        contentStream.showText("Date: " + ticketData.getProjectionDate() + "       ");
-        contentStream.showText("Hour: " + ticketData.getProjectionHour());
+        contentStream.showText("Data: " + ticketData.getProjectionDate() + "       ");
+        contentStream.showText("Godzina: " + ticketData.getProjectionHour());
         contentStream.newLine();
         contentStream.newLine();
-        contentStream.showText("Cinema Hall: " + ticketData.getCinemaHallId() + "  ");
+        contentStream.showText("Sala: " + ticketData.getCinemaHallId() + "  ");
         contentStream.newLine();
         chosenSeatAndPrices.stream().forEach(seatAndPriceDetails -> {
             try {
                 contentStream.newLine();
-                String ticketDetails = "Seat nr: " + Integer.toString(seatAndPriceDetails.getSeat().getSeatNumber())
-                        + ", row: " + Integer.toString(seatAndPriceDetails.getSeat().getRowNumber()) + ", " + seatAndPriceDetails.getTicketPrice().getTicketType() +
-                        " $" + Integer.toString(seatAndPriceDetails.getTicketPrice().getTicketValue());
+                String ticketDetails = "Numer: " + Integer.toString(seatAndPriceDetails.getSeat().getSeatNumber())
+                        + ", rzad: " + Integer.toString(seatAndPriceDetails.getSeat().getRowNumber()) + ", " + seatAndPriceDetails.getTicketPrice().getTicketType() +
+                         Integer.toString(seatAndPriceDetails.getTicketPrice().getTicketValue()) + " zl";
                 contentStream.showText(ticketDetails);
 
             } catch (IOException e) {

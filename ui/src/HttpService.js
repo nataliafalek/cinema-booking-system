@@ -7,7 +7,6 @@ export function fetchJson(path) {
   }).then(results => {
     return results.json();
   }));
-
 }
 
 export function postJson(path, body) {
@@ -25,6 +24,5 @@ export function post(path) {
   return (fetch(url + path, {
     method: "POST",
     credentials: 'include'
-
   }));
 }

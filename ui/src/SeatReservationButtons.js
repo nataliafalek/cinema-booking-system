@@ -34,7 +34,7 @@ class BackAndNextButton extends Component {
           <BackButton/>
           <button className={"nextButton"} disabled={this.props.chosenSeats.length === 0}
                   onClick={this.handleOnClick}
-                  type="button">Next
+                  type="button">Dalej
           </button>
         </div>
       </div>

@@ -3,10 +3,10 @@ import * as HttpService from "./HttpService";
 import {Redirect} from 'react-router-dom';
 import BackButton from "./BackButton";
 import _ from 'lodash';
+import {Table} from 'react-bootstrap';
 
 
 class Schedule extends Component {
-
   constructor() {
     super();
     this.days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
@@ -52,49 +52,48 @@ class Schedule extends Component {
     const grouppedByDay = _.groupBy(this.state.whatsOn, 'dayOfProjection');
     return !_.isEmpty(grouppedByDay) ? (
       <div className={"schedule"}>
-        <div className={"daysOfWeek"}>
-          {
-            this.orderByActualDay().map((day, idx) => {
-                const dayClass = this.state.actualDay === day ? "actualDay" : "otherDays";
-                return <span key={idx} className={dayClass}
-                             onClick={(event) => this.setState({actualDay: day})}>&emsp;{day}</span>
-              }
-            )}
-        </div>
-        <table className={"scheduledMovies"}>
-          <tbody>
-          <tr>
-            <th>TITLE</th>
-            <th>HOUR</th>
-            <th>DURATION</th>
-          </tr>
-          {grouppedByDay[this.state.actualDay] ? grouppedByDay[this.state.actualDay].map((movie, idx) => {
-            const movieClass = this.state.chosenMovie === movie.scheduledMovieId ? "selectedMovie" : "otherMovies";
-            return <tr className={movieClass}
-                       key={idx} onClick={(event) => {
-              this.setState({chosenMovie: movie.scheduledMovieId})
-            }}>
-              <td> {movie.movieTitle}</td>
-              <td> {movie.hourOfProjection}</td>
-              <td> {movie.movieDurationInMinutes} minutes</td>
+        <div className={"container"}>
+          <div className={"daysOfWeek"}>
+            {this.orderByActualDay().map((day, idx) => {
+              const dayClass = this.state.actualDay === day ? "actualDay" : "otherDays";
+              return <span key={idx} className={dayClass}
+                           onClick={(event) => this.setState({actualDay: day})}>&emsp;{day}</span>
+            })}
+          </div>
+          <Table responsive>
+            <tbody>
+            <tr>
+              <th>TYTUŁ</th>
+              <th>GODZINA</th>
+              <th>CZAS TRWANIA</th>
             </tr>
-          }) : null}
-          </tbody>
-        </table>
-        <div>
+            {grouppedByDay[this.state.actualDay] ? grouppedByDay[this.state.actualDay].map((movie, idx) => {
+              const movieClass = this.state.chosenMovie === movie.scheduledMovieId ? "selectedMovie" : "otherMovies";
+              return <tr className={movieClass}
+                         key={idx} onClick={(event) => {
+                this.setState({chosenMovie: movie.scheduledMovieId})
+              }}>
+                <td> {movie.movieTitle}</td>
+                <td> {movie.hourOfProjection}</td>
+                <td> {movie.movieDurationInMinutes} min</td>
+              </tr>
+            }) : null}
+            </tbody>
+          </Table>
         </div>
         {this.state.redirect ? <Redirect push to={`/seats/${this.state.chosenMovie}`}/> : null}
-        <div className={"buttons"}>
-          <BackButton/>
-          <button className={"nextButton"} disabled={!((this.state.chosenMovie || {}))}
-                  onClick={this.handleOnClick}
-                  type="button">Next
-          </button>
+        <div className={"container"}>
+          <div className={"buttons"}>
+            <BackButton/>
+            <button className={"nextButton"} disabled={!((this.state.chosenMovie || {}))}
+                    onClick={this.handleOnClick}
+                    type="button">Dalej
+            </button>
+          </div>
         </div>
       </div>
     ) : null;
   }
-
 
 }
 

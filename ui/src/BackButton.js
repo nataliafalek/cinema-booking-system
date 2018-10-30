@@ -10,7 +10,7 @@ class BackButton extends Component {
       <button
         className="backButton"
         onClick={this.context.router.history.goBack}>
-        Back
+        Cofnij
       </button>
     )
   }
