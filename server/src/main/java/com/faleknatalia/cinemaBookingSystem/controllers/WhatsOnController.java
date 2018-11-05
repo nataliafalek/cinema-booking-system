@@ -35,7 +35,6 @@ public class WhatsOnController {
         return new ResponseEntity<>(scheduledMovieDetailDtos, HttpStatus.OK);
     }
 
-
     @RequestMapping(value = "/whatsOn/{chosenMovieId}", method = RequestMethod.GET)
     public ResponseEntity<List<ScheduledMovieDetailsDto>> whatsOnByMovieId(@PathVariable long chosenMovieId) {
         List<ScheduledMovie> scheduledMovies = scheduledMovieRepository.findAllByMovieId(chosenMovieId);
@@ -43,7 +42,12 @@ public class WhatsOnController {
         return new ResponseEntity<>(scheduledMovieDetailDtos, HttpStatus.OK);
     }
 
-    //TODO optymalizacja - wydzielic metode do serwisu osobnego, tak by efektywnie laczyc ScheduledMovie i ScheduledMovieDetailsDto
+    @RequestMapping(value = "/movieInfo/{chosenMovieId}", method = RequestMethod.GET)
+    public ResponseEntity<Movie> getMovieDetails(@PathVariable long chosenMovieId) {
+        Long movieId = scheduledMovieRepository.findOne(chosenMovieId).getMovieId();
+        return new ResponseEntity<>(movieRepository.findOne(movieId), HttpStatus.OK);
+    }
+
     private List<ScheduledMovieDetailsDto> joinScheduledMovieWithMovieData(List<ScheduledMovie> scheduledMovies) {
         List<ScheduledMovieDetailsDto> scheduledMovieDetailsDtos = scheduledMovies.stream().map(
                 scheduledMovie -> {

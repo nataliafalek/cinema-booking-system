@@ -16,26 +16,19 @@ import java.util.List;
 public class TicketGeneratorPdf {
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(TicketGeneratorPdf.class);
 
-
     public ByteArrayOutputStream generateTicket(TicketData ticketData) throws Exception {
-
         List<SeatAndPriceDetails> chosenSeatAndPrices = ticketData.getSeatAndPriceDetails();
-
         PDDocument document = new PDDocument();
         PDPage page = new PDPage();
         document.addPage(page);
-
         PDPageContentStream contentStream = new PDPageContentStream(document, page);
-        byte[] image = IOUtils.toByteArray(new ClassPathResource("/static/logo-palmy.jpg").getInputStream());
+        byte[] image = IOUtils.toByteArray(new ClassPathResource("/static/logo-nati.png").getInputStream());
         PDImageXObject pdImage = PDImageXObject.createFromByteArray(document, image, null);
-        contentStream.drawImage(pdImage, 60, 618, 100, 100);
-
+        contentStream.drawImage(pdImage, 160, 700, 200, 50);
         contentStream.beginText();
         contentStream.setLeading(14.5f);
-        contentStream.newLineAtOffset(200, 700);
-
+        contentStream.newLineAtOffset(50, 670);
         contentStream.setFont(PDType1Font.COURIER, 16);
-
         contentStream.showText("Tytul: " + ticketData.getMovieTitle());
         contentStream.newLine();
         contentStream.newLine();
@@ -50,7 +43,7 @@ public class TicketGeneratorPdf {
                 contentStream.newLine();
                 String ticketDetails = "Numer: " + Integer.toString(seatAndPriceDetails.getSeat().getSeatNumber())
                         + ", rzad: " + Integer.toString(seatAndPriceDetails.getSeat().getRowNumber()) + ", " + seatAndPriceDetails.getTicketPrice().getTicketType() +
-                         Integer.toString(seatAndPriceDetails.getTicketPrice().getTicketValue()) + " zl";
+                        " " + Integer.toString(seatAndPriceDetails.getTicketPrice().getTicketValue()) + " zl";
                 contentStream.showText(ticketDetails);
 
             } catch (IOException e) {
@@ -65,5 +58,4 @@ public class TicketGeneratorPdf {
         document.close();
         return baos;
     }
-
 }

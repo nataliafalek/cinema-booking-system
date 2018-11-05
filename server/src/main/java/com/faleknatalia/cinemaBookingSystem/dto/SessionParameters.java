@@ -1,14 +1,12 @@
 package com.faleknatalia.cinemaBookingSystem.dto;
 
 import com.faleknatalia.cinemaBookingSystem.model.PersonalData;
-import com.faleknatalia.cinemaBookingSystem.model.Seat;
 import com.faleknatalia.cinemaBookingSystem.model.SeatReservationByScheduledMovie;
 import com.faleknatalia.cinemaBookingSystem.model.TicketPrice;
 
 import java.util.List;
 
 public class SessionParameters {
-
     private long chosenMovieId;
     private String dayOfProjection;
     private List<SeatReservationByScheduledMovie> chosenSeats;

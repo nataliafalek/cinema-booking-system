@@ -32,7 +32,7 @@ class BackAndNextButton extends Component {
         {this.state.redirect ? <Redirect push to={'/personalData'}/> : null}
         <div className={"buttons"}>
           <BackButton/>
-          <button className={"nextButton"} disabled={this.props.chosenSeats.length === 0}
+          <button className={"nextButton"} disabled={this.props.chosenSeats.length == 0}
                   onClick={this.handleOnClick}
                   type="button">Dalej
           </button>

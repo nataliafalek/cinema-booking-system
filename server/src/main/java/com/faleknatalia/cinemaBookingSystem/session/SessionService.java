@@ -6,6 +6,7 @@ import com.faleknatalia.cinemaBookingSystem.model.Reservation;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Optional;
 
 public class SessionService {
 
@@ -14,7 +15,7 @@ public class SessionService {
     }
 
     public static Long getChosenMovieId(HttpSession session) {
-        return (Long) session.getAttribute("chosenMovieId");
+        return Optional.ofNullable((Long) session.getAttribute("chosenMovieId")).orElse(0L);
     }
 
     public static void setChosenSeatsAndPrices(HttpSession session, List<ChosenSeatAndPrice> chosenSeatAndPrices) {

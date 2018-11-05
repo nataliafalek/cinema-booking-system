@@ -37,16 +37,18 @@ public class MakeReservationController {
         List<SeatReservationByScheduledMovie> cinemaHallSeats = seatReservationByScheduledMovieRepository.findAllByScheduledMovieId(scheduledMovieId);
         Map<Integer, List<SeatReservationByScheduledMovie>> groupByRow =
                 cinemaHallSeats.stream().collect(Collectors.groupingBy(seat -> seat.getSeat().getRowNumber()));
-        Long extractedChosenMovieId = Optional.ofNullable(SessionService.getChosenMovieId(session)).orElse(0L);
-        List<ChosenSeatAndPrice> extractedChosenSeatsAndPrices = SessionService.getChosenSeatsAndPrices(session);
-        List<ChosenSeatAndPrice> chosenSeatAndPrices = Optional.ofNullable(extractedChosenSeatsAndPrices).orElseGet(ArrayList::new);
-        if (extractedChosenMovieId != 0L && extractedChosenMovieId != scheduledMovieId && !chosenSeatAndPrices.isEmpty()) {
-            SessionService.removeChosenSeatsAndPrice(session);
-            SessionService.removePersonalData(session);
-            SessionService.removeReservation(session);
+        Long extractedChosenMovieId = SessionService.getChosenMovieId(session);
+        if (extractedChosenMovieId != scheduledMovieId) {
+            cleanupSession(session);
         }
         SessionService.setChosenMovieId(session, scheduledMovieId);
         return new ResponseEntity<>(new ArrayList<>(groupByRow.values()), HttpStatus.OK);
+    }
+
+    private void cleanupSession(HttpSession session) {
+        SessionService.removeChosenSeatsAndPrice(session);
+        SessionService.removePersonalData(session);
+        SessionService.removeReservation(session);
     }
 
     @Transactional

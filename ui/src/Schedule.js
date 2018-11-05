@@ -55,7 +55,7 @@ class Schedule extends Component {
         <div className={"container"}>
           <div className={"daysOfWeek"}>
             {this.orderByActualDay().map((day, idx) => {
-              const dayClass = this.state.actualDay === day ? "actualDay" : "otherDays";
+              const dayClass = this.state.actualDay == day ? "actualDay" : "otherDays";
               return <span key={idx} className={dayClass}
                            onClick={(event) => this.setState({actualDay: day})}>&emsp;{day}</span>
             })}
@@ -68,7 +68,7 @@ class Schedule extends Component {
               <th>CZAS TRWANIA</th>
             </tr>
             {grouppedByDay[this.state.actualDay] ? grouppedByDay[this.state.actualDay].map((movie, idx) => {
-              const movieClass = this.state.chosenMovie === movie.scheduledMovieId ? "selectedMovie" : "otherMovies";
+              const movieClass = this.state.chosenMovie == movie.scheduledMovieId ? "selectedMovie" : "otherMovies";
               return <tr className={movieClass}
                          key={idx} onClick={(event) => {
                 this.setState({chosenMovie: movie.scheduledMovieId})
@@ -85,7 +85,7 @@ class Schedule extends Component {
         <div className={"container"}>
           <div className={"buttons"}>
             <BackButton/>
-            <button className={"nextButton"} disabled={!((this.state.chosenMovie || {}))}
+            <button className={"nextButton"} disabled={(this.state.chosenMovie == null || this.state.chosenMovie === 0 || this.state.chosenMovie == {})}
                     onClick={this.handleOnClick}
                     type="button">Dalej
             </button>

@@ -62,13 +62,14 @@ public class PdfGeneratorTest {
         document.addPage(page);
 
         PDPageContentStream contentStream = new PDPageContentStream(document, page);
-        byte[] image = IOUtils.toByteArray(new ClassPathResource("/static/logo-palmy.jpg").getInputStream());
+        byte[] image = IOUtils.toByteArray(new ClassPathResource("/static/logo-nati.png").getInputStream());
         PDImageXObject pdImage = PDImageXObject.createFromByteArray(document, image, null);
-        contentStream.drawImage(pdImage, 60, 621, 100, 100);
+        contentStream.drawImage(pdImage, 160, 700, 200, 50);
         contentStream.beginText();
         contentStream.setLeading(14.5f);
-        contentStream.newLineAtOffset(200, 700);
+        contentStream.newLineAtOffset(50, 670);
         contentStream.setFont(PDType1Font.COURIER, 16);
+//        contentStream.newLine();contentStream.newLine();contentStream.newLine();contentStream.newLine();contentStream.newLine();
 
         contentStream.showText("Movie: " + ticketData.getMovieTitle());
         contentStream.newLine();

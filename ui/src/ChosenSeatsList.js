@@ -3,6 +3,7 @@ import * as HttpService from "./HttpService";
 import './index.css';
 
 class ChosenSeatsList extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -15,19 +16,22 @@ class ChosenSeatsList extends Component {
     HttpService.fetchJson('ticketPriceList')
       .then(data => {
         this.setState({ticketPrices: data})
-      });
+      })
+
     HttpService.fetchJson('session')
       .then(data => {
         if (data.chosenPriceList && data.status !== 500) {
           this.setState({chosenPriceList: data.chosenPriceList})
         }
-      });
+      })
   }
 
+
   getTicketPrice = (priceId) => {
-    const ticketPrice = this.state.ticketPrices.filter(ticketPrice => ticketPrice.ticketPriceId === priceId);
-    return ticketPrice.length !== 0 ? ticketPrice[0].ticketValue : [];
-  };
+    const ticketPrice = this.state.ticketPrices.filter(ticketPrice =>
+      ticketPrice.ticketPriceId == priceId);
+    return ticketPrice.length != 0 ? ticketPrice[0].ticketValue : [];
+  }
 
   calculateNewChosenSeats = (event, seat, selectedPrice) => {
     const newChosenSeats = this.props.chosenSeats.map(chosenSeat => {
@@ -42,7 +46,7 @@ class ChosenSeatsList extends Component {
       }
     });
     return newChosenSeats
-  };
+  }
 
   render() {
     return <div>
@@ -60,6 +64,7 @@ class ChosenSeatsList extends Component {
           </select>
           , cena: {this.getTicketPrice(seat.ticketPriceId)}zł
         </div>) : []}
+
     </div>;
   }
 }

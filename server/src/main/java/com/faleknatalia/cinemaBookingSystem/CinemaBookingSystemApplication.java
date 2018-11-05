@@ -60,18 +60,17 @@ public class CinemaBookingSystemApplication implements CommandLineRunner {
     public void run(String... strings) throws Exception {
 
         if (generateSampleData) {
-
             List<Movie> allMovies =
                     Arrays.asList(
                             new Movie("Kler", "Życie trzech księży ulega zmianie, kiedy ich drogi krzyżują się ponownie.", 135, "https://1.fwcdn.pl/po/04/02/810402/7856555.6.jpg"),
                             new Movie("Zimna Wojna", "Historia wielkiej i trudnej miłości dwojga ludzi, którzy nie potrafią być ze sobą i jednocześnie nie mogą bez siebie żyć. W tle wydarzenia zimnej wojny lat 50. w Polsce, Berlinie, Jugosławii i Paryżu.", 85, "https://1.fwcdn.pl/po/40/39/764039/7845442.6.jpg"),
-                            new Movie("Bohemian Rhapsody", "Dzięki oryginalnemu brzmieniu Queen staje się jednym z najpopularniejszych zespołów w historii muzyki.", 135, "https://1.fwcdn.pl/po/92/01/619201/7845376.6.jpg"),
+                            new Movie("Bohemian Rhapsody", "Dzięki oryginalnemu brzmieniu Queen staje się jednym z najpopularniejszych zespołów w historii muzyki.", 135, "https://1.fwcdn.pl/po/92/01/619201/7863181.6.jpg"),
                             new Movie("Ocean ognia", "Kapitan okrętu podwodnego współpracuje z drużyną Navy SEAL w celu uratowania prezydenta Rosji, który podczas zamachu wzięty został do niewoli.", 125, "https://1.fwcdn.pl/po/83/54/618354/7860787.6.jpg")
                     );
 
             List<CinemaHall> cinemaHalls = Arrays.asList(
                     new CinemaHallGenerator().generateCinemaHall(8, 10),
-                    new CinemaHallGenerator().generateCinemaHall(12, 12)
+                    new CinemaHallGenerator().generateCinemaHall(10, 12)
             );
 
             List<TicketPrice> ticketPrices = Arrays.asList(

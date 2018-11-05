@@ -6,7 +6,8 @@ class CinemaHall extends Component {
     super(props);
     this.state = {
       chosenSeats: [],
-      cinemaHall: []
+      cinemaHall: [],
+      movieDetails: [],
     };
   }
 
@@ -45,10 +46,14 @@ class CinemaHall extends Component {
   };
 
   componentDidMount() {
-    this.getHall(this.props.scheduledMovieId)
+    this.getHall(this.props.scheduledMovieId);
+    HttpService.fetchJson(`movieInfo/${this.props.scheduledMovieId}`)
+      .then(data => {
+          this.setState({movieDetails: data})
+      });
     HttpService.fetchJson('session')
       .then(data => {
-        if (data && data.status !== 500 && data.chosenMovieId === this.props.scheduledMovieId) {
+        if (data && data.status != 500 && data.chosenMovieId == this.props.scheduledMovieId) {
           this.setState({chosenSeats: data.chosenSeats});
           this.props.chosenSeats(data.chosenSeats)
         }
@@ -63,6 +68,7 @@ class CinemaHall extends Component {
     const maxCinemaHallSeats = Array(maxRows).fill().map(() => Array.from(new Array(maxColumns), (value, index) => index + 1));
     return <div className={"container"}>
       <h3>#wybierz siedzenia</h3>
+      <h3>Film: {this.state.movieDetails.title}</h3>
       <div className={"printedSeats"}>
         <div className={"screen"}>Ekran</div>
         {

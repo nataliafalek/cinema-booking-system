@@ -10,6 +10,7 @@ class ReservationSummary extends Component {
     this.state = {
       personalData: [],
       ticketData: null,
+      showUploadButton: false
     };
   }
 
@@ -25,12 +26,14 @@ class ReservationSummary extends Component {
   };
 
   handleClick = () => {
+    this.setState({ showUploadButton: true });
+    this.refs.btn.style.cursor = 'not-allowed';
     return HttpService.post(`payment`)
-      .then(results => {
-        return results.json();
-      }).then(data => {
-        window.location = data.redirectUri
-      });
+        .then(results => {
+          return results.json();
+        }).then(data => {
+          window.location = data.redirectUri
+        });
   };
 
   render() {
@@ -75,7 +78,7 @@ class ReservationSummary extends Component {
         <div className={"container"}>
           <div className={"buttons"}>
             <BackButton/>
-            <button className={"payButton"} type="button" onClick={this.handleClick}>Zapłać</button>
+            <button className={"payButton"} ref="btn" disabled={this.state.showUploadButton} onClick={this.handleClick}>Zapłać</button>
           </div>
         </div>
       </div>
