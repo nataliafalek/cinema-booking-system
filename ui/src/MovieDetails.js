@@ -33,7 +33,7 @@ class MovieDetails extends Component {
             </Media.Left>
             <Media.Body>
               <Media.Heading>"{this.state.whatsOnByMovies[0].movieTitle}"</Media.Heading>
-              <p> Czas trwania: {this.state.whatsOnByMovies[0].movieDurationInMinutes} minutes </p>
+              <p> Czas trwania: {this.state.whatsOnByMovies[0].movieDurationInMinutes} min </p>
               <p> Opis: {this.state.whatsOnByMovies[0].movieDescription}</p>
               <p>Dzisiejsze seanse: </p>
               <div>

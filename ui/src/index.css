@@ -211,13 +211,13 @@ li.emptySeat {
 div.CinemaHallRows p {
     color: white;
     display: inline-block;
-    margin: 15px;
+    margin-top: 8px;
+    margin-left: 15px;
 }
 
 li.freeSeat:before {
     display: block;
     padding-top: 100%;
-
 }
 
 li.freeSeat:hover {
@@ -285,10 +285,9 @@ li.reservedSeat:before {
     background-color: #EA783B;
 }
 
-.btn:disabled{
+.btn:disabled {
     cursor: not-allowed;
 }
-
 
 /*Personal data*/
 
@@ -484,7 +483,6 @@ div.gallery div.movieDescription {
     li.emptySeat {
         border: 5px solid #222;
     }
-
 
     .printedSeats {
         font-size: 12px;

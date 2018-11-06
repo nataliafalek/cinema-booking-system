@@ -68,7 +68,8 @@ class CinemaHall extends Component {
     const maxCinemaHallSeats = Array(maxRows).fill().map(() => Array.from(new Array(maxColumns), (value, index) => index + 1));
     return <div className={"container"}>
       <h3>#wybierz siedzenia</h3>
-      <h3>Film: {this.state.movieDetails.title}</h3>
+      <h3>Film: {this.state.movieDetails.movieTitle}</h3>
+      <h3>Data: {this.state.movieDetails.dayOfProjection} {this.state.movieDetails.hourOfProjection}</h3>
       <div className={"printedSeats"}>
         <div className={"screen"}>Ekran</div>
         {
