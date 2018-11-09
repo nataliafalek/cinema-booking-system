@@ -94,7 +94,6 @@ class Schedule extends Component {
       </div>
     ) : null;
   }
-
 }
 
 export default Schedule;

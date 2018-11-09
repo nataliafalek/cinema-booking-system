@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import * as HttpService from "./HttpService";
 import {Redirect} from 'react-router-dom';
 import BackButton from "./BackButton";
+import {Table} from 'react-bootstrap';
 
 
 class ReservationSummary extends Component {
@@ -10,7 +11,7 @@ class ReservationSummary extends Component {
     this.state = {
       personalData: [],
       ticketData: null,
-      showUploadButton: false
+      disableButton: false
     };
   }
 
@@ -26,14 +27,13 @@ class ReservationSummary extends Component {
   };
 
   handleClick = () => {
-    this.setState({ showUploadButton: true });
-    this.refs.btn.style.cursor = 'not-allowed';
+    this.setState({disableButton: true});
     return HttpService.post(`payment`)
-        .then(results => {
-          return results.json();
-        }).then(data => {
-          window.location = data.redirectUri
-        });
+      .then(results => {
+        return results.json();
+      }).then(data => {
+        window.location = data.redirectUri
+      });
   };
 
   render() {
@@ -42,43 +42,59 @@ class ReservationSummary extends Component {
         <h3>#podsumowanie transakcji</h3>
         <div className={"summaryData"}>
           <li>
-            <em className={"reservationData"}>Imię:</em>
+            <em className={"reservationData"}>Imię: </em>
             {this.state.personalData.name}</li>
           <li>
-            <em className={"reservationData"}>Nazwisko:</em>
+            <em className={"reservationData"}>Nazwisko: </em>
             {this.state.personalData.surname}</li>
           <li>
-            <em className={"reservationData"}>Email:</em>
+            <em className={"reservationData"}>Email: </em>
             {this.state.personalData.email}</li>
           <li>
-            <em className={"reservationData"}>Numer telefonu:</em>
+            <em className={"reservationData"}>Numer telefonu: </em>
             {this.state.personalData.phoneNumber}</li>
           <li>
-            <em className={"reservationData"}>Tytuł filmu:</em>
+            <em className={"reservationData"}>Tytuł filmu: </em>
             "{this.state.ticketData.movieTitle}"
           </li>
           <li>
-            <em className={"reservationData"}>Data:</em>
+            <em className={"reservationData"}>Data: </em>
             {this.state.ticketData.projectionDate}</li>
           <li>
-            <em className={"reservationData"}>Godzina:</em>
+            <em className={"reservationData"}>Godzina: </em>
             {this.state.ticketData.projectionHour}</li>
-          <li>
-            <em className={"reservationData"}>Nr: &emsp; Rząd: &emsp;Typ:&emsp;&emsp;Cena:</em>
-            {this.state.ticketData.seatAndPriceDetails.map((seatAndPrice, idx) => {
-                return (
-                  <li key={idx}
-                      className={"reservationSeat"}>{seatAndPrice.seat.seatNumber} &emsp;&emsp; {seatAndPrice.seat.rowNumber}&emsp;&emsp;&emsp;&emsp;
-                    {seatAndPrice.ticketPrice.ticketType}&emsp;&emsp;  {seatAndPrice.ticketPrice.ticketValue}</li>)
-              }
-            )}</li>
-        </div>
+          <em className={"reservationData"}>
+            <Table className={"summaryTable"} responsive>
+              <thead>
+              <tr>
+                <th>Nr:</th>
+                <th>Rząd:</th>
+                <th>Typ:</th>
+                <th>Cena:</th>
+              </tr>
+              </thead>
+              <tbody>
+              {this.state.ticketData.seatAndPriceDetails.map((seatAndPrice, idx) => {
+                  return (
+                    <tr key={idx} className={"reservationSeat"}>
+                      <td>{seatAndPrice.seat.seatNumber}</td>
+                      <td> {seatAndPrice.seat.rowNumber} </td>
+                      <td>{seatAndPrice.ticketPrice.ticketType}</td>
+                      <td>{seatAndPrice.ticketPrice.ticketValue} zł</td>
+                    </tr>)
+                }
+              )}
+              </tbody>
+            </Table>
+          </em>
 
+        </div>
         {this.state.redirect ? <Redirect push to={`/payment/${this.props.match.params.reservationId}`}/> : null}
         <div className={"container"}>
           <div className={"buttons"}>
             <BackButton/>
-            <button className={"payButton"} ref="btn" disabled={this.state.showUploadButton} onClick={this.handleClick}>Zapłać</button>
+            <button className={"payButton"} disabled={this.state.disableButton} onClick={this.handleClick}>Zapłać
+            </button>
           </div>
         </div>
       </div>

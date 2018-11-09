@@ -24,7 +24,6 @@ class Movies extends Component {
       .then(data => {
         this.setState({movies: data})
       });
-
     HttpService.fetchJson('ticketPriceList')
       .then(data => {
         this.setState({ticketPrices: data})
@@ -39,24 +38,20 @@ class Movies extends Component {
     return (
       <div>
         <Carousel>
-          <Carousel.Item>
-            <img alt="900x500" src={require("./assets/rsz_1kler.jpg")}/>
-            <Carousel.Caption>
-              <h1>KLER</h1>
-            </Carousel.Caption>
-          </Carousel.Item>
-          <Carousel.Item>
-            <img alt="900x500" src={require("./assets/rsz_1zimna-wojna.jpg")}/>
-            <Carousel.Caption>
-              <h1>ZIMNA WOJNA</h1>
-            </Carousel.Caption>
-          </Carousel.Item>
-          <Carousel.Item>
-            <img alt="900x500" src={require("./assets/bohemian.jpg")}/>
-            <Carousel.Caption>
-              <h1>BOHEMIAN RHAPSODY</h1>
-            </Carousel.Caption>
-          </Carousel.Item>
+          {this.state.movies ? this.state.movies.map(movie => {
+              return (
+                <Carousel.Item>
+                  <img src={`data:image/png;base64, ${movie.carouselImage}`} onClick={(event) => {
+                    this.setState({chosenMovie: movie});
+                    this.handleOnClick();
+                  }}/>
+                  <Carousel.Caption>
+                    <h1>{movie.title}</h1>
+                  </Carousel.Caption>
+                </Carousel.Item>
+              );
+            })
+            : null}
         </Carousel>
         <h2>#filmy</h2>
         <div className="container">

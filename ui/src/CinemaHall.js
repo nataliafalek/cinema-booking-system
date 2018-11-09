@@ -8,6 +8,7 @@ class CinemaHall extends Component {
       chosenSeats: [],
       cinemaHall: [],
       movieDetails: [],
+      isLoadingSeats: true,
     };
   }
 
@@ -15,6 +16,7 @@ class CinemaHall extends Component {
     HttpService.fetchJson(`cinemaHall/seats?scheduledMovieId=${scheduledMovieId}`)
       .then(data => {
         this.setState({cinemaHall: data})
+        this.setState({isLoadingSeats: false})
       })
   };
 
@@ -49,7 +51,7 @@ class CinemaHall extends Component {
     this.getHall(this.props.scheduledMovieId);
     HttpService.fetchJson(`movieInfo/${this.props.scheduledMovieId}`)
       .then(data => {
-          this.setState({movieDetails: data})
+        this.setState({movieDetails: data})
       });
     HttpService.fetchJson('session')
       .then(data => {
@@ -61,6 +63,7 @@ class CinemaHall extends Component {
   }
 
   render() {
+    console.log("isloading: ", this.state.isLoadingSeats)
     const maxColumns = Math.max.apply(Math, this.state.cinemaHall.map(function (row) {
       return row.length;
     }));
@@ -70,10 +73,10 @@ class CinemaHall extends Component {
       <h3>#wybierz siedzenia</h3>
       <h3>Film: {this.state.movieDetails.movieTitle}</h3>
       <h3>Data: {this.state.movieDetails.dayOfProjection} {this.state.movieDetails.hourOfProjection}</h3>
-      <div className={"printedSeats"}>
-        <div className={"screen"}>Ekran</div>
-        {
-          maxCinemaHallSeats.map((rowNumber, rowIndexMax) => {
+      {this.state.isLoadingSeats ? <div className="loader"></div> :
+        <div className={"printedSeats"}>
+          <div className={"screen"}>Ekran</div>
+          {maxCinemaHallSeats.map((rowNumber, rowIndexMax) => {
             const row = rowNumber.map((columnNumber, colIndex) => {
               const seat = this.findSeat(this.state.cinemaHall, rowIndexMax + 1, columnNumber)
               return seat ? this.renderSeat(seat, rowIndexMax, colIndex) :
@@ -84,8 +87,9 @@ class CinemaHall extends Component {
               <p>{rowIndexMax + 1}</p>
             </div>)
           })
-        }
-      </div>
+          }
+        </div>
+      }
     </div>
   }
 }

@@ -38,7 +38,6 @@ class BackAndNextButton extends Component {
           </button>
         </div>
       </div>
-
     );
   }
 

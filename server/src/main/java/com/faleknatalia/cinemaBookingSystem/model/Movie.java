@@ -1,9 +1,6 @@
 package com.faleknatalia.cinemaBookingSystem.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Movie {
@@ -13,18 +10,26 @@ public class Movie {
     private int durationInMinutes;
     private String imageUrl;
 
+    @Lob
+    private byte[] carouselImage;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long movieId;
 
-    public Movie(String title, String description, int durationInMinutes, String imageUrl) {
+    public Movie(String title, String description, int durationInMinutes, String imageUrl, byte[] carouselImage) {
         this.title = title;
         this.description = description;
         this.durationInMinutes = durationInMinutes;
         this.imageUrl = imageUrl;
+        this.carouselImage = carouselImage;
     }
 
     public Movie() {
+    }
+
+    public byte[] getCarouselImage() {
+        return carouselImage;
     }
 
     public String getTitle() {

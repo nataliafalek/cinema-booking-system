@@ -71,6 +71,7 @@ class PersonalData extends Component {
               onChange={(event) => {
                 this.setState({name: event.target.value});
               }}
+              placeholder={"Jan"}
               pattern={"\\p{L}+)\\s?(\\p{L}+)?"}
               required
             />
@@ -81,6 +82,7 @@ class PersonalData extends Component {
               onChange={(event) => {
                 this.setState({surname: event.target.value});
               }}
+              placeholder={"Kowalski"}
               pattern={"(\\p{L}+)(-|\\s)?(\\p{L}+)?"}
               required
             />
@@ -91,6 +93,7 @@ class PersonalData extends Component {
               onChange={(event) => {
                 this.setState({email: event.target.value});
               }}
+              placeholder={"jankowalski@gmail.com"}
               pattern={"[^@]+@[^@]+\\.[a-zA-Z]{2,}"}
               required
             />
@@ -101,6 +104,7 @@ class PersonalData extends Component {
               onChange={(event) => {
                 this.setState({phoneNumber: event.target.value});
               }}
+              placeholder={"123456789"}
               pattern="(?<!\w)(\(?(\+|00)?48\)?)?[ -]?\d{3}[ -]?\d{3}[ -]?\d{3}(?!\w)"
               required
             />

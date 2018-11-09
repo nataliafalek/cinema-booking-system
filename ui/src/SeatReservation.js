@@ -25,7 +25,6 @@ class SeatReservation extends Component {
           chosenSeatsChanged={(newChosenSeats) => this.chosenSeatsChanged(newChosenSeats)}
           chosenSeats={this.state.chosenSeats}
           scheduledMovieId={this.props.match.params.scheduledMovieId}/>
-
         <BackAndNextButton
           chosenSeats={this.state.chosenSeats}
           scheduledMovieId={this.props.match.params.scheduledMovieId}
