@@ -39,19 +39,19 @@ class Movies extends Component {
       <div>
         <Carousel>
           {this.state.movies ? this.state.movies.map(movie => {
-              return (
-                <Carousel.Item>
-                  <img src={`data:image/png;base64, ${movie.carouselImage}`} onClick={(event) => {
-                    this.setState({chosenMovie: movie});
-                    this.handleOnClick();
-                  }}/>
-                  <Carousel.Caption>
-                    <h1>{movie.title}</h1>
-                  </Carousel.Caption>
-                </Carousel.Item>
-              );
-            })
-            : null}
+            return (
+              <Carousel.Item>
+                <img src={movie.carouselImageUrl} onClick={(event) => {
+                  this.setState({chosenMovie: movie});
+                  this.handleOnClick();
+                }}/>
+                <Carousel.Caption>
+                  <h1>{movie.title}</h1>
+                </Carousel.Caption>
+              </Carousel.Item>
+            );
+          })
+          : null}
         </Carousel>
         <h2>#filmy</h2>
         <div className="container">

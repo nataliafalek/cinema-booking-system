@@ -9,27 +9,25 @@ public class Movie {
     private String description;
     private int durationInMinutes;
     private String imageUrl;
-
-    @Lob
-    private byte[] carouselImage;
+    private String carouselImageUrl;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long movieId;
 
-    public Movie(String title, String description, int durationInMinutes, String imageUrl, byte[] carouselImage) {
+    public Movie(String title, String description, int durationInMinutes, String imageUrl, String carouselImageUrl) {
         this.title = title;
         this.description = description;
         this.durationInMinutes = durationInMinutes;
         this.imageUrl = imageUrl;
-        this.carouselImage = carouselImage;
+        this.carouselImageUrl = carouselImageUrl;
     }
 
     public Movie() {
     }
 
-    public byte[] getCarouselImage() {
-        return carouselImage;
+    public String getCarouselImageUrl() {
+        return carouselImageUrl;
     }
 
     public String getTitle() {

@@ -9,6 +9,9 @@ public class Constants {
     @Value("${dev_mode}")
     private boolean devMode;
 
+    @Value("${server.port}")
+    private int serverPort;
+
     @Value("${clientId}")
     private String clientId;
 
@@ -63,5 +66,9 @@ public class Constants {
 
     public String getCustomerIp() {
         return customerIp;
+    }
+
+    public int getServerPort() {
+        return serverPort;
     }
 }

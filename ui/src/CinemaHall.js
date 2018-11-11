@@ -73,10 +73,9 @@ class CinemaHall extends Component {
       <h3>#wybierz siedzenia</h3>
       <h3>Film: {this.state.movieDetails.movieTitle}</h3>
       <h3>Data: {this.state.movieDetails.dayOfProjection} {this.state.movieDetails.hourOfProjection}</h3>
-      {this.state.isLoadingSeats ? <div className="loader"></div> :
         <div className={"printedSeats"}>
           <div className={"screen"}>Ekran</div>
-          {maxCinemaHallSeats.map((rowNumber, rowIndexMax) => {
+          {this.state.isLoadingSeats ? <div className="loader"></div> : maxCinemaHallSeats.map((rowNumber, rowIndexMax) => {
             const row = rowNumber.map((columnNumber, colIndex) => {
               const seat = this.findSeat(this.state.cinemaHall, rowIndexMax + 1, columnNumber)
               return seat ? this.renderSeat(seat, rowIndexMax, colIndex) :
@@ -89,7 +88,6 @@ class CinemaHall extends Component {
           })
           }
         </div>
-      }
     </div>
   }
 }
