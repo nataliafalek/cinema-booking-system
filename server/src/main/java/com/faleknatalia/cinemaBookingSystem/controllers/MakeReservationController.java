@@ -61,7 +61,7 @@ public class MakeReservationController {
     }
 
     @RequestMapping(value = "/cinemaHall/addPerson", method = RequestMethod.POST)
-    public ResponseEntity<String> createReservation(HttpSession session, @RequestBody PersonalData personalData) {
+    public ResponseEntity<Void> createReservation(HttpSession session, @RequestBody PersonalData personalData) {
         Optional<String> validationResult = PersonalDataValidator.validate(personalData);
         if (validationResult.isPresent()) {
             throw new IllegalArgumentException(validationResult.get());
@@ -69,10 +69,10 @@ public class MakeReservationController {
             List<ChosenSeatAndPrice> chosenSeatAndPrices = SessionService.getChosenSeatsAndPrices(session);
             long chosenMovieId = SessionService.getChosenMovieId(session);
             Reservation reservation = new Reservation(chosenMovieId, personalData, chosenSeatAndPrices);
-            String reservationId = reservation.getReservationId();
+//            String reservationId = reservation.getReservationId();
             SessionService.setPersonalData(session, personalData);
             SessionService.setReservation(session, reservation);
-            return new ResponseEntity<>(reservationId, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 

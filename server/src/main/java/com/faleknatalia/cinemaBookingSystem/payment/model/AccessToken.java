@@ -1,5 +1,7 @@
 package com.faleknatalia.cinemaBookingSystem.payment.model;
 
+import java.util.Objects;
+
 public class AccessToken {
 
     private String access_token;
@@ -31,5 +33,22 @@ public class AccessToken {
 
     public String getGrant_type() {
         return grant_type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AccessToken that = (AccessToken) o;
+        return expires_in == that.expires_in &&
+                Objects.equals(access_token, that.access_token) &&
+                Objects.equals(token_type, that.token_type) &&
+                Objects.equals(grant_type, that.grant_type);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(access_token, token_type, expires_in, grant_type);
     }
 }

@@ -41,11 +41,9 @@ public class PaymentService {
     private Constants constants;
 
     public AccessToken generateAccessToken(String client_id, String client_secret) {
-
         String request = String.format("grant_type=client_credentials&client_id=%s&client_secret=%s", client_id, client_secret);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
         HttpEntity<String> entity = new HttpEntity<>(request, headers);
         return restTemplate.postForObject(constants.getPaymentAuthorizationUrl(), entity, AccessToken.class);
     }
@@ -70,9 +68,7 @@ public class PaymentService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + token.getAccess_token());
-
         HttpEntity<OrderRequest> entity = new HttpEntity<>(orderRequest, headers);
-
         return restTemplate.postForObject(constants.getCreateOrderUrl(), entity, OrderResponse.class);
     }
 
@@ -81,9 +77,7 @@ public class PaymentService {
         PersonalData personalData = reservation.getPersonalData();
         List<TicketPrice> ticketPrices =
                 reservation.getChosenSeatsAndPrices().stream().map(chosenSeatAndPrice -> ticketPriceRepository.findOne(chosenSeatAndPrice.getTicketPriceId())).collect(Collectors.toList());
-
         Buyer buyer = new Buyer(personalData.getEmail(), personalData.getPhoneNumber(), personalData.getName(), personalData.getSurname());
-
         List<Product> products = ticketPrices.stream().map(ticketPrice ->
                 new Product("Ticket", toCents(ticketPrice.getTicketValue()), QUANTITY))
                 .collect(Collectors.toList());

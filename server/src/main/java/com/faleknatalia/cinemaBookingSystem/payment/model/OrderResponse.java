@@ -2,8 +2,6 @@ package com.faleknatalia.cinemaBookingSystem.payment.model;
 
 
 public class OrderResponse {
-
-
     private String orderId;
     private String extOrderId;
     private String statusCode;

@@ -1,6 +1,7 @@
 package com.faleknatalia.cinemaBookingSystem.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 //Serializable because it is used in the session
 public class ChosenSeatAndPrice implements Serializable {
@@ -22,5 +23,19 @@ public class ChosenSeatAndPrice implements Serializable {
 
     public long getTicketPriceId() {
         return ticketPriceId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChosenSeatAndPrice that = (ChosenSeatAndPrice) o;
+        return seatId == that.seatId &&
+                ticketPriceId == that.ticketPriceId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seatId, ticketPriceId);
     }
 }

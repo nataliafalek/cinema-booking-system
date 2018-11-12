@@ -5,11 +5,8 @@ import java.time.LocalDateTime;
 
 @Entity
 public class ScheduledMovie {
-
     private LocalDateTime dateOfProjection;
-
     private long cinemaHallId;
-
     private long movieId;
 
     @Id
